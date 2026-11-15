@@ -1,0 +1,128 @@
+name: CD
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cd-production
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      APP_ORIGIN: http://127.0.0.1:3100
+      DATABASE_PATH: .runtime/smoke.sqlite
+      CLOVA_STUDIO_API_KEY: ''
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: python3 -m unittest discover -s tests -p '*_test.py'
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Run HTTP smoke checks
+        run: |
+          npm run start -- --port 3100 > /tmp/tourpass.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          curl --fail --silent --show-error --retry 20 --retry-connrefused --retry-delay 1 --max-time 5 http://127.0.0.1:3100/ > /dev/null
+          node tests/http.mjs
+          TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs
+
+  deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment:
+      name: production
+      url: ${{ vars.APP_ORIGIN }}
+    env:
+      IMAGE_REF: ${{ vars.NCP_IMAGE_NAME || 'siheung-tourpass' }}:${{ github.sha }}
+      NCP_REGION_CODE: ${{ vars.NCP_REGION_CODE || 'KR' }}
+      NCP_VPC_NO: ${{ vars.NCP_VPC_NO }}
+      NCP_ACG_NO: ${{ vars.NCP_ACG_NO }}
+      NCP_ACCESS_KEY_ID: ${{ secrets.NCP_ACCESS_KEY_ID }}
+      NCP_SECRET_KEY: ${{ secrets.NCP_SECRET_KEY }}
+      NCP_SERVER_HOST: ${{ vars.NCP_SERVER_HOST }}
+      NCP_SERVER_PORT: ${{ vars.NCP_SERVER_PORT || '22' }}
+      NCP_SERVER_USER: ${{ secrets.NCP_SERVER_USER }}
+      NCP_SERVER_SSH_KEY: ${{ secrets.NCP_SERVER_SSH_KEY }}
+      NCP_SERVER_KNOWN_HOSTS: ${{ secrets.NCP_SERVER_KNOWN_HOSTS }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Validate deployment configuration
+        run: |
+          for var_name in NCP_VPC_NO NCP_ACG_NO NCP_ACCESS_KEY_ID NCP_SECRET_KEY NCP_SERVER_HOST NCP_SERVER_USER NCP_SERVER_SSH_KEY NCP_SERVER_KNOWN_HOSTS; do
+            if [ -z "${!var_name:-}" ]; then
+              echo "오류: GitHub Environment(production)에 ${var_name} 설정이 필요합니다." >&2
+              exit 1
+            fi
+          done
+
+      - name: Determine runner IPv4
+        id: runner
+        run: |
+          RUNNER_IP="$(curl -4 --fail --silent --show-error --retry 3 --max-time 10 https://api.ipify.org)"
+          python3 -c 'import ipaddress, sys; assert ipaddress.IPv4Address(sys.argv[1]).is_global' "$RUNNER_IP"
+          printf 'ip=%s\n' "$RUNNER_IP" >> "$GITHUB_OUTPUT"
+
+      - name: Allow temporary SSH access
+        run: python3 deploy/acg.py open "${{ steps.runner.outputs.ip }}"
+
+      - name: Build and deploy over SSH
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$NCP_SERVER_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$NCP_SERVER_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          SSH_TARGET="${NCP_SERVER_USER}@${NCP_SERVER_HOST}"
+          ARCHIVE="/tmp/siheung-tourpass-${GITHUB_SHA}.tar"
+          git archive --format=tar HEAD > /tmp/release.tar
+          scp -o BatchMode=yes -o ConnectTimeout=15 -o StrictHostKeyChecking=yes -P "$NCP_SERVER_PORT" /tmp/release.tar "${SSH_TARGET}:${ARCHIVE}"
+          {
+            printf 'export IMAGE_REF=%q\n' "$IMAGE_REF"
+            printf 'export ARCHIVE=%q\n' "$ARCHIVE"
+            cat <<'REMOTE'
+          set -euo pipefail
+          SOURCE_DIR="$(mktemp -d /tmp/siheung-tourpass-build.XXXXXX)"
+          trap 'rm -rf "$SOURCE_DIR"; rm -f "$ARCHIVE"' EXIT
+          tar -xf "$ARCHIVE" -C "$SOURCE_DIR"
+          docker build -t "$IMAGE_REF" "$SOURCE_DIR"
+          PULL_IMAGE=false bash "$SOURCE_DIR/deploy/deploy-container.sh"
+          REMOTE
+          } | ssh -o BatchMode=yes -o ConnectTimeout=15 -o StrictHostKeyChecking=yes -p "$NCP_SERVER_PORT" "$SSH_TARGET" bash -s
+
+      - name: Remove temporary SSH access
+        if: always() && steps.runner.outputs.ip != ''
+        env:
+          RUNNER_IP: ${{ steps.runner.outputs.ip }}
+        run: |
+          for attempt in 1 2 3; do
+            if python3 deploy/acg.py close "$RUNNER_IP"; then
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1

@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      APP_ORIGIN: http://127.0.0.1:3100
+      DATABASE_PATH: .runtime/smoke.sqlite
+      CLOVA_STUDIO_API_KEY: ''
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: Start server and run HTTP smoke checks
+        run: |
+          npm run start -- --port 3100 > /tmp/tourpass.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          curl --fail --silent --show-error --retry 20 --retry-connrefused --retry-delay 1 --max-time 5 http://127.0.0.1:3100/ > /dev/null
+          node tests/http.mjs
+          TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs
+      - name: Show server log on failure
+        if: failure()
+        run: cat /tmp/tourpass.log || true

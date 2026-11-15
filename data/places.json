@@ -1,0 +1,831 @@
+[
+  {
+    "id": "PLACE_REAL_001",
+    "name": "시흥 갯골생태공원",
+    "region": "장곡·갯골",
+    "description": "갯골과 옛 염전 주변의 생물 관찰 공간.",
+    "address": "경기도 시흥시 동서로 287",
+    "tags": [
+      "자연·생태",
+      "체험"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_GAETGOL",
+        "title": "시흥 갯골생태공원",
+        "publisher": "한국관광공사",
+        "url": "https://access.visitkorea.or.kr/opentour/detail.do?cotId=44219c7f-c556-474b-b92d-92505fa93199",
+        "checked_on": "2026-10-12",
+        "content_date": "2024-07-02",
+        "content_date_note": "출처에 표시된 작성 또는 갱신 시점; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "개요·주소",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_001.jpg",
+      "alt": "갯골생태공원의 옛 소래염전 소금창고",
+      "author": "오모군",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Salt_Warehouses_of_Sorae_Salt_Field.jpg",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "checkedOn": "2026-10-12",
+      "width": "960",
+      "height": "720"
+    }
+  },
+  {
+    "id": "PLACE_REAL_002",
+    "name": "오이도 선사유적공원",
+    "region": "오이도",
+    "description": "패총과 신석기 생활상을 소개하는 유적공원.",
+    "address": "경기도 시흥시 서해안로 113-27",
+    "tags": [
+      "역사·문화",
+      "체험",
+      "산책",
+      "경관 감상"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_PREHISTORIC",
+        "title": "오이도 선사유적공원",
+        "publisher": "한국관광공사",
+        "url": "https://access.visitkorea.or.kr/opentour/detail.do?cotId=4b33a891-95be-48dc-a98d-c6f029a4599c",
+        "checked_on": "2026-10-12",
+        "content_date": "2024-12-30",
+        "content_date_note": "출처에 표시된 수정일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "관광지 소개·주소",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_002.jpg",
+      "alt": "오이도 선사유적공원의 움집",
+      "author": "RyuMinjoo",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:%EC%8B%9C%ED%9D%A5_%EC%98%A4%EC%9D%B4%EB%8F%84_%EC%84%A0%EC%82%AC%EC%9C%A0%EC%A0%81%EA%B3%B5%EC%9B%90_%EC%9B%80%EC%A7%91%EB%93%A4_Siheung_Oido_Prehistoric_Park_Huts.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "checkedOn": "2026-10-12",
+      "width": "960",
+      "height": "720"
+    }
+  },
+  {
+    "id": "PLACE_REAL_003",
+    "name": "시흥오이도박물관",
+    "region": "오이도",
+    "description": "시흥 출토 유물 전시와 어린이 선사문화 체험을 소개하는 박물관.",
+    "address": "경기도 시흥시 오이도로 332",
+    "tags": [
+      "역사·문화",
+      "체험"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_MUSEUM",
+        "title": "생생한 유물과 재미있는 교육, 휴식이 공존하는 공간 - 시흥 오이도박물관",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/rem_detail.do?cotid=264ef757-a6e8-48f3-9724-904ae9a84fc3",
+        "checked_on": "2026-10-12",
+        "content_date": "2022-07",
+        "content_date_note": "출처에 표시된 작성 또는 갱신 시점; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "본문의 전시·어린이 체험·가족 방문 소개와 주소",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_003.jpg",
+      "alt": "시흥오이도박물관 건물과 앞마당 전경",
+      "author": "경기뉴스광장 김지호",
+      "sourceUrl": "https://gnews.gg.go.kr/news/news_detail.do?number=202508210926005603C049&s_code=C049",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "width": "970",
+      "height": "546",
+      "sourceTitle": "[색다른 박물관] ① 시흥오이도박물관",
+      "publishedOn": "2025-08-22",
+      "imageUrl": "http://gnews.gg.go.kr/OP_UPDATA/UP_DATA/_FILEZ/202508/20250821092600654250143.jpg",
+      "provenanceNote": "기사의 제1유형 표시와 해당 사진의 저작권자 표기 및 장소 단락을 확인. 공개 사진을 편집하지 않고 저장; 게시일은 촬영일로 간주하지 않음.",
+      "publisher": "경기도뉴스포털"
+    }
+  },
+  {
+    "id": "PLACE_REAL_004",
+    "name": "연꽃테마파크",
+    "region": "하중·호조벌",
+    "description": "연과 수련을 관찰하는 공간으로 관곡지와 별도 장소다.",
+    "address": "경기도 시흥시 관곡지로 139",
+    "tags": [
+      "자연·생태",
+      "산책"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_LOTUS",
+        "title": "시흥 연꽃테마파크(관곡지)와 인천 소래습지생태공원",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/rem_detail.do?cotid=420224c6-3206-48f0-8f36-a88c6fcd981a",
+        "checked_on": "2026-10-12",
+        "content_date": "2019-03",
+        "content_date_note": "출처에 표시된 작성 또는 갱신 시점; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "관곡지·연꽃테마파크 소개; 인천 관광지는 수집 제외",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_004.png",
+      "author": "시흥시",
+      "sourceUrl": "https://www.kogl.or.kr/recommend/recommendDivView.do?division=img&recommendIdx=36575",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "width": "760",
+      "height": "507",
+      "sourceTitle": "시흥_연꽃테마파크",
+      "capturedYear": "2021",
+      "imageUrl": "https://www.kogl.or.kr/upload_recommend/thumb_V/%ED%82%A4%EC%9B%8C%EB%93%9C%20%EC%A0%80%EC%9E%91%EB%AC%BC/%EC%8B%9C%ED%9D%A5%EC%8B%9C/%EB%AF%B8%EB%94%94%EC%96%B4%EC%8B%9C%ED%9D%A5/%EB%AF%B8%EB%94%94%EC%96%B4%EC%8B%9C%ED%9D%A5_0803_%EC%97%B0%EA%BD%83%ED%85%8C%EB%A7%88%ED%8C%8C%ED%81%AC_01.png",
+      "provenanceNote": "공공누리 상세 페이지의 제1유형 표시 확인. 로그인 없이 공개된 미리보기 사진을 그대로 저장; 별도 신청이 필요한 고해상도 원본 미사용.",
+      "alt": "연꽃테마파크 연못에 핀 수련",
+      "publisher": "공공누리"
+    }
+  },
+  {
+    "id": "PLACE_REAL_005",
+    "name": "관곡지",
+    "region": "하중·호조벌",
+    "description": "강희맹과 연꽃 재배의 역사적 연관을 소개하는 연못.",
+    "address": null,
+    "tags": [
+      "역사·문화",
+      "자연·생태"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_LOTUS",
+        "title": "시흥 연꽃테마파크(관곡지)와 인천 소래습지생태공원",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/rem_detail.do?cotid=420224c6-3206-48f0-8f36-a88c6fcd981a",
+        "checked_on": "2026-10-12",
+        "content_date": "2019-03",
+        "content_date_note": "출처에 표시된 작성 또는 갱신 시점; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "관곡지·연꽃테마파크 소개; 인천 관광지는 수집 제외",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_005.jpg",
+      "alt": "향토유적 관곡지 전경",
+      "author": "Narubaru7",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:%ED%96%A5%ED%86%A0%EC%9C%A0%EC%A0%81_%EA%B4%80%EA%B3%A1%EC%A7%80.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "checkedOn": "2026-10-12",
+      "width": "960",
+      "height": "720"
+    }
+  },
+  {
+    "id": "PLACE_REAL_006",
+    "name": "웨이브파크",
+    "region": "거북섬",
+    "description": "거북섬 일원에 조성된 인공 서핑장.",
+    "address": null,
+    "tags": [
+      "해양 체험"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_WAVE",
+        "title": "샤카! 더위를 쫓고 파도를 타다, 시흥 웨이브파크",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/rem_detail.do?cotid=cda885e6-fd10-44fa-a9de-b120cd7c4b2a",
+        "checked_on": "2026-10-12",
+        "content_date": "2022-05",
+        "content_date_note": "출처에 표시된 작성 또는 갱신 시점; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "본문 첫 부분의 거북섬 인공 서핑장 소개",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_006.jpg",
+      "author": "경기도청",
+      "sourceUrl": "https://gnews.gg.go.kr/news/news_detail.do?number=202509261642287501C049&s_code=C049",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "sourceTitle": "[달달한 경기도 즐길거리] ⑥ 시흥 편",
+      "publishedOn": "2025-09-26",
+      "imageUrl": "http://gnews.gg.go.kr/OP_UPDATA/UP_DATA/_FILEZ/202509/20250926044228691319999.jpg",
+      "provenanceNote": "기사의 제1유형 표시와 사진별 경기도청 저작권 표기를 확인. 게시일은 촬영일로 간주하지 않음.",
+      "width": "966",
+      "height": "644",
+      "alt": "웨이브파크의 인공 파도에서 서핑하는 방문객",
+      "publisher": "경기도뉴스포털"
+    }
+  },
+  {
+    "id": "PLACE_REAL_007",
+    "name": "배곧한울공원",
+    "region": "배곧",
+    "description": "서해에 접한 공원으로 해안 산책과 노을 감상을 소개한다.",
+    "address": "경기도 시흥시 해송십리로 61",
+    "tags": [
+      "산책",
+      "경관 감상"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_HANUL",
+        "title": "서울 근교 여행, 선선한 바람과 함께 즐기는 야간 산책 명소 4",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/rem_detail.do?cotid=40b18ed1-5b2b-4cb5-ac72-85d0cb739242",
+        "checked_on": "2026-10-12",
+        "content_date": "2025-01",
+        "content_date_note": "출처에 표시된 작성 또는 갱신 시점; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "배곧한울공원 단락·위치",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_007.jpg",
+      "alt": "배곧한울공원 해수풀장 전경",
+      "author": "Raccoon Dog",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Baegot_han-ul_park_outdoor_pool_view.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "checkedOn": "2026-10-12",
+      "width": "960",
+      "height": "440"
+    }
+  },
+  {
+    "id": "PLACE_REAL_008",
+    "name": "은계호수공원",
+    "region": "은계",
+    "description": "은행동의 호수 주변 산책로와 쉼터가 있는 공원.",
+    "address": null,
+    "tags": [
+      "휴식",
+      "산책",
+      "경관 감상"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_EUNGYE",
+        "title": "은계호수공원",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=5e9e675d-e381-4df0-8f91-88aa81830cd2",
+        "checked_on": "2026-10-12",
+        "content_date": null,
+        "content_date_note": "본문에서 작성·갱신일 미확인",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "본문의 은행동·산책로·쉼터·수변데크 소개",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_008.jpg",
+      "alt": "은계호수공원 호수 전경",
+      "author": "Narubaru7",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:%EC%9D%80%EA%B3%84%ED%98%B8%EC%88%98%EA%B3%B5%EC%9B%90.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "checkedOn": "2026-10-12",
+      "width": "960",
+      "height": "1280"
+    }
+  },
+  {
+    "id": "PLACE_REAL_009",
+    "name": "물왕호수",
+    "region": "물왕",
+    "description": "시흥의 담수호로, 물왕저수지라는 이전 명칭도 사용되었다.",
+    "address": null,
+    "tags": [
+      "휴식",
+      "경관 감상"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_MULWANG",
+        "title": "물왕호수",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=9fc74bfe-7618-46bf-bed2-b6c474880a34",
+        "checked_on": "2026-10-12",
+        "content_date": null,
+        "content_date_note": "본문에서 작성·갱신일 미확인",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "본문의 담수호·휴식처·명칭 변경 소개",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_009.jpg",
+      "author": "경기도",
+      "sourceUrl": "https://www.kogl.or.kr/recommend/recommendDivView.do?division=img&recommendIdx=37042",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "width": "760",
+      "height": "505",
+      "sourceTitle": "시흥_물왕저수지",
+      "capturedYear": "2009",
+      "imageUrl": "https://www.kogl.or.kr/upload_recommend/thumb_V/%ED%82%A4%EC%9B%8C%EB%93%9C%20%EC%A0%80%EC%9E%91%EB%AC%BC/%EA%B2%BD%EA%B8%B0%EA%B4%80%EA%B4%91/%ED%8F%AC%ED%86%A0%EA%B0%A4%EB%9F%AC%EB%A6%AC/%EA%B2%BD%EA%B8%B0%EA%B4%80%EA%B4%91%ED%8F%AC%ED%84%B8_1592_%5B%EC%8B%9C%ED%9D%A5%5D%20%EB%AC%BC%EC%99%95%EC%A0%80%EC%88%98%EC%A7%80.JPG",
+      "provenanceNote": "공공누리 상세 페이지의 제1유형 표시 확인. 로그인 없이 공개된 미리보기 사진을 그대로 저장; 별도 신청이 필요한 고해상도 원본 미사용.",
+      "alt": "물왕호수의 수면과 주변 풍경",
+      "publisher": "공공누리"
+    }
+  },
+  {
+    "id": "PLACE_REAL_010",
+    "name": "호조벌",
+    "region": "하중·호조벌",
+    "description": "간척지의 논과 수로 경관을 소개하는 장소.",
+    "address": "경기도 시흥시 하중동 73",
+    "tags": [
+      "자연·생태",
+      "산책"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_DULEGIL",
+        "title": "경기둘레길 54코스 상세안내",
+        "publisher": "경기관광공사",
+        "url": "https://ggtour.or.kr/dulegil/usr/wap/detail.do?app=24910&seq=10054",
+        "checked_on": "2026-10-12",
+        "content_date": null,
+        "content_date_note": "본문에서 작성·갱신일 미확인",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "추천 장소의 호조벌 위치·논길/수로, 관련 관광지의 소래산·산책로. 과거 공사·우회 문구 및 호조벌 복수 주소 혼재; 현재 경로 미확인.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_010.jpg",
+      "author": "시흥시",
+      "sourceUrl": "https://www.kogl.or.kr/recommend/recommendDivView.do?division=img&recommendIdx=36529",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "width": "760",
+      "height": "508",
+      "sourceTitle": "시흥_호조벌 풍경",
+      "capturedYear": "2020",
+      "imageUrl": "https://www.kogl.or.kr/upload_recommend/thumb_V/%ED%82%A4%EC%9B%8C%EB%93%9C%20%EC%A0%80%EC%9E%91%EB%AC%BC/%EC%8B%9C%ED%9D%A5%EC%8B%9C/%EB%AF%B8%EB%94%94%EC%96%B4%EC%8B%9C%ED%9D%A5/%EB%AF%B8%EB%94%94%EC%96%B4%EC%8B%9C%ED%9D%A5_0238_%ED%98%B8%EC%A1%B0%EB%B2%8C%20%ED%92%8D%EA%B2%BD_01.jpg",
+      "provenanceNote": "공공누리 상세 페이지의 제1유형 표시 확인. 로그인 없이 공개된 미리보기 사진을 그대로 저장; 별도 신청이 필요한 고해상도 원본 미사용.",
+      "alt": "호조벌의 농경지와 나무 풍경",
+      "publisher": "공공누리"
+    }
+  },
+  {
+    "id": "PLACE_REAL_011",
+    "name": "소래산",
+    "region": "대야·소래산",
+    "description": "산림과 산책로를 소개하는 시흥 대야동의 산.",
+    "address": "경기도 시흥시 대야동",
+    "tags": [
+      "자연·생태",
+      "산책"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_DULEGIL",
+        "title": "경기둘레길 54코스 상세안내",
+        "publisher": "경기관광공사",
+        "url": "https://ggtour.or.kr/dulegil/usr/wap/detail.do?app=24910&seq=10054",
+        "checked_on": "2026-10-12",
+        "content_date": null,
+        "content_date_note": "본문에서 작성·갱신일 미확인",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "추천 장소의 호조벌 위치·논길/수로, 관련 관광지의 소래산·산책로. 과거 공사·우회 문구 및 호조벌 복수 주소 혼재; 현재 경로 미확인.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_011.jpg",
+      "alt": "소래산 중턱의 마애보살입상",
+      "author": "문화재청",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:%EC%8B%9C%ED%9D%A5_%EC%86%8C%EB%9E%98%EC%82%B0_%EB%A7%88%EC%95%A0%EB%B3%B4%EC%82%B4%EC%9E%85%EC%83%81.jpg",
+      "license": "KOGL Type 1",
+      "licenseUrl": "http://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-12",
+      "width": "945",
+      "height": "947"
+    }
+  },
+  {
+    "id": "PLACE_REAL_012",
+    "name": "월곶포구",
+    "region": "월곶",
+    "description": "서해안에 위치하며 어선이 드나드는 포구.",
+    "address": "경기도 시흥시 월곶동",
+    "tags": [
+      "경관 감상"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_WOLGOT",
+        "title": "Wolgot Harbor (월곶포구)",
+        "publisher": "한국관광공사",
+        "url": "https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=94401",
+        "checked_on": "2026-10-12",
+        "content_date": null,
+        "content_date_note": "본문에서 작성·갱신일 미확인",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "Introduction·Address; 한국어 상세 페이지는 열기 오류로 영문 페이지 확인",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_012.jpg",
+      "alt": "소래포구에서 바라본 월곶포구 수변과 건물 전경",
+      "author": "Ken Eckert",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_of_Wolgot_from_Soraepogu.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "checkedOn": "2026-10-14",
+      "width": "2000",
+      "height": "1126"
+    }
+  },
+  {
+    "id": "PLACE_REAL_013",
+    "name": "거북섬",
+    "region": "거북섬",
+    "description": "시흥 시화MTV에 조성된 인공섬으로 해양레저 시설이 소개되어 있다.",
+    "address": null,
+    "tags": [],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-12",
+    "sources": [
+      {
+        "code": "SRC_GEOBUK",
+        "title": "거북섬",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/ms_detail.do?cotid=f4ddd92c-99df-4691-a52a-9c167a227d99",
+        "checked_on": "2026-10-12",
+        "content_date": null,
+        "content_date_note": "본문에서 작성·갱신일 미확인",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "본문의 시흥 시화MTV 인공섬·해양레저 소개",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_013.jpg",
+      "alt": "거북섬에서 바라본 서해 해안 전경",
+      "author": "Raccoon Dog",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Geobuk_island_in_siheung_west_sea_view.jpg",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0",
+      "checkedOn": "2026-10-14",
+      "width": "3890",
+      "height": "1817"
+    }
+  },
+  {
+    "id": "PLACE_REAL_014",
+    "name": "옥구공원",
+    "region": "정왕·옥구",
+    "description": "장미원·무궁화동산과 등산로가 있으며 정상에서 서해 낙조를 조망하는 공원.",
+    "address": "경기도 시흥시 서해안로 315 (정왕동)",
+    "tags": [
+      "자연·생태",
+      "산책",
+      "경관 감상"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-14",
+    "sources": [
+      {
+        "code": "SRC_OKGU",
+        "title": "옥구공원",
+        "publisher": "한국관광공사",
+        "url": "https://access.visitkorea.or.kr/ms/detail.do?cotId=c2055153-738b-4aeb-ad40-6c5821f60bb7",
+        "checked_on": "2026-10-14",
+        "content_date": "2026-03-11",
+        "content_date_note": "출처에 표시된 수정일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "기본정보의 등산로·장미원·무궁화동산·서해 낙조 소개와 주소. 과거 기사 서해안로 277 대신 이 페이지의 서해안로 315를 기록.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_014.png",
+      "author": "시흥시",
+      "sourceUrl": "https://www.kogl.or.kr/recommend/recommendDivView.do?division=img&recommendIdx=36562",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "width": "760",
+      "height": "507",
+      "sourceTitle": "시흥의 봄(옥구공원)",
+      "capturedYear": "2021",
+      "imageUrl": "https://www.kogl.or.kr/upload_recommend/thumb_V/%ED%82%A4%EC%9B%8C%EB%93%9C%20%EC%A0%80%EC%9E%91%EB%AC%BC/%EC%8B%9C%ED%9D%A5%EC%8B%9C/%EB%AF%B8%EB%94%94%EC%96%B4%EC%8B%9C%ED%9D%A5/%EB%AF%B8%EB%94%94%EC%96%B4%EC%8B%9C%ED%9D%A5_0638_%EC%8B%9C%ED%9D%A5%EC%9D%98%20%EB%B4%84%28%EC%98%A5%EA%B5%AC%EA%B3%B5%EC%9B%90%29_01.png",
+      "provenanceNote": "공공누리 상세 페이지의 제1유형 표시 확인. 로그인 없이 공개된 미리보기 사진을 그대로 저장; 별도 신청이 필요한 고해상도 원본 미사용.",
+      "alt": "봄철 벚꽃과 옥구공원 글자 조형물",
+      "publisher": "공공누리"
+    }
+  },
+  {
+    "id": "PLACE_REAL_015",
+    "name": "시흥에코센터 초록배곧",
+    "region": "정왕·옥구",
+    "description": "환경과 생태를 배우는 교육 거점 시설.",
+    "address": "경기도 시흥시 경기과기대로 284",
+    "tags": [
+      "자연·생태",
+      "체험"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-14",
+    "sources": [
+      {
+        "code": "SRC_ECO",
+        "title": "시흥에코센터ㆍ바라지 - 산, 냇가, 갯골, 갯벌, 바다를 만나는 그곳",
+        "publisher": "한국관광공사",
+        "url": "https://korean.visitkorea.or.kr/detail/rem_detail.do?cotid=892bc08d-25ef-4b21-9afb-0c48de87dc0b",
+        "checked_on": "2026-10-14",
+        "content_date": null,
+        "content_date_note": "본문에서 작성·갱신일 미확인; 2019년 프로그램 날짜는 게시일로 간주하지 않음",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "시흥에코센터의 환경·생태 교육 전문기관 소개와 경기과기대로 284 주소. 본문에 2019년 프로그램이 포함되어 현재 일정·운영 근거로 사용하지 않음.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_015.jpg",
+      "alt": "시흥에코센터 초록배곧 입구와 건물 전경",
+      "author": "차준호 기자",
+      "sourceUrl": "https://gnews.gg.go.kr/news/news_detail.do?number=202507011956501369C094&s_code=C094",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "width": "2048",
+      "height": "1536",
+      "sourceTitle": "내가 만드는 경기도 기후정책? 도민총회 출범식 속으로",
+      "publishedOn": "2025-07-02",
+      "imageUrl": "http://gnews.gg.go.kr/OP_UPDATA/UP_DATA/_FILEZ/202507/20250701075650654774526.jpg",
+      "provenanceNote": "기사의 제1유형 표시와 해당 사진의 저작권자 표기 및 장소 단락을 확인. 공개 사진을 편집하지 않고 저장; 게시일은 촬영일로 간주하지 않음.",
+      "publisher": "경기도뉴스포털"
+    }
+  },
+  {
+    "id": "PLACE_REAL_016",
+    "name": "오이도 빨강등대",
+    "region": "오이도",
+    "description": "오이도 해안의 등대로 전망대에서 서해 풍경을 감상하는 장소.",
+    "address": null,
+    "tags": [
+      "경관 감상"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-14",
+    "sources": [
+      {
+        "code": "SRC_OIDO_OPEN",
+        "title": "오이도 해양단지",
+        "publisher": "한국관광공사",
+        "url": "https://access.visitkorea.or.kr/opentour/detail.do?cotId=ce05e707-b009-4153-a6bc-26f1fbce467b",
+        "checked_on": "2026-10-14",
+        "content_date": "2024-12-30",
+        "content_date_note": "출처에 표시된 수정일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "관광지 소개의 빨강등대 전망대·서해 풍경·황새바위길 갯벌 생물 소개. 프로그램·교통·운영 조건은 수집 제외.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      },
+      {
+        "code": "SRC_OIDO_MARINE",
+        "title": "오이도포구해양관광단지",
+        "publisher": "한국관광공사",
+        "url": "https://access.visitkorea.or.kr/ms/detail.do?cotId=368ba294-3536-41c3-a631-d2ed2a58df66",
+        "checked_on": "2026-10-14",
+        "content_date": "2026-04-13",
+        "content_date_note": "출처에 표시된 수정일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "기본정보의 방조제 산책길·황새바위길 부잔교와 갯벌 관찰·빨간 등대·퇴역 경비함 활용 오아시스 함상전망대 소개. 단지 주소는 개별 시설 주소로 전용하지 않음.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_016.jpg",
+      "alt": "해 질 무렵 오이도 빨강등대와 주변 산책 공간",
+      "author": "SIA YANG",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:The_red_lighthouse_in_Oido.jpg",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "checkedOn": "2026-10-14",
+      "width": "1440",
+      "height": "1080"
+    }
+  },
+  {
+    "id": "PLACE_REAL_017",
+    "name": "황새바위길",
+    "region": "오이도",
+    "description": "조수에 따라 높이가 변하는 부잔교 형식의 길로 썰물 때 갯벌 생물 관찰을 소개한다.",
+    "address": null,
+    "tags": [
+      "자연·생태",
+      "산책"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-14",
+    "sources": [
+      {
+        "code": "SRC_OIDO_MARINE",
+        "title": "오이도포구해양관광단지",
+        "publisher": "한국관광공사",
+        "url": "https://access.visitkorea.or.kr/ms/detail.do?cotId=368ba294-3536-41c3-a631-d2ed2a58df66",
+        "checked_on": "2026-10-14",
+        "content_date": "2026-04-13",
+        "content_date_note": "출처에 표시된 수정일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "기본정보의 방조제 산책길·황새바위길 부잔교와 갯벌 관찰·빨간 등대·퇴역 경비함 활용 오아시스 함상전망대 소개. 단지 주소는 개별 시설 주소로 전용하지 않음.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      },
+      {
+        "code": "SRC_OIDO_OPEN",
+        "title": "오이도 해양단지",
+        "publisher": "한국관광공사",
+        "url": "https://access.visitkorea.or.kr/opentour/detail.do?cotId=ce05e707-b009-4153-a6bc-26f1fbce467b",
+        "checked_on": "2026-10-14",
+        "content_date": "2024-12-30",
+        "content_date_note": "출처에 표시된 수정일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "관광지 소개의 빨강등대 전망대·서해 풍경·황새바위길 갯벌 생물 소개. 프로그램·교통·운영 조건은 수집 제외.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_017.jpg",
+      "alt": "오이도 황새바위길 부잔교와 바다 풍경 모음",
+      "author": "여현주(경기도민기자단) · 경기도블로그",
+      "sourceUrl": "https://gnews.gg.go.kr/news/news_detail.do?number=202112290928557681C094&s_code=C094",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "width": "1060",
+      "height": "1054",
+      "sourceTitle": "[경기도민기자단] 다채로운 빛깔의 해넘이를 만나볼 수 있는 곳! 경기도 해넘이 명소",
+      "publishedOn": "2021-12-29",
+      "imageUrl": "http://gnews.gg.go.kr/OP_UPDATA/UP_DATA/_FILEZ/202112/20211229092855292596541.jpg",
+      "provenanceNote": "기사의 제1유형 표시와 해당 사진의 저작권자 표기 및 장소 단락을 확인. 공개 사진을 편집하지 않고 저장; 게시일은 촬영일로 간주하지 않음.",
+      "publisher": "경기도뉴스포털"
+    }
+  },
+  {
+    "id": "PLACE_REAL_018",
+    "name": "오아시스 함상전망대",
+    "region": "오이도",
+    "description": "퇴역 경비함을 활용한 복합문화공간이자 해변 전망 시설.",
+    "address": null,
+    "tags": [
+      "경관 감상"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-10-14",
+    "sources": [
+      {
+        "code": "SRC_OIDO_MARINE",
+        "title": "오이도포구해양관광단지",
+        "publisher": "한국관광공사",
+        "url": "https://access.visitkorea.or.kr/ms/detail.do?cotId=368ba294-3536-41c3-a631-d2ed2a58df66",
+        "checked_on": "2026-10-14",
+        "content_date": "2026-04-13",
+        "content_date_note": "출처에 표시된 수정일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "기본정보의 방조제 산책길·황새바위길 부잔교와 갯벌 관찰·빨간 등대·퇴역 경비함 활용 오아시스 함상전망대 소개. 단지 주소는 개별 시설 주소로 전용하지 않음.",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": {
+      "path": "/places/place_real_018.jpg",
+      "alt": "오이도 함상전망대의 퇴역 경비함과 주변 해넘이 풍경 모음",
+      "author": "여현주(경기도민기자단) · 경기도블로그",
+      "sourceUrl": "https://gnews.gg.go.kr/news/news_detail.do?number=202112290928557681C094&s_code=C094",
+      "license": "KOGL Type 1",
+      "licenseUrl": "https://www.kogl.or.kr/info/licenseType1.do",
+      "checkedOn": "2026-10-14",
+      "width": "1122",
+      "height": "1095",
+      "sourceTitle": "[경기도민기자단] 다채로운 빛깔의 해넘이를 만나볼 수 있는 곳! 경기도 해넘이 명소",
+      "publishedOn": "2021-12-29",
+      "imageUrl": "http://gnews.gg.go.kr/OP_UPDATA/UP_DATA/_FILEZ/202112/20211229092855288665295.jpg",
+      "provenanceNote": "기사의 제1유형 표시와 해당 사진의 저작권자 표기 및 장소 단락을 확인. 공개 사진을 편집하지 않고 저장; 게시일은 촬영일로 간주하지 않음.",
+      "publisher": "경기도뉴스포털"
+    }
+  },
+  {
+    "id": "PLACE_REAL_019",
+    "name": "시흥아트센터",
+    "region": "배곧",
+    "description": "2026년 11월 문을 연 시흥시 첫 전문공연장. 대·소공연장과 전시실을 갖췄다.",
+    "address": null,
+    "tags": [
+      "역사·문화"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-11-13",
+    "sources": [
+      {
+        "code": "SRC_ARTCENTER",
+        "title": "임윤찬부터 지용·소향까지…시흥아트센터 화려한 개관",
+        "publisher": "더쎈뉴스",
+        "url": "https://www.mhns.co.kr/news/articleView.html?idxno=761458",
+        "checked_on": "2026-11-13",
+        "content_date": "2026-09-22",
+        "content_date_note": "기사 입력일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "배곧동 위치·대공연장·소공연장·전시실 등 시설과 11월 13일 개관",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": null
+  },
+  {
+    "id": "PLACE_REAL_020",
+    "name": "시흥 해양생태과학관",
+    "region": "거북섬",
+    "description": "해양 생물 전시와 교육·체험 공간을 갖춘 거북섬의 과학관.",
+    "address": "경기도 시흥시 거북섬서로 35",
+    "tags": [
+      "체험",
+      "자연·생태"
+    ],
+    "reviewStatus": "DRAFT",
+    "checkedOn": "2026-11-13",
+    "sources": [
+      {
+        "code": "SRC_MESM_MAIN",
+        "title": "시흥시 해양생태과학관",
+        "publisher": "시흥시 해양생태과학관",
+        "url": "https://www.siheung.go.kr/mesm/main",
+        "checked_on": "2026-11-13",
+        "content_date": null,
+        "content_date_note": "페이지에 수정일 표기 없음",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "하단 주소·연락처",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      },
+      {
+        "code": "SRC_MESM",
+        "title": "해양생태과학관 이용시간·요금안내",
+        "publisher": "시흥시 해양생태과학관",
+        "url": "https://www.siheung.go.kr/mesm/itc/guide/information?menuId=8",
+        "checked_on": "2026-11-13",
+        "content_date": null,
+        "content_date_note": "페이지에 수정일 표기 없음",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "관람시간·회차·매표 마감·휴관일·관람료",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      },
+      {
+        "code": "SRC_MESM_NEWS",
+        "title": "시흥시 해양생태과학관, 2026년 '강소형 잠재관광지' 최종 선정",
+        "publisher": "아시아경제",
+        "url": "https://view.asiae.co.kr/article/2026031209235378918",
+        "checked_on": "2026-11-13",
+        "content_date": "2026-03-12",
+        "content_date_note": "기사 입력일; 현재 운영 확인일 아님",
+        "access_status": "BODY_CHECKED",
+        "evidence_section": "해양 생태 전시·교육·체험 시설, 가족 단위 체험형 교육 소개",
+        "reuse_note": "사실을 짧게 재서술; 원문·사진·음성 미복제. 외부 게시 시 출처별 이용조건 별도 확인."
+      }
+    ],
+    "image": null
+  }
+]

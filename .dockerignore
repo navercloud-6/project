@@ -1,0 +1,9 @@
+node_modules
+.next
+.runtime
+.env*
+.git
+.github
+deploy
+*.tsbuildinfo
+docs/screenshots

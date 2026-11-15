@@ -1,0 +1,22 @@
+# Dependencies
+/node_modules/
+
+# Next.js
+/.next/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Runtime & SQLite
+/.runtime/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Environment variables
+.env*
+!.env.example
+
+# macOS
+.DS_Store

@@ -1,0 +1,33 @@
+{
+  "name": "siheung-tourpass-navercloud",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
+    "start": "next start --hostname 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "format": "prettier --write app components lib tests next.config.mjs package.json tsconfig.json .prettierrc.json",
+    "format:check": "prettier --check app components lib tests next.config.mjs package.json tsconfig.json .prettierrc.json"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "@scalar/nextjs-api-reference": "^0.12.18",
+    "next": "^16.4.6",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sharp": "^0.35.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "prettier": "3.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}
