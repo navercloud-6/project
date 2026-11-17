@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Place } from '@/lib/domain/catalog';
 
 export function TripBuilder({
@@ -60,7 +61,7 @@ export function TripBuilder({
                 <span className="stop-index">{i + 1}</span>
                 <span className="selection-thumbnail" aria-hidden="true">
                   {p.image ? (
-                    <img src={p.image.path} alt="" loading="lazy" />
+                    <Image src={p.image.path} alt="" fill sizes="52px" />
                   ) : (
                     <span>≈</span>
                   )}

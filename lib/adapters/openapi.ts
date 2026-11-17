@@ -75,7 +75,7 @@ export const openApiDocument = {
   },
   servers: [{ url: '/', description: '현재 애플리케이션 오리진 (APP_ORIGIN)' }],
   tags: [
-    { name: 'Session', description: '익명 브라우저 세션 발급·갱신' },
+    { name: 'Session', description: '브라우저 세션과 네이버 로그인' },
     {
       name: 'Journeys',
       description: '여행 패스 조회·저장 및 장소별 방문 기록',
@@ -185,7 +185,70 @@ export const openApiDocument = {
     },
   },
   paths: {
+    '/api/auth/naver': {
+      post: {
+        tags: ['Session'],
+        summary: '네이버 로그인 시작',
+        description:
+          'Origin 검증 후 10분 일회용 state와 세션 쿠키를 발급하고 네이버 인증 화면으로 이동합니다.',
+        responses: {
+          '303': { description: '네이버 인증 URL로 이동' },
+          '403': { description: 'Origin 불일치' },
+          '503': { description: '로그인 설정 없음' },
+        },
+      },
+    },
+    '/api/auth/naver/callback': {
+      get: {
+        tags: ['Session'],
+        summary: '네이버 인증 콜백',
+        description:
+          'state 쿠키·서버 상태·세션을 검증하고 코드를 교환합니다. 익명 여행·사진을 계정에 연결하고 세션을 교체합니다. 성공·취소·실패는 마이 화면에 표시합니다.',
+        parameters: ['state', 'code', 'error'].map((name) => ({
+          name,
+          in: 'query',
+          required: name === 'state',
+          schema: { type: 'string' },
+        })),
+        responses: {
+          '303': { description: '/?login=success|cancelled|failed 로 이동' },
+        },
+      },
+    },
+    '/api/auth/logout': {
+      post: {
+        tags: ['Session'],
+        summary: '현재 세션 로그아웃',
+        description:
+          'Origin 검증 후 현재 세션을 폐기하고 새 익명 세션을 발급합니다. 계정 여행은 유지합니다.',
+        responses: {
+          '200': { description: '로그아웃 성공' },
+          '403': { description: 'Origin 불일치' },
+        },
+      },
+    },
     '/api/session': {
+      get: {
+        tags: ['Session'],
+        summary: '로그인 설정·인증 상태 조회',
+        responses: {
+          '200': {
+            description: '로그인 상태',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    enabled: { type: 'boolean' },
+                    authenticated: { type: 'boolean' },
+                  },
+                  required: ['enabled', 'authenticated'],
+                },
+              },
+            },
+          },
+        },
+      },
       post: {
         tags: ['Session'],
         summary: '익명 브라우저 세션 발급·갱신',

@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { useEffect, useId, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 
@@ -401,7 +402,9 @@ export function PlaceMap({
               onClick={() => onDetail(activePlace)}
               aria-label={`${activePlace.name} 상세 보기`}
             >
-              <img
+              <Image
+                fill
+                sizes="(max-width: 760px) calc(100vw - 36px), 210px"
                 src={activePlace.image.path}
                 alt={activePlace.image.alt}
                 loading="lazy"

@@ -35,6 +35,9 @@ test('마이는 방문 기록이 있는 고유 장소만 집계하고 연결 전
         onSave() {},
         onJourneys() {},
         onRecommend() {},
+        auth: { enabled: false, authenticated: false },
+        onLogout() {},
+        busy: false,
       }),
     );
   assert.match(render(true), /저장한 여행<\/dt><dd>2<small>개/);

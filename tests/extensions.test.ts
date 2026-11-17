@@ -10,7 +10,7 @@ import { demoEdit, posterOutput } from '../lib/domain/assistant';
 import { revisionOf } from '../lib/domain/journey';
 import { guide, proposeEdit } from '../lib/server';
 import { translate, voice, ocr } from '../lib/adapters/naver';
-import { parseAI } from '../lib/application/ai-output';
+import { parseAI } from '../lib/adapters/ai-output';
 import { safeImage } from '../lib/adapters/images';
 process.env.DATABASE_PATH = join(
   mkdtempSync(join(tmpdir(), 'tourpass-extensions-')),
@@ -231,4 +231,57 @@ test('Papago·Voice·OCR의 인증·본문과 실제 응답 형식을 검증한�
   }
   await assert.rejects(translate('시흥', 'en'), /설정/);
   await assert.rejects(voice('시흥'), /설정/);
+});
+
+test('AI 어댑터는 안내·일기·포스터를 타입이 정해진 결과로 변환하고 잘못된 출력을 거절한다', async () => {
+  const { naver } = await import('../lib/adapters/naver');
+  const oldFetch = globalThis.fetch;
+  const oldKey = process.env.CLOVA_STUDIO_API_KEY;
+  const oldModel = process.env.CLOVA_VISION_MODEL;
+  process.env.CLOVA_STUDIO_API_KEY = 'test';
+  process.env.CLOVA_VISION_MODEL = 'vision-test';
+  let output: unknown;
+  let inspect = (_url: unknown, _body: any) => {};
+  try {
+    globalThis.fetch = async (url, init) => {
+      inspect(url, JSON.parse(init!.body as string));
+      return Response.json({
+        status: { code: '20000' },
+        result: {
+          message: { content: JSON.stringify(output) },
+        },
+      });
+    };
+    output = { answer: '근거 답변', sourceIds: ['source'] };
+    assert.deepEqual(await naver.guide('관광 질문', [], []), output);
+    output = { answer: '근거 답변', sourceIds: [] };
+    await assert.rejects(naver.guide('관광 질문', [], []), /형식/);
+
+    const image = new Uint8Array([1, 2, 3]);
+    inspect = (url, body) => {
+      assert.match(String(url), /\/vision-test$/);
+      assert.equal(
+        body.messages[1].content[0].text,
+        '사용자가 선택한 장소: 공원',
+      );
+      assert.equal(body.messages[1].content[1].dataUri.data, 'AQID');
+    };
+    output = { draft: '풍경 일기' };
+    assert.deepEqual(await naver.diary('공원', image), output);
+    output = { draft: '가'.repeat(501) };
+    await assert.rejects(naver.diary('공원', image), /형식/);
+
+    inspect = (_url, body) =>
+      assert.equal(body.messages[1].content, '포스터 원문');
+    output = { title: '행사', date: '', location: '공원' };
+    assert.deepEqual(await naver.poster('포스터 원문'), output);
+    output = { title: '행사', date: '2026-02-30', location: '공원' };
+    await assert.rejects(naver.poster('포스터 원문'), /형식/);
+  } finally {
+    globalThis.fetch = oldFetch;
+    if (oldKey === undefined) delete process.env.CLOVA_STUDIO_API_KEY;
+    else process.env.CLOVA_STUDIO_API_KEY = oldKey;
+    if (oldModel === undefined) delete process.env.CLOVA_VISION_MODEL;
+    else process.env.CLOVA_VISION_MODEL = oldModel;
+  }
 });

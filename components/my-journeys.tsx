@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
 import type { Capabilities } from '@/lib/application/ports';
@@ -69,7 +70,9 @@ export function MyJourneys({
                       onClick={() => onDetail(cover)}
                       aria-label={`${cover.name} 상세 보기`}
                     >
-                      <img
+                      <Image
+                        fill
+                        sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1400px) 50vw, 640px"
                         src={cover.image.path}
                         alt={cover.image.alt}
                         loading="lazy"

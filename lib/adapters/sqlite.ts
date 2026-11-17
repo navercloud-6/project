@@ -2,10 +2,12 @@ import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import type { Journey } from '@/lib/domain/contracts';
+import { ApplicationError } from '@/lib/domain/errors';
 import type {
   JourneyRepository,
   SessionRepository,
   LimitPort,
+  AuthRepository,
 } from '@/lib/application/ports';
 const globalDb = globalThis as unknown as { tourpassDb?: DatabaseSync };
 export function db() {
@@ -21,7 +23,9 @@ export function db() {
       CREATE TABLE IF NOT EXISTS journeys (id TEXT PRIMARY KEY, owner TEXT NOT NULL, data TEXT NOT NULL);
       CREATE INDEX IF NOT EXISTS journeys_owner ON journeys(owner);
       CREATE TABLE IF NOT EXISTS limits (key TEXT PRIMARY KEY, count INTEGER NOT NULL);
-      CREATE TABLE IF NOT EXISTS photos (id TEXT PRIMARY KEY, owner TEXT NOT NULL, journey TEXT NOT NULL, place TEXT NOT NULL, image BLOB NOT NULL, UNIQUE(journey,place));`);
+      CREATE TABLE IF NOT EXISTS photos (id TEXT PRIMARY KEY, owner TEXT NOT NULL, journey TEXT NOT NULL, place TEXT NOT NULL, image BLOB NOT NULL, UNIQUE(journey,place));
+      CREATE TABLE IF NOT EXISTS account_sessions (token TEXT PRIMARY KEY, owner TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS oauth_states (state TEXT PRIMARY KEY, session TEXT NOT NULL, expires INTEGER NOT NULL);`);
     globalDb.tourpassDb = connection;
   }
   return globalDb.tourpassDb;
@@ -90,14 +94,66 @@ export const journeyRepository: JourneyRepository = {
   transaction: (operation) => transaction(operation),
 };
 export const sessionRepository: SessionRepository = {
-  valid: (owner, now) =>
-    Boolean(
+  owner(hash, now) {
+    return (
       db()
-        .prepare('SELECT token FROM sessions WHERE token=? AND expires>?')
-        .get(owner, now),
-    ),
+        .prepare(
+          'SELECT COALESCE(a.owner,s.token) AS owner FROM sessions s LEFT JOIN account_sessions a ON a.token=s.token WHERE s.token=? AND s.expires>?',
+        )
+        .get(hash, now) as { owner: string } | undefined
+    )?.owner;
+  },
   insert(owner, expires) {
     db().prepare('INSERT INTO sessions VALUES (?,?)').run(owner, expires);
+  },
+};
+export const authRepository: AuthRepository = {
+  attempt(state, session, expires) {
+    transaction((connection) => {
+      connection
+        .prepare('DELETE FROM oauth_states WHERE expires<=? OR session=?')
+        .run(Date.now(), session);
+      connection
+        .prepare('INSERT INTO oauth_states VALUES (?,?,?)')
+        .run(state, session, expires);
+    });
+  },
+  consume(state, session, now) {
+    return Boolean(
+      db()
+        .prepare(
+          'DELETE FROM oauth_states WHERE state=? AND session=? AND expires>? RETURNING state',
+        )
+        .get(state, session, now),
+    );
+  },
+  login(previous, next, owner, now) {
+    transaction((connection) => {
+      const current = sessionRepository.owner(previous, now);
+      if (!current)
+        throw new ApplicationError(
+          'SESSION_REQUIRED',
+          '로그인 세션이 만료되었습니다. 다시 시도해 주세요.',
+        );
+      if (current === previous) {
+        connection
+          .prepare('UPDATE journeys SET owner=? WHERE owner=?')
+          .run(owner, previous);
+        connection
+          .prepare('UPDATE photos SET owner=? WHERE owner=?')
+          .run(owner, previous);
+      }
+      authRepository.revoke(previous);
+      sessionRepository.insert(next, now + 30 * 86400000);
+      connection
+        .prepare('INSERT INTO account_sessions VALUES (?,?)')
+        .run(next, owner);
+    });
+  },
+  revoke(hash) {
+    db().prepare('DELETE FROM sessions WHERE token=?').run(hash);
+    db().prepare('DELETE FROM account_sessions WHERE token=?').run(hash);
+    db().prepare('DELETE FROM oauth_states WHERE session=?').run(hash);
   },
 };
 export const limits: LimitPort = { consume: consumeLimit };

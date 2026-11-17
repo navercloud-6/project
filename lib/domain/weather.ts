@@ -288,8 +288,8 @@ export function pickRecommendedPlaces(
   return uniqueIds;
 }
 
-function kstDateString(daysOffset = 0): string {
-  const base = new Date(Date.now() + daysOffset * 86400000);
+function kstDateString(now: number, daysOffset = 0): string {
+  const base = new Date(now + daysOffset * 86400000);
   return new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Seoul',
     year: 'numeric',
@@ -298,7 +298,7 @@ function kstDateString(daysOffset = 0): string {
   }).format(base);
 }
 
-export function buildDemoWeather(region: string): WeatherResponse {
+export function buildDemoWeather(region: string, now: number): WeatherResponse {
   const meta = WEATHER_REGIONS[region] ?? WEATHER_REGIONS['전체'];
   const temperature = Number((14.2 + meta.tempOffset).toFixed(1));
   const windSpeed = Number(Math.max(1.2, 3.1 + meta.windOffset).toFixed(1));
@@ -325,7 +325,7 @@ export function buildDemoWeather(region: string): WeatherResponse {
   const daily = dailyCodes.map((code, idx) => {
     const d = describeWeatherCode(code, windSpeed);
     return {
-      date: kstDateString(idx),
+      date: kstDateString(now, idx),
       weatherCode: code,
       condition: d.condition,
       icon: d.icon,
@@ -340,7 +340,7 @@ export function buildDemoWeather(region: string): WeatherResponse {
     areaNote: meta.areaNote,
     coordinates: { lat: meta.lat, lng: meta.lng },
     mode: 'demo',
-    observedAt: `${kstDateString(0)} 시연 기준`,
+    observedAt: `${kstDateString(now)} 시연 기준`,
     current,
     advisory,
     daily,

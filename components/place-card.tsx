@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Place } from '@/lib/domain/catalog';
 
 export function PlaceCard({
@@ -19,7 +20,12 @@ export function PlaceCard({
         aria-label={`${p.name} 상세 보기`}
       >
         {p.image ? (
-          <img src={p.image.path} alt={p.image.alt} loading="lazy" />
+          <Image
+            src={p.image.path}
+            alt={p.image.alt}
+            fill
+            sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 960px) calc((100vw - 68px) / 2), (max-width: 1400px) calc((100vw - 136px) / 3), 422px"
+          />
         ) : (
           <span className="no-photo">시흥의 또 다른 풍경</span>
         )}

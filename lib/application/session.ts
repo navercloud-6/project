@@ -7,8 +7,8 @@ export function createSession(
 ) {
   return (token: string | undefined, create = false) => {
     if (token && /^[a-f0-9]{64}$/.test(token)) {
-      const owner = identity.digest(token);
-      if (repository.valid(owner, identity.now())) return { owner };
+      const owner = repository.owner(identity.digest(token), identity.now());
+      if (owner) return { owner };
     }
     if (!create)
       throw new ApplicationError(

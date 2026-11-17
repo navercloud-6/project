@@ -2,6 +2,14 @@ import { cookies } from 'next/headers';
 import { ZodError } from 'zod';
 import { resolveSession } from '@/lib/server';
 import { ApplicationError } from '@/lib/domain/errors';
+export const sessionCookie = 'tourpass-session';
+export const cookieOptions = (maxAge = 30 * 86400) => ({
+  httpOnly: true,
+  sameSite: 'lax' as const,
+  secure: process.env.COOKIE_SECURE === 'true',
+  path: '/',
+  maxAge,
+});
 export async function session(create = false) {
   const jar = await cookies();
   const { owner, token } = resolveSession(
@@ -9,13 +17,7 @@ export async function session(create = false) {
     create,
   );
   if (token) {
-    jar.set('tourpass-session', token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: process.env.COOKIE_SECURE === 'true',
-      path: '/',
-      maxAge: 30 * 86400,
-    });
+    jar.set(sessionCookie, token, cookieOptions());
   }
   return owner;
 }

@@ -15,6 +15,12 @@
 
 키 없는 동작·전송 범위·과금 남용 한도는 [요구사항](../01-func/01-requirements.md)을 따른다. 실제 호출은 과금될 수 있다.
 
+## 네이버 로그인
+
+[NAVER Developers](https://developers.naver.com/apps/#/register)에 네이버 로그인 애플리케이션을 등록한다. 서비스 URL을 `APP_ORIGIN`으로, Callback URL을 `<APP_ORIGIN>/api/auth/naver/callback`으로 정확히 등록한다. 로컬 주소·포트도 일치해야 한다. 로그인 전용 Client ID·Secret을 [.env.example](../../.env.example)의 로그인 항목에 설정하고 재시작한다. 기존 CLOVA Voice 키는 재사용하지 않는다.
+
+[공식 OAuth 명세](https://developers.naver.com/docs/login/api/api.md)와 [프로필 명세](https://developers.naver.com/docs/login/profile/profile.md)를 따른다. 동일인 식별자만 사용하므로 이름·이메일 등 선택 제공 항목은 요청하지 않는다. 개발 상태에서는 앱에 등록한 테스트 계정으로 확인하고 외부 공개 전 네이버 검수를 완료한다. 운영은 HTTPS와 보안 쿠키를 적용한다. 키가 없으면 익명 이용은 계속 가능하다.
+
 ## 서버 준비와 수동 컨테이너 배포
 
 ### 현재 서버 구성
@@ -64,3 +70,24 @@ GitHub `production` Environment는 `main` 브랜치 배포만 허용하고 다�
 - 배포 스크립트는 기존 컨테이너를 중지하고 `VACUUM INTO` 백업을 만든다. 볼륨의 `/app/.runtime/backups/`에 최근 7개를 유지한다.
 - 서버 기동 중 일시적인 연결 오류는 재시도한다. 새 컨테이너의 `/`·`POST /api/session` 검사 실패 시 로그를 출력하고 직전 이미지가 있으면 복구한다.
 - 볼륨을 외부 스토리지로 복사할 때는 컨테이너를 중지한다. 단일 서버·영속 디스크 전용이며 서버리스·다중 인스턴스 전환은 [남은 작업과 리스크](../03-tech/01-architecture.md#남은-작업과-리스크)를 따른다.
+
+## 운영 모니터링
+
+Linux Docker 서버에서 [모니터링 실행 스크립트](../../deploy/monitoring/start.sh)를 root로 실행한다. Compose는 필요하지 않다. 앱을 재시작하지 않으며 설정 변경 후 같은 명령으로 모니터링 컨테이너만 교체한다.
+
+```sh
+cd /opt/siheung-tourpass
+bash deploy/monitoring/start.sh
+```
+
+Grafana의 `admin` 초기 비밀번호는 서버 `/etc/siheung-monitoring/grafana-password`에 자동 생성된다. 관리자는 `sudo cat /etc/siheung-monitoring/grafana-password`로 확인하고 최초 로그인 후 변경한다. 파일은 초기화에만 사용하므로 기존 Grafana 볼륨의 비밀번호는 재실행해도 바뀌지 않는다. 데이터 소스와 기본 대시보드는 파일에서 자동 등록되며 UI 편집은 파일 갱신 시 덮어쓸 수 있다.
+
+관리자 PC에서 다음 터널을 유지하고 [Grafana](http://localhost:3001)와 [Prometheus](http://localhost:9090)에 접속한다. ACG·Apache에 모니터링 포트를 공개하지 않는다.
+
+```sh
+ssh -N -L 3001:127.0.0.1:3001 -L 9090:127.0.0.1:9090 root@223.130.161.104
+```
+
+대시보드에서 CPU·메모리·디스크·앱/Apache 응답 상태·지연을 확인한다. Prometheus의 `/targets`에서 수집 상태를 확인하고 `probe_success`가 두 대상 모두 1인지 검사한다. HTTP 검사는 로컬 경로이므로 외부 인터넷·ACG 장애는 검출하지 못한다. API별 처리량·오류율과 장애 알림 전송은 미구성이다.
+
+중지는 `docker stop tourpass-prometheus tourpass-grafana tourpass-node-exporter tourpass-blackbox`로 수행한다. 전용 `tourpass-prometheus-data`·`tourpass-grafana-data` 볼륨은 유지한다. 앱 볼륨과는 독립적이다. 공식 [Prometheus 수집 패턴](https://prometheus.io/docs/guides/multi-target-exporter/)과 [Grafana 프로비저닝](https://grafana.com/docs/grafana/latest/administration/provisioning/)을 따른다.

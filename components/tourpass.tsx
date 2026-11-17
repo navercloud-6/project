@@ -1,9 +1,10 @@
 'use client';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { BottomNavigation, type Tab } from './bottom-navigation';
 import { Guide } from './assistant/guide';
 import { Poster } from './assistant/poster';
-import type { Capabilities } from '@/lib/application/ports';
+import type { AuthStatus, Capabilities } from '@/lib/application/ports';
 import { api } from '@/lib/adapters/client-api';
 import { MyJourneys } from './my-journeys';
 import { MyProfile } from './my-profile';
@@ -61,6 +62,7 @@ export default function Tourpass({
   const [saved, setSaved] = useState<Journey[]>([]);
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
+  const [auth, setAuth] = useState<AuthStatus | null>(null);
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
   const [detail, setDetail] = useState<Place | null>(null);
@@ -73,8 +75,12 @@ export default function Tourpass({
     setSessionError('');
     try {
       await api('/api/session', 'POST');
-      const data = await api<{ journeys: Journey[] }>('/api/journeys');
+      const [data, status] = await Promise.all([
+        api<{ journeys: Journey[] }>('/api/journeys'),
+        api<AuthStatus>('/api/session'),
+      ]);
       setSaved(data.journeys);
+      setAuth(status);
       setReady(true);
     } catch (e) {
       setSessionError((e as Error).message);
@@ -84,6 +90,25 @@ export default function Tourpass({
   }
   useEffect(() => {
     setDate(today());
+    const url = new URL(window.location.href);
+    const login = url.searchParams.get('login');
+    if (login) {
+      setTab('profile');
+      if (login === 'success')
+        setNotice('네이버 계정으로 로그인했습니다. 내 여행을 확인해 보세요.');
+      else if (login === 'logout')
+        setNotice(
+          '로그아웃했습니다. 계정 여행은 다시 로그인하면 확인할 수 있어요.',
+        );
+      else
+        setError(
+          login === 'cancelled'
+            ? '네이버 로그인을 취소했습니다.'
+            : '네이버 로그인에 실패했습니다. 다시 시도해 주세요.',
+        );
+      url.searchParams.delete('login');
+      window.history.replaceState(null, '', url);
+    }
     void loadSession();
     try {
       const loaded = loadPreferences(localStorage, regions);
@@ -98,6 +123,17 @@ export default function Tourpass({
       );
     }
   }, []);
+  async function logout() {
+    setBusy(true);
+    setError('');
+    try {
+      await api('/api/auth/logout', 'POST');
+      window.location.assign('/?login=logout');
+    } catch (error) {
+      setError((error as Error).message);
+      setBusy(false);
+    }
+  }
   useEffect(() => {
     mainRef.current?.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -280,12 +316,16 @@ export default function Tourpass({
               ))}
             </div>
             {exploreTask === 'browse' && (
-              <div
-                className="explore-banner"
-                style={{
-                  backgroundImage: `linear-gradient(90deg,rgba(10,45,64,.85),rgba(10,45,64,.3)),url(${hero.image?.path})`,
-                }}
-              >
+              <div className="explore-banner">
+                {hero.image && (
+                  <Image
+                    src={hero.image.path}
+                    alt=""
+                    fill
+                    sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1400px) calc(100vw - 96px), 1304px"
+                    preload
+                  />
+                )}
                 <p>바다를 따라 걷고, 갯골에서 쉬어가는 하루</p>
                 <span>
                   배곧한울공원 · 사진: {hero.image?.author} /{' '}
@@ -423,6 +463,9 @@ export default function Tourpass({
           />
         ) : tab === 'profile' ? (
           <MyProfile
+            auth={auth}
+            onLogout={logout}
+            busy={busy}
             saved={saved}
             ready={ready}
             regions={regions}

@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import type { Place } from '@/lib/domain/catalog';
 import type { Capabilities } from '@/lib/application/ports';
 import { PhotoCredit } from './photo-credit';
@@ -22,11 +23,15 @@ export function PlaceDetail({
   return (
     <Modal title={detail.name} onClose={onClose}>
       {detail.image && (
-        <img
-          className="detail-image"
-          src={detail.image.path}
-          alt={detail.image.alt}
-        />
+        <div className="detail-image">
+          <Image
+            src={detail.image.path}
+            alt={detail.image.alt}
+            fill
+            sizes="(max-width: 760px) calc(100vw - 84px), 620px"
+            loading="eager"
+          />
+        </div>
       )}
       <span className="pill">{detail.region} · 검토 전 자료</span>
       <p>{detail.description}</p>

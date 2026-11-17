@@ -6,6 +6,7 @@ import { createJourneys } from '../lib/application/journeys';
 import { createOperations } from '../lib/application/operations';
 import { createSession } from '../lib/application/session';
 import { createWeather } from '../lib/application/weather';
+import { buildDemoWeather } from '../lib/domain/weather';
 import { revisionOf } from '../lib/domain/journey';
 import type { Journey } from '../lib/domain/contracts';
 import type {
@@ -47,7 +48,7 @@ test('안쪽 계층은 프레임워크·어댑터·I/O에 의존하지 않고 �
       }
       assert.doesNotMatch(
         source,
-        /\b(?:process\.env|fetch\s*\(|new Request\b|Response\.|Buffer\.|require\s*\()/,
+        /\b(?:process\.env|Date\.now\s*\(|fetch\s*\(|new Request\b|Response\.|Buffer\.|toolCalls|toolChoice|dataUri|imageData|require\s*\()/,
       );
     }
   }
@@ -105,7 +106,6 @@ const draft = {
   date: '2026-11-15',
   placeIds: ['PLACE_REAL_001', 'PLACE_REAL_003'],
 };
-const models = { functionModel: 'function-test', visionModel: 'vision-test' };
 function ai(overrides: Partial<AIPort> = {}): AIPort {
   const unexpected = async (): Promise<never> => {
     throw Error('unexpected external call');
@@ -117,8 +117,11 @@ function ai(overrides: Partial<AIPort> = {}): AIPort {
       translate: false,
       ocr: false,
     }),
-    imageData: () => '',
-    chat: unexpected,
+    recommend: unexpected,
+    guide: unexpected,
+    proposeEdit: unexpected,
+    diary: unexpected,
+    poster: unexpected,
     translate: unexpected,
     voice: unexpected,
     ocr: unexpected,
@@ -176,36 +179,25 @@ test('추천 유스케이스는 만족도만 외부에 전달하고 한도 초�
       translate: false,
       ocr: false,
     }),
-    chat: async (messages) => {
+    recommend: async (_prompt, _candidates, feedback) => {
       calls++;
-      assert.doesNotMatch(JSON.stringify(messages), /SECRET_NOTE/);
-      assert.match((messages[0] as { content: string }).content, /"rating":5/);
+      assert.deepEqual(feedback, [{ placeId: draft.placeIds[0], rating: 5 }]);
       return {
-        content: JSON.stringify({
-          title: '여행',
-          summary: '추천',
-          stops: [{ placeId: draft.placeIds[0], reason: '바다' }],
-        }),
+        title: '여행',
+        summary: '추천',
+        stops: [{ placeId: draft.placeIds[0], reason: '바다' }],
       };
     },
   });
-  const operations = createOperations(
-    service,
-    provider,
-    { consume: () => true },
-    models,
-  );
+  const operations = createOperations(service, provider, {
+    consume: () => true,
+  });
   await operations.recommendation('owner', {
     prompt: '바다 여행',
     region: '전체',
   });
   assert.equal(calls, 1);
-  const blocked = createOperations(
-    service,
-    provider,
-    { consume: () => false },
-    models,
-  );
+  const blocked = createOperations(service, provider, { consume: () => false });
   const load = async () => {
     assert.fail('한도 초과 요청의 이미지를 읽으면 안 된다');
   };
@@ -220,7 +212,7 @@ test('세션과 날씨 유스케이스는 쿠키·환경 변수·네트워크 �
   const { identity } = memory();
   const sessions = new Map<string, number>();
   const repository: SessionRepository = {
-    valid: (owner, now) => (sessions.get(owner) ?? 0) > now,
+    owner: (hash, now) => ((sessions.get(hash) ?? 0) > now ? hash : undefined),
     insert: (owner, expires) => {
       sessions.set(owner, expires);
     },
@@ -232,11 +224,27 @@ test('세션과 날씨 유스케이스는 쿠키·환경 변수·네트워크 �
   assert.deepEqual(session(created.token), { owner: created.owner });
   assert.equal(sessions.get(created.owner), 1000 + 30 * 86400000);
   const weather = createWeather({
+    now: () => Date.parse('2026-11-17T15:00:00Z'),
     demo: () => false,
     current: async () => {
       throw Error('offline');
     },
   });
-  assert.equal((await weather('오이도')).mode, 'demo');
+  const fallback = await weather('오이도');
+  assert.equal(fallback.mode, 'demo');
+  assert.equal(fallback.daily[0].date, '2026-11-18');
+  assert.equal(fallback.observedAt, '2026-11-18 시연 기준');
   await assert.rejects(weather('없는 지역'));
+});
+
+test('날씨 도메인은 같은 기준 시간에 같은 결과를 내고 한국 자정·연도 경계를 반영한다', () => {
+  const before = Date.parse('2026-12-31T14:59:59Z');
+  const after = before + 1000;
+  const first = buildDemoWeather('전체', before);
+  assert.deepEqual(first, buildDemoWeather('전체', before));
+  assert.deepEqual(
+    first.daily.map((day) => day.date),
+    ['2026-12-31', '2027-01-01', '2027-01-02', '2027-01-03', '2027-01-04'],
+  );
+  assert.equal(buildDemoWeather('전체', after).daily[0].date, '2027-01-01');
 });

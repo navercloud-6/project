@@ -32,9 +32,11 @@ npm run dev
 | 내 여행 | 코스 지도를 확인하고 방문 기록·사진·일기, 여행 수정·번역을 이용한다. |
 | 여행 도우미 | 관광 안내와 행사 등록 중 작업을 선택한다. 포스터를 읽거나 직접 입력해 저장하면 내 여행으로 이동한다. |
 | 시흥 날씨 | 권역별 현재 날씨·5일 예보를 확인하고 추천 장소를 담는다. |
-| 마이 | 여행 요약을 확인하고 추천에 사용할 지역·취향을 브라우저에 저장한다. |
+| 마이 | 네이버 로그인·로그아웃, 여행 요약과 브라우저 여행 취향을 관리한다. |
 
 API 문서는 실행 서버의 `/api/docs` 또는 `/scalar`, JSON 명세는 `/api/openapi`에서 제공한다. 계약과 보안 경계는 [기술 구조](docs/03-tech/01-architecture.md#http-api-계약)를 따른다.
+
+서버 자원과 앱 응답 상태는 [Prometheus·Grafana 운영 모니터링](docs/05-ops/01-deploy.md#운영-모니터링)에서 확인한다.
 
 ## 테스트
 
@@ -55,6 +57,8 @@ APP_ORIGIN=http://127.0.0.1:3100 DATABASE_PATH=.runtime/smoke.sqlite CLOVA_STUDI
 node tests/http.mjs
 TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs
 ```
+
+로그인 HTTP 검사는 별도 DB 서버에 `NAVER_LOGIN_CLIENT_ID`·`NAVER_LOGIN_CLIENT_SECRET`을 더미 값으로 설정한 뒤 `node tests/auth-http.mjs`로 실행한다. 실제 네이버 요청 없이 리다이렉트·취소·state·로그아웃을 확인한다.
 
 문서 링크·분류 검사는 `python3 .github/scripts/check_docs.py`로 실행한다.
 

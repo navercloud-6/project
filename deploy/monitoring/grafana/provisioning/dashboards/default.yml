@@ -1,0 +1,8 @@
+apiVersion: 1
+providers:
+  - name: Siheung
+    folder: Siheung
+    type: file
+    disableDeletion: true
+    options:
+      path: /var/lib/grafana/dashboards

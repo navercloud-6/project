@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Journey } from '@/lib/domain/contracts';
+import type { AuthStatus } from '@/lib/application/ports';
 
 import type { TravelPreferences } from '@/lib/adapters/preferences';
 
@@ -11,6 +12,9 @@ export function MyProfile({
   onSave,
   onJourneys,
   onRecommend,
+  auth,
+  onLogout,
+  busy,
 }: {
   saved: Journey[];
   ready: boolean;
@@ -19,6 +23,9 @@ export function MyProfile({
   onSave: (preferences: TravelPreferences) => void;
   onJourneys: () => void;
   onRecommend: () => void;
+  auth: AuthStatus | null;
+  onLogout: () => void;
+  busy: boolean;
 }) {
   const [region, setRegion] = useState(preferences.region);
   const [prompt, setPrompt] = useState(preferences.prompt);
@@ -34,6 +41,43 @@ export function MyProfile({
           <p>나의 여행을 돌아보고, 다음 하루의 취향을 남겨 보세요.</p>
         </div>
       </div>
+      <section className="tool-section" aria-labelledby="profile-account-title">
+        <h2 id="profile-account-title">네이버 계정</h2>
+        {auth?.authenticated ? (
+          <>
+            <p>
+              네이버 계정으로 로그인했어요. 같은 계정으로 다른 기기에서도 여행과
+              방문 기록을 확인할 수 있어요.
+            </p>
+            <button className="secondary" onClick={onLogout} disabled={busy}>
+              로그아웃
+            </button>
+          </>
+        ) : (
+          <>
+            <p>
+              로그인하면 이 브라우저에 저장한 여행·기록·사진을 네이버 계정에
+              연결해요. 공용 기기에서는 본인의 여행인지 먼저 확인해 주세요.
+            </p>
+            <form action="/api/auth/naver" method="post">
+              <button
+                className="naver-login"
+                disabled={!ready || !auth?.enabled || busy}
+                type="submit"
+              >
+                네이버로 로그인
+              </button>
+            </form>
+            <p className="fine">
+              {auth === null
+                ? '로그인 설정을 확인하고 있어요.'
+                : !auth.enabled
+                  ? '네이버 로그인 준비 중입니다. 지금은 회원가입 없이 이용할 수 있어요.'
+                  : '계정 식별 정보만 사용하며 이름·이메일은 저장하지 않아요.'}
+            </p>
+          </>
+        )}
+      </section>
       <section
         className="profile-summary"
         aria-labelledby="profile-summary-title"
@@ -120,14 +164,15 @@ export function MyProfile({
         className="profile-storage"
         aria-labelledby="profile-storage-title"
       >
-        <h2 id="profile-storage-title">이 브라우저에 보관돼요</h2>
+        <h2 id="profile-storage-title">여행 보관 안내</h2>
         <p>
-          회원가입 없이 사용하는 여행 보관함입니다. 다른 기기나 브라우저와
-          동기화되지 않습니다.
+          로그인 전에는 이 브라우저에서만 여행을 확인할 수 있어요. 네이버 로그인
+          후에는 계정에 연결된 여행을 다른 기기에서도 불러올 수 있어요.
         </p>
         <p>
-          쿠키를 지우거나 세션이 30일 후 만료되면 저장한 여행에 접근할 수
-          없습니다. 여행 취향은 브라우저의 사이트 데이터를 삭제하면 사라집니다.
+          익명 여행은 쿠키 삭제·30일 만료 후 접근할 수 없어요. 계정 여행은 다시
+          로그인하면 확인할 수 있어요. 로그아웃해도 계정 여행은 보관됩니다. 여행
+          취향은 이 브라우저에만 저장되며 사이트 데이터를 삭제하면 사라집니다.
         </p>
       </aside>
     </section>

@@ -1,4 +1,6 @@
 import { session, checkOrigin, failure } from '@/lib/adapters/http';
+import { cookies } from 'next/headers';
+import { auth } from '@/lib/server';
 export const runtime = 'nodejs';
 export async function POST(request: Request) {
   try {
@@ -11,4 +13,10 @@ export async function POST(request: Request) {
   } catch (e) {
     return failure(e);
   }
+}
+export async function GET() {
+  const jar = await cookies();
+  return Response.json(auth.status(jar.get('tourpass-session')?.value), {
+    headers: { 'Cache-Control': 'no-store' },
+  });
 }
