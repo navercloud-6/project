@@ -15,8 +15,15 @@ export async function POST(request: Request) {
   }
 }
 export async function GET() {
-  const jar = await cookies();
-  return Response.json(auth.status(jar.get('tourpass-session')?.value), {
-    headers: { 'Cache-Control': 'no-store' },
-  });
+  try {
+    const jar = await cookies();
+    return Response.json(
+      await auth.status(jar.get('tourpass-session')?.value),
+      {
+        headers: { 'Cache-Control': 'no-store' },
+      },
+    );
+  } catch (e) {
+    return failure(e);
+  }
 }

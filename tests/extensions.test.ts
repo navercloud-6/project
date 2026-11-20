@@ -1,8 +1,5 @@
-import test from 'node:test';
+import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import sharp from 'sharp';
 import { saveJourney, saveRecord } from '../lib/server';
 import { applyEdit, getJourney, photoFor, savePhoto } from '../lib/server';
@@ -12,10 +9,15 @@ import { guide, proposeEdit } from '../lib/server';
 import { translate, voice, ocr } from '../lib/adapters/naver';
 import { parseAI } from '../lib/adapters/ai-output';
 import { safeImage } from '../lib/adapters/images';
-process.env.DATABASE_PATH = join(
-  mkdtempSync(join(tmpdir(), 'tourpass-extensions-')),
-  'test.sqlite',
-);
+import { setupTestSchema } from './helpers/pg';
+
+let dbCtx: Awaited<ReturnType<typeof setupTestSchema>> | undefined;
+before(async () => {
+  dbCtx = await setupTestSchema('extensions');
+});
+after(async () => {
+  await dbCtx?.teardown();
+});
 const trip = {
   name: '바다 여행',
   date: '2026-11-14',
@@ -33,37 +35,41 @@ test('검색은 출처를 반환하고 운영 정보는 모른다고 답한다',
   const missing = await guide('zzzzqqq', undefined, []);
   assert.equal(missing.sources.length, 0);
 });
-test('편집은 미리보기·적용을 분리하고 중복·소유권·오래된 변경을 차단한다', () => {
-  const current = saveJourney('a', trip);
+test('편집은 미리보기·적용을 분리하고 중복·소유권·오래된 변경을 차단한다', async () => {
+  const current = await saveJourney('a', trip);
   const proposal = demoEdit(current, '2번째 빼기');
-  assert.equal(getJourney('a', current.id).placeIds.length, 2);
-  assert.throws(() =>
+  assert.equal((await getJourney('a', current.id)).placeIds.length, 2);
+  await assert.rejects(
     applyEdit('b', current.id, revisionOf(current), proposal),
   );
-  const changed = applyEdit('a', current.id, revisionOf(current), proposal);
+  const changed = await applyEdit(
+    'a',
+    current.id,
+    revisionOf(current),
+    proposal,
+  );
   assert.equal(changed.placeIds.length, 1);
-  assert.throws(
-    () => applyEdit('a', current.id, revisionOf(current), proposal),
+  await assert.rejects(
+    applyEdit('a', current.id, revisionOf(current), proposal),
     /변경되었습니다/,
   );
   assert.throws(() => demoEdit(changed, '1번째 빼기'));
   assert.throws(() => demoEdit(current, '8번째 빼기'), /순서/);
 });
 test('방문 기록·사진은 장소 변경에서 보호되고 타인에게 노출되지 않는다', async () => {
-  const current = saveJourney('a', trip);
-  saveRecord('a', {
+  const current = await saveJourney('a', trip);
+  await saveRecord('a', {
     journeyId: current.id,
     placeId: 'PLACE_REAL_001',
     rating: 5,
     note: '기록',
   });
-  const revised = getJourney('a', current.id);
-  assert.throws(
-    () =>
-      applyEdit('a', current.id, revisionOf(revised), {
-        ...trip,
-        placeIds: ['PLACE_REAL_003'],
-      }),
+  const revised = await getJourney('a', current.id);
+  await assert.rejects(
+    applyEdit('a', current.id, revisionOf(revised), {
+      ...trip,
+      placeIds: ['PLACE_REAL_003'],
+    }),
     /방문 기록/,
   );
   const image = await sharp({
@@ -71,16 +77,15 @@ test('방문 기록·사진은 장소 변경에서 보호되고 타인에게 노
   })
     .png()
     .toBuffer();
-  savePhoto('a', current.id, 'PLACE_REAL_003', image);
-  assert.throws(() => photoFor('b', current.id, 'PLACE_REAL_003'));
-  assert.ok(photoFor('a', current.id, 'PLACE_REAL_003')?.image.length);
-  const withPhoto = getJourney('a', current.id);
-  assert.throws(
-    () =>
-      applyEdit('a', current.id, revisionOf(withPhoto), {
-        ...trip,
-        placeIds: ['PLACE_REAL_001'],
-      }),
+  await savePhoto('a', current.id, 'PLACE_REAL_003', image);
+  await assert.rejects(photoFor('b', current.id, 'PLACE_REAL_003'));
+  assert.ok((await photoFor('a', current.id, 'PLACE_REAL_003'))?.image.length);
+  const withPhoto = await getJourney('a', current.id);
+  await assert.rejects(
+    applyEdit('a', current.id, revisionOf(withPhoto), {
+      ...trip,
+      placeIds: ['PLACE_REAL_001'],
+    }),
     /사진/,
   );
 });
@@ -136,7 +141,7 @@ test('포스터 결과는 잘못된 날짜를 거절하고 미확인 날짜는 �
 test('Function Calling은 허용된 도구와 유효한 장소만 반환한다', async () => {
   const old = globalThis.fetch;
   process.env.CLOVA_STUDIO_API_KEY = 'test';
-  const current = saveJourney('a', trip);
+  const current = await saveJourney('a', trip);
   try {
     globalThis.fetch = async (_url, init) => {
       const body = JSON.parse(init!.body as string);
