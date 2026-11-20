@@ -3,7 +3,7 @@ import {
   sessionRepository,
   limits,
   authRepository,
-} from './adapters/sqlite';
+} from './adapters/postgres';
 import { identity } from './adapters/identity';
 import { naver } from './adapters/naver';
 import { liveWeather } from './adapters/open-meteo';

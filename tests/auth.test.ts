@@ -1,9 +1,6 @@
-import test from 'node:test';
+import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { DatabaseSync } from 'node:sqlite';
+import { Pool } from 'pg';
 import { createAuth } from '../lib/application/auth';
 import { createSession } from '../lib/application/session';
 import {
@@ -11,24 +8,35 @@ import {
   db,
   journeyRepository,
   sessionRepository,
-} from '../lib/adapters/sqlite';
+} from '../lib/adapters/postgres';
 import { identity } from '../lib/adapters/identity';
 import { naverLogin } from '../lib/adapters/naver-login';
+import { setupTestSchema } from './helpers/pg';
 
-process.env.DATABASE_PATH = join(
-  mkdtempSync(join(tmpdir(), 'tourpass-auth-')),
-  'test.sqlite',
-);
-// Start with the existing schema to verify old anonymous cookies remain valid.
-const legacy = new DatabaseSync(process.env.DATABASE_PATH);
-legacy.exec(
-  'CREATE TABLE sessions (token TEXT PRIMARY KEY, expires INTEGER NOT NULL)',
-);
 const legacyToken = identity.token();
-legacy
-  .prepare('INSERT INTO sessions VALUES (?,?)')
-  .run(identity.digest(legacyToken), Date.now() + 60000);
-legacy.close();
+let dbCtx: Awaited<ReturnType<typeof setupTestSchema>> | undefined;
+
+before(async () => {
+  dbCtx = await setupTestSchema('auth');
+  // Start with an existing sessions table to verify old anonymous cookies remain valid.
+  const legacy = new Pool({ connectionString: dbCtx.url });
+  try {
+    await legacy.query(
+      'CREATE TABLE sessions (token TEXT PRIMARY KEY, expires BIGINT NOT NULL)',
+    );
+    await legacy.query(
+      'INSERT INTO sessions (token, expires) VALUES ($1, $2)',
+      [identity.digest(legacyToken), Date.now() + 60000],
+    );
+  } finally {
+    await legacy.end();
+  }
+});
+
+after(async () => {
+  await dbCtx?.teardown();
+});
+
 const resolve = createSession(sessionRepository, identity);
 let calls = 0;
 const auth = createAuth(authRepository, sessionRepository, identity, {
@@ -41,9 +49,12 @@ const auth = createAuth(authRepository, sessionRepository, identity, {
 });
 
 test('기존 DB·쿠키를 유지하고 로그인 후 익명 여행·기록·사진을 계정으로 함께 이전한다', async () => {
-  assert.equal(resolve(legacyToken).owner, identity.digest(legacyToken));
-  const guest = resolve(undefined, true);
-  journeyRepository.insert(guest.owner, {
+  assert.equal(
+    (await resolve(legacyToken)).owner,
+    identity.digest(legacyToken),
+  );
+  const guest = await resolve(undefined, true);
+  await journeyRepository.insert(guest.owner, {
     id: 'trip',
     name: '여행',
     date: '2026-11-17',
@@ -51,11 +62,11 @@ test('기존 DB·쿠키를 유지하고 로그인 후 익명 여행·기록·사
     placeIds: ['a'],
     records: { a: { rating: 5, note: 'private' } },
   });
-  journeyRepository.putPhoto(guest.owner, 'trip', 'a', {
+  await journeyRepository.putPhoto(guest.owner, 'trip', 'a', {
     id: 'photo',
     image: new Uint8Array([1, 2]),
   });
-  const login = auth.begin(guest.token);
+  const login = await auth.begin(guest.token);
   const token = await auth.complete(
     login.token,
     login.state,
@@ -63,21 +74,33 @@ test('기존 DB·쿠키를 유지하고 로그인 후 익명 여행·기록·사
     'account-a',
     false,
   );
-  const account = resolve(token).owner;
+  const account = (await resolve(token)).owner;
   assert.equal(account, 'naver:' + identity.digest('account-a'));
-  assert.throws(() => resolve(guest.token), /세션/);
-  assert.equal(journeyRepository.list(guest.owner).length, 0);
-  assert.equal(journeyRepository.list(account)[0].records.a.note, 'private');
-  assert.equal(journeyRepository.photo(account, 'trip', 'a')?.image.length, 2);
-  assert.deepEqual(auth.status(token), { enabled: true, authenticated: true });
+  await assert.rejects(resolve(guest.token), /세션/);
+  assert.equal((await journeyRepository.list(guest.owner)).length, 0);
+  assert.equal(
+    (await journeyRepository.list(account))[0].records.a.note,
+    'private',
+  );
+  assert.equal(
+    (await journeyRepository.photo(account, 'trip', 'a'))?.image.length,
+    2,
+  );
+  assert.deepEqual(await auth.status(token), {
+    enabled: true,
+    authenticated: true,
+  });
   await assert.rejects(
     auth.complete(login.token, login.state, login.state, 'account-a', false),
     /로그인 요청/,
   );
-  const anonymous = auth.logout(token);
-  assert.throws(() => resolve(token), /세션/);
-  assert.equal(journeyRepository.list(resolve(anonymous).owner).length, 0);
-  const otherDevice = auth.begin(undefined);
+  const anonymous = await auth.logout(token);
+  await assert.rejects(resolve(token), /세션/);
+  assert.equal(
+    (await journeyRepository.list((await resolve(anonymous)).owner)).length,
+    0,
+  );
+  const otherDevice = await auth.begin(undefined);
   const second = await auth.complete(
     otherDevice.token,
     otherDevice.state,
@@ -85,8 +108,11 @@ test('기존 DB·쿠키를 유지하고 로그인 후 익명 여행·기록·사
     'account-a',
     false,
   );
-  assert.equal(journeyRepository.list(resolve(second).owner).length, 1);
-  const switchAccount = auth.begin(second);
+  assert.equal(
+    (await journeyRepository.list((await resolve(second)).owner)).length,
+    1,
+  );
+  const switchAccount = await auth.begin(second);
   const switched = await auth.complete(
     switchAccount.token,
     switchAccount.state,
@@ -94,20 +120,23 @@ test('기존 DB·쿠키를 유지하고 로그인 후 익명 여행·기록·사
     'account-b',
     false,
   );
-  assert.equal(journeyRepository.list(resolve(switched).owner).length, 0);
-  assert.equal(journeyRepository.list(account).length, 1);
+  assert.equal(
+    (await journeyRepository.list((await resolve(switched)).owner)).length,
+    0,
+  );
+  assert.equal((await journeyRepository.list(account)).length, 1);
 });
 
 test('state 불일치·다른 세션·만료·재사용·취소·로그아웃 후 콜백을 거절한다', async () => {
   const before = calls;
-  const login = auth.begin(undefined);
+  const login = await auth.begin(undefined);
   await assert.rejects(
     auth.complete(login.token, identity.token(), login.state, 'a', false),
     /로그인 요청/,
   );
   await assert.rejects(
     auth.complete(
-      resolve(undefined, true).token,
+      (await resolve(undefined, true)).token,
       login.state,
       login.state,
       'a',
@@ -115,12 +144,12 @@ test('state 불일치·다른 세션·만료·재사용·취소·로그아웃 �
     ),
     /로그인 요청/,
   );
-  db().prepare('UPDATE oauth_states SET expires=0').run();
+  await (await db()).query('UPDATE oauth_states SET expires = 0');
   await assert.rejects(
     auth.complete(login.token, login.state, login.state, 'a', false),
     /로그인 요청/,
   );
-  const cancelled = auth.begin(undefined);
+  const cancelled = await auth.begin(undefined);
   await assert.rejects(
     auth.complete(
       cancelled.token,
@@ -141,8 +170,8 @@ test('state 불일치·다른 세션·만료·재사용·취소·로그아웃 �
     ),
     /로그인 요청/,
   );
-  const loggedOut = auth.begin(undefined);
-  auth.logout(loggedOut.token);
+  const loggedOut = await auth.begin(undefined);
+  await auth.logout(loggedOut.token);
   await assert.rejects(
     auth.complete(
       loggedOut.token,
@@ -153,10 +182,12 @@ test('state 불일치·다른 세션·만료·재사용·취소·로그아웃 �
     ),
     /로그인 요청/,
   );
-  const expiredSession = auth.begin(undefined);
-  db()
-    .prepare('UPDATE sessions SET expires=0 WHERE token=?')
-    .run(identity.digest(expiredSession.token));
+  const expiredSession = await auth.begin(undefined);
+  await (
+    await db()
+  ).query('UPDATE sessions SET expires = 0 WHERE token = $1', [
+    identity.digest(expiredSession.token),
+  ]);
   await assert.rejects(
     auth.complete(
       expiredSession.token,

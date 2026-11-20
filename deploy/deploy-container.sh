@@ -2,13 +2,18 @@
 set -euo pipefail
 
 CONTAINER_NAME="${CONTAINER_NAME:-siheung-tourpass}"
-VOLUME_NAME="${VOLUME_NAME:-tourpass-data}"
 ENV_FILE="${ENV_FILE:-/etc/siheung-tourpass/app.env}"
 LISTEN_ADDR="${LISTEN_ADDR:-127.0.0.1:3000}"
 IMAGE_REF="${IMAGE_REF:?IMAGE_REF 환경 변수가 필요합니다.}"
 
 if [ ! -r "$ENV_FILE" ]; then
   echo "오류: 환경 변수 파일($ENV_FILE)을 읽을 수 없습니다." >&2
+  exit 1
+fi
+
+DATABASE_URL_VAL="$(grep -E '^DATABASE_URL=' "$ENV_FILE" | tail -n 1 | cut -d= -f2- | tr -d '\r"' || true)"
+if [ -z "$DATABASE_URL_VAL" ]; then
+  echo "오류: 환경 변수 파일($ENV_FILE)에 DATABASE_URL 설정이 필요합니다." >&2
   exit 1
 fi
 
@@ -28,25 +33,6 @@ PREV_IMAGE="$(docker inspect --format '{{.Config.Image}}' "$CONTAINER_NAME" 2>/d
 
 if docker ps -a --format '{{.Names}}' | grep -Fxq "$CONTAINER_NAME"; then
   docker stop --time 30 "$CONTAINER_NAME" >/dev/null || true
-  docker run --rm \
-    -v "${VOLUME_NAME}:/app/.runtime" \
-    "$IMAGE_REF" \
-    node -e '
-      const { existsSync, mkdirSync, readdirSync, rmSync } = require("node:fs");
-      const { DatabaseSync } = require("node:sqlite");
-      const src = "/app/.runtime/tourpass.sqlite";
-      if (existsSync(src)) {
-        const dir = "/app/.runtime/backups";
-        mkdirSync(dir, { recursive: true });
-        const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-        const dst = `${dir}/tourpass-${stamp}.sqlite`;
-        const db = new DatabaseSync(src);
-        db.exec(`VACUUM INTO '\''${dst}'\''`);
-        db.close();
-        const files = readdirSync(dir).filter(f => f.startsWith("tourpass-") && f.endsWith(".sqlite")).sort().reverse();
-        for (const old of files.slice(7)) rmSync(`${dir}/${old}`, { force: true });
-      }
-    '
   docker rm "$CONTAINER_NAME" >/dev/null
 fi
 
@@ -58,8 +44,6 @@ start_container() {
     --init \
     -p "${LISTEN_ADDR}:3000" \
     --env-file "$ENV_FILE" \
-    -e DATABASE_PATH=/app/.runtime/tourpass.sqlite \
-    -v "${VOLUME_NAME}:/app/.runtime" \
     "$image" >/dev/null
 }
 

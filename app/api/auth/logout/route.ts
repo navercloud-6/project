@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     const jar = await cookies();
     jar.set(
       sessionCookie,
-      auth.logout(jar.get(sessionCookie)?.value),
+      await auth.logout(jar.get(sessionCookie)?.value),
       cookieOptions(),
     );
     jar.set('tourpass-oauth-state', '', cookieOptions(0));

@@ -5,7 +5,7 @@ export const runtime = 'nodejs';
 export async function GET() {
   try {
     return Response.json(
-      { journeys: journeys(await session()) },
+      { journeys: await journeys(await session()) },
       { headers: { 'Cache-Control': 'no-store' } },
     );
   } catch (e) {
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     const owner = await session();
     const data = journeyInput.parse(await jsonBody(request));
     return Response.json(
-      { journey: operations.save(owner, data) },
+      { journey: await operations.save(owner, data) },
       { status: 201 },
     );
   } catch (e) {
@@ -30,7 +30,7 @@ export async function PATCH(request: Request) {
     checkOrigin(request);
     const owner = await session();
     const data = recordInput.parse(await jsonBody(request));
-    return Response.json({ journey: saveRecord(owner, data) });
+    return Response.json({ journey: await saveRecord(owner, data) });
   } catch (e) {
     return failure(e);
   }

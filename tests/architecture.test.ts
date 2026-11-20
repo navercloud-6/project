@@ -57,7 +57,7 @@ test('안쪽 계층은 프레임워크·어댑터·I/O에 의존하지 않고 �
     const source = readFileSync(file, 'utf8');
     assert.doesNotMatch(
       source,
-      /(?:node:sqlite|adapters\/(?:sqlite|naver|open-meteo))/,
+      /(?:node:sqlite|\bpg\b|adapters\/(?:sqlite|postgres|naver|open-meteo))/,
     );
   }
 });
@@ -66,28 +66,28 @@ function memory() {
   const rows = new Map<string, Journey>();
   let inTransaction = false;
   const repository: JourneyRepository = {
-    list: (owner) =>
+    list: async (owner) =>
       [...rows]
         .filter(([key]) => key.startsWith(owner + ':'))
         .map(([, value]) => structuredClone(value)),
-    find: (owner, id) => structuredClone(rows.get(owner + ':' + id)),
-    insert(owner, journey) {
+    find: async (owner, id) => structuredClone(rows.get(owner + ':' + id)),
+    async insert(owner, journey) {
       rows.set(owner + ':' + journey.id, structuredClone(journey));
     },
-    update(owner, journey) {
+    async update(owner, journey) {
       assert.ok(inTransaction);
       rows.set(owner + ':' + journey.id, structuredClone(journey));
     },
-    photo: () => undefined,
-    photoPlaces: () => [],
-    putPhoto() {
+    photo: async () => undefined,
+    photoPlaces: async () => [],
+    async putPhoto() {
       assert.ok(inTransaction);
     },
-    transaction(operation) {
+    async transaction(operation) {
       assert.equal(inTransaction, false);
       inTransaction = true;
       try {
-        return operation();
+        return await operation();
       } finally {
         inTransaction = false;
       }
@@ -130,43 +130,47 @@ function ai(overrides: Partial<AIPort> = {}): AIPort {
   };
 }
 
-test('여행 유스케이스는 저장소 대역으로 소유권·충돌·기록 보호를 트랜잭션 안에서 검사한다', () => {
+test('여행 유스케이스는 저장소 대역으로 소유권·충돌·기록 보호를 트랜잭션 안에서 검사한다', async () => {
   const { service } = memory();
-  const saved = service.saveJourney('owner', draft);
-  assert.throws(
-    () => service.getJourney('other', saved.id),
+  const saved = await service.saveJourney('owner', draft);
+  await assert.rejects(
+    service.getJourney('other', saved.id),
     /찾을 수 없습니다/,
   );
-  service.saveRecord('owner', {
+  await service.saveRecord('owner', {
     journeyId: saved.id,
     placeId: draft.placeIds[0],
     rating: 5,
     note: '비공개 메모',
   });
-  const current = service.getJourney('owner', saved.id);
-  assert.throws(
-    () => service.applyEdit('owner', saved.id, revisionOf(saved), draft),
+  const current = await service.getJourney('owner', saved.id);
+  await assert.rejects(
+    service.applyEdit('owner', saved.id, revisionOf(saved), draft),
     /변경되었습니다/,
   );
-  assert.throws(
-    () =>
-      service.applyEdit('owner', saved.id, revisionOf(current), {
-        ...draft,
-        placeIds: [draft.placeIds[1]],
-      }),
+  await assert.rejects(
+    service.applyEdit('owner', saved.id, revisionOf(current), {
+      ...draft,
+      placeIds: [draft.placeIds[1]],
+    }),
     /방문 기록/,
   );
-  const edited = service.applyEdit('owner', saved.id, revisionOf(current), {
-    ...draft,
-    placeIds: [...draft.placeIds].reverse(),
-  });
+  const edited = await service.applyEdit(
+    'owner',
+    saved.id,
+    revisionOf(current),
+    {
+      ...draft,
+      placeIds: [...draft.placeIds].reverse(),
+    },
+  );
   assert.equal(edited.records[draft.placeIds[0]].note, '비공개 메모');
 });
 
 test('추천 유스케이스는 만족도만 외부에 전달하고 한도 초과 시 이미지 처리를 시작하지 않는다', async () => {
   const { service } = memory();
-  const saved = service.saveJourney('owner', draft);
-  service.saveRecord('owner', {
+  const saved = await service.saveJourney('owner', draft);
+  await service.saveRecord('owner', {
     journeyId: saved.id,
     placeId: draft.placeIds[0],
     rating: 5,
@@ -191,14 +195,16 @@ test('추천 유스케이스는 만족도만 외부에 전달하고 한도 초�
     },
   });
   const operations = createOperations(service, provider, {
-    consume: () => true,
+    consume: async () => true,
   });
   await operations.recommendation('owner', {
     prompt: '바다 여행',
     region: '전체',
   });
   assert.equal(calls, 1);
-  const blocked = createOperations(service, provider, { consume: () => false });
+  const blocked = createOperations(service, provider, {
+    consume: async () => false,
+  });
   const load = async () => {
     assert.fail('한도 초과 요청의 이미지를 읽으면 안 된다');
   };
@@ -213,16 +219,17 @@ test('세션과 날씨 유스케이스는 쿠키·환경 변수·네트워크 �
   const { identity } = memory();
   const sessions = new Map<string, number>();
   const repository: SessionRepository = {
-    owner: (hash, now) => ((sessions.get(hash) ?? 0) > now ? hash : undefined),
-    insert: (owner, expires) => {
+    owner: async (hash, now) =>
+      (sessions.get(hash) ?? 0) > now ? hash : undefined,
+    insert: async (owner, expires) => {
       sessions.set(owner, expires);
     },
   };
   const session = createSession(repository, identity);
-  assert.throws(() => session(undefined), /세션/);
-  const created = session(undefined, true);
+  await assert.rejects(session(undefined), /세션/);
+  const created = await session(undefined, true);
   assert.equal(created.token?.length, 64);
-  assert.deepEqual(session(created.token), { owner: created.owner });
+  assert.deepEqual(await session(created.token), { owner: created.owner });
   assert.equal(sessions.get(created.owner), 1000 + 30 * 86400000);
   const weather = createWeather({
     now: () => Date.parse('2026-11-17T15:00:00Z'),

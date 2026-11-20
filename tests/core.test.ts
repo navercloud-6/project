@@ -1,8 +1,5 @@
-import test from 'node:test';
+import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { journeyInput, recommendationOutput } from '../lib/domain/contracts';
 import { openApiDocument } from '../lib/adapters/openapi';
 import { GET as getScalarDocs } from '../app/api/docs/route';
@@ -11,12 +8,17 @@ import { fetchSiheungWeather } from '../lib/server';
 import { places, placeIds } from '../lib/domain/catalog';
 import { journeys, saveJourney, saveRecord } from '../lib/server';
 import { recommend } from '../lib/server';
-import { consumeLimit } from '../lib/adapters/sqlite';
+import { consumeLimit } from '../lib/adapters/postgres';
 import { ApplicationError } from '../lib/domain/errors';
-process.env.DATABASE_PATH = join(
-  mkdtempSync(join(tmpdir(), 'tourpass-test-')),
-  'test.sqlite',
-);
+import { setupTestSchema } from './helpers/pg';
+
+let dbCtx: Awaited<ReturnType<typeof setupTestSchema>> | undefined;
+before(async () => {
+  dbCtx = await setupTestSchema('core');
+});
+after(async () => {
+  await dbCtx?.teardown();
+});
 const valid = {
   name: '시흥 여행',
   date: '2026-11-14',
@@ -32,10 +34,10 @@ test('여행 입력은 중복·허구 장소·잘못된 날짜를 거절한다',
   ])
     assert.equal(journeyInput.safeParse(bad).success, false);
 });
-test('여행과 방문 기록은 소유자에게만 노출·수정된다', () => {
-  const journey = saveJourney('owner-a', valid);
-  assert.equal(journeys('owner-b').length, 0);
-  assert.throws(() =>
+test('여행과 방문 기록은 소유자에게만 노출·수정된다', async () => {
+  const journey = await saveJourney('owner-a', valid);
+  assert.equal((await journeys('owner-b')).length, 0);
+  await assert.rejects(
     saveRecord('owner-b', {
       journeyId: journey.id,
       placeId: places[0].id,
@@ -43,7 +45,7 @@ test('여행과 방문 기록은 소유자에게만 노출·수정된다', () =>
       note: '침입',
     }),
   );
-  assert.throws(() =>
+  await assert.rejects(
     saveRecord('owner-a', {
       journeyId: journey.id,
       placeId: places[1].id,
@@ -51,20 +53,20 @@ test('여행과 방문 기록은 소유자에게만 노출·수정된다', () =>
       note: '잘못된 장소',
     }),
   );
-  saveRecord('owner-a', {
+  await saveRecord('owner-a', {
     journeyId: journey.id,
     placeId: places[0].id,
     rating: 4,
     note: '바람이 좋았다',
   });
   assert.equal(
-    journeys('owner-a')[0].records[places[0].id].note,
+    (await journeys('owner-a'))[0].records[places[0].id].note,
     '바람이 좋았다',
   );
 });
-test('요청 한도를 넘으면 거절한다', () => {
-  assert.equal(consumeLimit('test', 1), true);
-  assert.equal(consumeLimit('test', 1), false);
+test('요청 한도를 넘으면 거절한다', async () => {
+  assert.equal(await consumeLimit('test', 1), true);
+  assert.equal(await consumeLimit('test', 1), false);
 });
 test('AI 출력은 후보 외 ID와 중복 ID를 거절한다', () => {
   const base = {

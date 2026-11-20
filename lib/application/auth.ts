@@ -17,15 +17,17 @@ export function createAuth(
   const hash = (token: string | undefined) =>
     token && /^[a-f0-9]{64}$/.test(token) ? identity.digest(token) : undefined;
   return {
-    status(token: string | undefined) {
+    async status(token: string | undefined) {
       const digest = hash(token);
-      const owner = digest ? sessions.owner(digest, identity.now()) : undefined;
+      const owner = digest
+        ? await sessions.owner(digest, identity.now())
+        : undefined;
       return {
         enabled: provider.enabled(),
         authenticated: owner?.startsWith('naver:') ?? false,
       };
     },
-    begin(token: string | undefined) {
+    async begin(token: string | undefined) {
       if (!provider.enabled())
         throw new ApplicationError(
           'UNAVAILABLE',
@@ -33,9 +35,9 @@ export function createAuth(
         );
       const state = identity.token();
       const url = provider.authorize(state);
-      const current = resolve(token, true);
+      const current = await resolve(token, true);
       const active = current.token ?? token!;
-      repository.attempt(
+      await repository.attempt(
         identity.digest(state),
         identity.digest(active),
         identity.now() + 600000,
@@ -56,7 +58,11 @@ export function createAuth(
         !hash(state) ||
         !expected ||
         state !== expected ||
-        !repository.consume(identity.digest(state), digest, identity.now())
+        !(await repository.consume(
+          identity.digest(state),
+          digest,
+          identity.now(),
+        ))
       ) {
         throw new ApplicationError(
           'FORBIDDEN',
@@ -68,7 +74,7 @@ export function createAuth(
           'INVALID_INPUT',
           '네이버 로그인이 취소되었습니다.',
         );
-      if (!sessions.owner(digest, identity.now()))
+      if (!(await sessions.owner(digest, identity.now())))
         throw new ApplicationError(
           'SESSION_REQUIRED',
           '로그인 세션이 만료되었습니다. 다시 시도해 주세요.',
@@ -80,7 +86,7 @@ export function createAuth(
         );
       const id = await provider.identify(code, state);
       const next = identity.token();
-      repository.login(
+      await repository.login(
         digest,
         identity.digest(next),
         'naver:' + identity.digest(id),
@@ -88,10 +94,10 @@ export function createAuth(
       );
       return next;
     },
-    logout(token: string | undefined) {
+    async logout(token: string | undefined) {
       const digest = hash(token);
-      if (digest) repository.revoke(digest);
-      return resolve(undefined, true).token!;
+      if (digest) await repository.revoke(digest);
+      return (await resolve(undefined, true)).token!;
     },
   };
 }

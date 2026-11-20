@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     const q = query.parse(
       Object.fromEntries(new URL(request.url).searchParams),
     );
-    const photo = photoFor(owner, q.journey, q.place);
+    const photo = await photoFor(owner, q.journey, q.place);
     if (new URL(request.url).searchParams.has('metadata'))
       return Response.json(
         { exists: Boolean(photo) },
