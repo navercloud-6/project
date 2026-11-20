@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
-import { assistant, ErrorText, type Capabilities } from './shared';
+import { ErrorText, type Capabilities } from './shared';
 import { request, api } from '@/lib/adapters/client-api';
 export function PhotoRecord({
   journey,
@@ -62,14 +62,12 @@ export function PhotoRecord({
     setBusyKind('write');
     setError('');
     try {
-      const d = await (
-        await assistant({
-          action: 'diary',
-          journeyId: journey.id,
-          placeId: place.id,
-        })
-      ).json();
-      setDraft(d.draft);
+      const { draft: text } = await api<{ draft: string }>(
+        '/api/assistant',
+        'POST',
+        { action: 'diary', journeyId: journey.id, placeId: place.id },
+      );
+      setDraft(text);
     } catch (e) {
       setError((e as Error).message);
     } finally {

@@ -1,5 +1,4 @@
 'use client';
-
 import Image from 'next/image';
 import { useId } from 'react';
 import type { Place } from '@/lib/domain/catalog';
@@ -23,14 +22,9 @@ const previewWeather: CityMapWeather = {
   mode: 'demo',
 };
 
-function LocationIcon({ className = '' }: { className?: string }) {
+function LocationIcon() {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
       <path
         d="M38 20c0 10-14 22-14 22S10 30 10 20a14 14 0 1 1 28 0Z"
         stroke="currentColor"
@@ -62,8 +56,9 @@ export function GyeonggiCityExplorer({
   const labelId = useId();
   const city = gyeonggiCities.find((item) => item.id === selectedCityId);
   const cityPlaces = placesInCity(places, selectedCityId);
+  const populated = new Set(places.map((p) => p.cityId));
   const availableCities = gyeonggiCities.filter((item) =>
-    places.some((place) => place.cityId === item.id),
+    populated.has(item.id),
   );
 
   return (
@@ -133,9 +128,9 @@ export function GyeonggiCityExplorer({
                 aria-label={`${item.name} 선택`}
                 aria-pressed={item.id === selectedCityId}
                 onClick={() => onSelectCity(item.id)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
                     onSelectCity(item.id);
                   }
                 }}
@@ -177,7 +172,7 @@ export function GyeonggiCityExplorer({
               <span className="sr-only">지도에서 선택할 시·군</span>
               <select
                 value={selectedCityId ?? ''}
-                onChange={(event) => onSelectCity(event.target.value || null)}
+                onChange={(e) => onSelectCity(e.target.value || null)}
               >
                 <option value="">지역을 목록에서 선택</option>
                 {gyeonggiCities.map((item) => (

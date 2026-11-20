@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useId, useState } from 'react';
-import { assistant, ErrorText, type Capabilities } from './shared';
+import { api, request } from '@/lib/adapters/client-api';
+import { ErrorText, type Capabilities } from './shared';
 export function LanguageTools({
   placeId,
   journeyId,
@@ -26,9 +27,22 @@ export function LanguageTools({
     setBusyKind(kind);
     setError('');
     try {
-      const r = await assistant({ action: kind, placeId, journeyId, target });
-      if (kind === 'voice') setAudio(URL.createObjectURL(await r.blob()));
-      else setText((await r.json()).text);
+      if (kind === 'voice') {
+        const r = await request('/api/assistant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'voice', placeId }),
+        });
+        setAudio(URL.createObjectURL(await r.blob()));
+      } else {
+        const res = await api<{ text: string }>('/api/assistant', 'POST', {
+          action: 'translate',
+          placeId,
+          journeyId,
+          target,
+        });
+        setText(res.text);
+      }
     } catch (e) {
       setError((e as Error).message);
     } finally {

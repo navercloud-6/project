@@ -4,21 +4,9 @@ import { PlaceCard } from './place-card';
 import { WeatherSymbol } from './weather-symbol';
 import { api } from '@/lib/adapters/client-api';
 import type { Place } from '@/lib/domain/catalog';
-import type { WeatherResponse } from '@/lib/domain/weather';
+import { WEATHER_REGIONS, type WeatherResponse } from '@/lib/domain/weather';
 
-const REGION_LIST = [
-  '전체',
-  '장곡·갯골',
-  '오이도',
-  '배곧',
-  '거북섬',
-  '월곶',
-  '정왕·옥구',
-  '하중·호조벌',
-  '물왕',
-  '은계',
-  '대야·소래산',
-];
+const REGION_LIST = Object.keys(WEATHER_REGIONS);
 
 function formatDayLabel(dateStr: string, index: number): string {
   if (index === 0) return '오늘';
@@ -68,15 +56,9 @@ export function WeatherPanel({
     api<WeatherResponse>(
       `/api/weather?region=${encodeURIComponent(selectedRegion)}`,
     )
-      .then((d) => {
-        if (active) setWeather(d);
-      })
-      .catch((e) => {
-        if (active) setError((e as Error).message);
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
+      .then((d) => active && setWeather(d))
+      .catch((e) => active && setError((e as Error).message))
+      .finally(() => active && setLoading(false));
     return () => {
       active = false;
     };
