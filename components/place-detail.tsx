@@ -9,6 +9,7 @@ export function PlaceDetail({
   detail,
   selected,
   full,
+  selectionCount = 0,
   capabilities,
   onClose,
   onToggle,
@@ -17,6 +18,7 @@ export function PlaceDetail({
   detail: Place;
   selected: boolean;
   full: boolean;
+  selectionCount?: number;
   capabilities: Capabilities;
   onClose: () => void;
   onToggle: (id: string) => void;
@@ -54,8 +56,8 @@ export function PlaceDetail({
       ))}
       {detail.image && (
         <p className="fine">
-          <PhotoCredit image={detail.image} />. 카드·배너 표시를 위해 잘라 보일
-          수 있습니다.
+          <PhotoCredit image={detail.image} />. 카드 표시를 위해 일부가 잘려
+          보일 수 있습니다.
         </p>
       )}
       {full && !selected && (
@@ -71,14 +73,23 @@ export function PlaceDetail({
           )}
         </div>
       )}
-      <button
-        type="button"
-        className="primary"
-        disabled={full && !selected}
-        onClick={() => onToggle(detail.id)}
-      >
-        {selected ? '담기 취소' : '여행에 담기'}
-      </button>
+      <div className="modal-actions">
+        {selected && onReview && (
+          <button type="button" className="primary" onClick={onReview}>
+            {selectionCount > 0
+              ? `담은 여행 확인 (${selectionCount}곳)`
+              : '담은 여행 확인'}
+          </button>
+        )}
+        <button
+          type="button"
+          className={selected ? 'secondary' : 'primary'}
+          disabled={full && !selected}
+          onClick={() => onToggle(detail.id)}
+        >
+          {selected ? '담기 취소' : '여행에 담기'}
+        </button>
+      </div>
       <details className="journey-options">
         <summary>번역·음성 안내 (선택)</summary>
         <LanguageTools

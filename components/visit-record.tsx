@@ -23,6 +23,7 @@ export function VisitRecord({
 }) {
   const [rating, setRating] = useState(journey.records[place.id]?.rating || 5);
   const [note, setNote] = useState(journey.records[place.id]?.note || '');
+  const [draftApplied, setDraftApplied] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   async function saveVisit() {
@@ -37,7 +38,7 @@ export function VisitRecord({
       });
       onSaved(d.journey);
       onClose();
-      onNotice('방문 기록을 저장했습니다. 만족도는 다음 추천에 반영됩니다.');
+      onNotice('방문 기록을 저장했어요. 만족도는 다음 추천에 반영돼요.');
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -53,7 +54,13 @@ export function VisitRecord({
     >
       {error && (
         <p className="message error" role="alert">
-          {error} 입력한 내용은 유지됩니다. 다시 저장해 주세요.
+          {error} 입력한 내용은 유지돼요. 다시 저장해 주세요.
+        </p>
+      )}
+      {draftApplied && (
+        <p className="tool-result" role="status">
+          AI 일기 초안을 메모에 넣었어요. 확인한 뒤 ‘방문 기록 저장’을 눌러
+          주세요.
         </p>
       )}
       <form
@@ -62,19 +69,30 @@ export function VisitRecord({
           void saveVisit();
         }}
       >
-        <label htmlFor="rating">이번 방문은 어땠나요?</label>
-        <select
-          id="rating"
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
+        <label id="rating-label">이번 방문은 어땠나요?</label>
+        <div
+          className="rating-picker"
+          role="radiogroup"
+          aria-labelledby="rating-label"
         >
-          {[5, 4, 3, 2, 1].map((n) => (
-            <option key={n} value={n}>
-              {'★'.repeat(n)} ({n}점)
-            </option>
+          {[1, 2, 3, 4, 5].map((n) => (
+            <button
+              key={n}
+              type="button"
+              role="radio"
+              aria-checked={rating === n}
+              className={rating === n ? 'rating-chip active' : 'rating-chip'}
+              onClick={() => setRating(n)}
+            >
+              <span aria-hidden="true">{'★'.repeat(n)}</span>
+              <small>{n}점</small>
+            </button>
           ))}
-        </select>
-        <label htmlFor="note">나만의 메모</label>
+        </div>
+        <div className="label-row">
+          <label htmlFor="note">나만의 메모</label>
+          <span className="char-count">{note.length} / 500</span>
+        </div>
         <textarea
           id="note"
           value={note}
@@ -83,8 +101,8 @@ export function VisitRecord({
           placeholder="기억하고 싶은 순간을 남겨 주세요."
         />
         <p className="fine">
-          만족도는 다음 추천에 반영됩니다. 메모는 AI로 보내지 않습니다. 방문
-          인증이 아닌 개인 기록입니다.
+          만족도는 다음 추천에 반영됩니다. 메모는 AI로 보내지 않으며 방문 인증이
+          아닌 개인 기록입니다.
         </p>
         <button className="primary" disabled={busy}>
           {busy ? '저장 중…' : '방문 기록 저장'}
@@ -100,6 +118,7 @@ export function VisitRecord({
           onSaved={onSaved}
           onDraft={(draft) => {
             setNote(draft);
+            setDraftApplied(true);
             document.getElementById('note')?.focus();
           }}
         />

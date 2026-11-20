@@ -1,5 +1,4 @@
 'use client';
-import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { BottomNavigation, type Tab } from './bottom-navigation';
 import { Guide } from './assistant/guide';
@@ -38,19 +37,19 @@ const EXPLORE_COPY: Record<
   { pill: (n: number) => string; title: string; body: string }
 > = {
   browse: {
-    pill: (n) => `경기 관광지 ${n}곳`,
+    pill: (n) => `경기 31개 시·군 · 관광지 ${n}곳`,
     title: '경기 둘러보기',
-    body: '마음에 드는 장소를 최대 8곳까지 담아 나만의 하루를 만드세요.',
+    body: '지도에서 도시를 고르거나 검색해서 최대 8곳까지 나만의 하루에 담아 보세요.',
   },
   recommend: {
-    pill: () => '맞춤 코스 제안',
+    pill: () => '맞춤 코스 추천',
     title: '취향에 맞는 여행 추천',
-    body: '선호 지역과 여행 취향을 알려주시면 어울리는 코스를 골라드려요.',
+    body: '원하는 지역과 여행 취향을 알려주시면 어울리는 코스를 제안해 드려요.',
   },
   review: {
     pill: () => '여행 코스 완성',
     title: '담은 여행 확인',
-    body: '방문 순서와 날짜를 정한 뒤 여행을 저장하세요.',
+    body: '방문 순서와 날짜를 정리한 뒤 내 여행에 저장해 보세요.',
   },
 };
 
@@ -70,6 +69,7 @@ export default function Tourpass({
   );
   const mainRef = useRef<HTMLElement>(null);
   const resultRef = useRef<HTMLElement>(null);
+  const scrollToCatalogRef = useRef(false);
   const [sessionError, setSessionError] = useState('');
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
@@ -91,6 +91,7 @@ export default function Tourpass({
   const [auth, setAuth] = useState<AuthStatus | null>(null);
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
+  const [limitReached, setLimitReached] = useState(false);
   const [detail, setDetail] = useState<Place | null>(null);
   const [record, setRecord] = useState<{
     journey: Journey;
@@ -108,8 +109,23 @@ export default function Tourpass({
   );
   const selected = selection.map((id) => byId.get(id)!);
   const goExplore = (task: ExploreTask = 'browse') => {
+    if (tab === 'explore' && exploreTask === task) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
     setTab('explore');
     setExploreTask(task);
+  };
+  const handleTab = (next: Tab) => {
+    if (next === 'explore' && tab === 'explore' && exploreTask !== 'browse') {
+      setExploreTask('browse');
+      return;
+    }
+    if (next === tab) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    setTab(next);
   };
 
   async function loadSession() {
@@ -138,16 +154,16 @@ export default function Tourpass({
     if (login) {
       setTab('profile');
       if (login === 'success')
-        setNotice('네이버 계정으로 로그인했습니다. 내 여행을 확인해 보세요.');
+        setNotice('네이버 계정으로 로그인했어요. 내 여행을 확인해 보세요.');
       else if (login === 'logout')
         setNotice(
-          '로그아웃했습니다. 계정 여행은 다시 로그인하면 확인할 수 있어요.',
+          '로그아웃했어요. 계정 여행은 다시 로그인하면 확인할 수 있어요.',
         );
       else
         setError(
           login === 'cancelled'
-            ? '네이버 로그인을 취소했습니다.'
-            : '네이버 로그인에 실패했습니다. 다시 시도해 주세요.',
+            ? '네이버 로그인을 취소했어요.'
+            : '네이버 로그인에 실패했어요. 다시 시도해 주세요.',
         );
       url.searchParams.delete('login');
       window.history.replaceState(null, '', url);
@@ -162,12 +178,24 @@ export default function Tourpass({
       }
     } catch {
       setNotice(
-        '저장한 여행 취향을 불러오지 못했습니다. 마이에서 다시 설정할 수 있어요.',
+        '저장한 여행 취향을 불러오지 못했어요. 마이에서 다시 설정할 수 있어요.',
       );
     }
   }, []);
 
   useEffect(() => {
+    if (
+      scrollToCatalogRef.current &&
+      tab === 'explore' &&
+      exploreTask === 'browse'
+    ) {
+      scrollToCatalogRef.current = false;
+      const catalogEl = document.getElementById('places');
+      if (catalogEl) {
+        catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+    }
     mainRef.current?.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [tab, exploreTask, assistantTask]);
@@ -182,6 +210,7 @@ export default function Tourpass({
   async function logout() {
     setBusy(true);
     setError('');
+    setLimitReached(false);
     try {
       await api('/api/auth/logout', 'POST');
       window.location.assign('/?login=logout');
@@ -193,6 +222,7 @@ export default function Tourpass({
 
   function savePreferences(next: TravelPreferences) {
     setError('');
+    setLimitReached(false);
     setNotice('');
     try {
       storePreferences(localStorage, next);
@@ -200,10 +230,10 @@ export default function Tourpass({
       setPrompt(next.prompt);
       setRegion(next.region);
       setResult(null);
-      setNotice('여행 취향을 저장했습니다. 다음 추천에 사용할 수 있어요.');
+      setNotice('여행 취향을 저장했어요. 다음 추천에 기본값으로 채워져요.');
     } catch {
       setError(
-        '여행 취향을 저장하지 못했습니다. 브라우저의 사이트 저장 설정을 확인한 뒤 다시 시도해 주세요.',
+        '여행 취향을 저장하지 못했어요. 브라우저의 사이트 저장 설정을 확인한 뒤 다시 시도해 주세요.',
       );
     }
   }
@@ -211,14 +241,28 @@ export default function Tourpass({
   function toggle(id: string) {
     setNotice('');
     setError('');
+    setLimitReached(false);
     if (selection.includes(id)) setSelection(selection.filter((x) => x !== id));
     else if (selection.length < 8) setSelection([...selection, id]);
-    else setError('한 여행에 최대 8곳까지 담을 수 있습니다.');
+    else {
+      setLimitReached(true);
+      setError('한 여행에는 최대 8곳까지 담을 수 있어요.');
+    }
+  }
+
+  function moveStop(from: number, to: number) {
+    setSelection((current) => {
+      if (to < 0 || to >= current.length) return current;
+      const next = [...current];
+      [next[from], next[to]] = [next[to], next[from]];
+      return next;
+    });
   }
 
   async function generate() {
     setBusy(true);
     setError('');
+    setLimitReached(false);
     setNotice('');
     try {
       setResult(
@@ -234,6 +278,7 @@ export default function Tourpass({
   async function save() {
     setBusy(true);
     setError('');
+    setLimitReached(false);
     try {
       const { journey } = await api<{ journey: Journey }>(
         '/api/journeys',
@@ -243,7 +288,7 @@ export default function Tourpass({
       setSaved((current) => [journey, ...current]);
       setSelection([]);
       setTab('journeys');
-      setNotice('여행을 저장했습니다. 방문 후 기록을 남겨 보세요.');
+      setNotice('여행을 저장했어요. 다녀온 뒤 방문 기록을 남겨 보세요.');
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -256,7 +301,6 @@ export default function Tourpass({
       current.map((j) => (j.id === updated.id ? updated : j)),
     );
 
-  const hero = byId.get('PLACE_REAL_007')!;
   const heading = EXPLORE_COPY[exploreTask];
 
   return (
@@ -269,7 +313,10 @@ export default function Tourpass({
           className="brand"
           href="#main"
           aria-label="경기 하루이음 홈"
-          onClick={() => goExplore()}
+          onClick={(e) => {
+            e.preventDefault();
+            goExplore();
+          }}
         >
           <span className="brand-mark" aria-hidden="true">
             ≈
@@ -285,16 +332,44 @@ export default function Tourpass({
         <div className="messages" aria-live="polite">
           {error && (
             <div className="message error" role="alert">
-              {error}
-              <button onClick={() => setError('')} aria-label="오류 닫기">
-                ×
-              </button>
+              <span>{error}</span>
+              <div className="message-actions">
+                {limitReached && (
+                  <button
+                    type="button"
+                    className="secondary compact"
+                    onClick={() => {
+                      setError('');
+                      setLimitReached(false);
+                      goExplore('review');
+                    }}
+                  >
+                    담은 여행 확인
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="message-close"
+                  onClick={() => {
+                    setError('');
+                    setLimitReached(false);
+                  }}
+                  aria-label="오류 닫기"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           )}
           {notice && (
             <div className="message">
-              {notice}
-              <button onClick={() => setNotice('')} aria-label="알림 닫기">
+              <span>{notice}</span>
+              <button
+                type="button"
+                className="message-close"
+                onClick={() => setNotice('')}
+                aria-label="알림 닫기"
+              >
                 ×
               </button>
             </div>
@@ -302,11 +377,17 @@ export default function Tourpass({
         </div>
         {!ready && (
           <div className="session-status" role="status">
-            {loading
-              ? '여행 보관함을 연결하고 있습니다. 장소는 먼저 둘러볼 수 있어요.'
-              : `여행 보관함을 연결하지 못했습니다. ${sessionError}`}
+            <span>
+              {loading
+                ? '여행 보관함을 연결하고 있어요. 장소는 먼저 둘러볼 수 있어요.'
+                : `여행 보관함을 연결하지 못했어요. ${sessionError}`}
+            </span>
             {!loading && (
-              <button className="secondary" onClick={() => void loadSession()}>
+              <button
+                type="button"
+                className="secondary compact"
+                onClick={() => void loadSession()}
+              >
                 다시 시도
               </button>
             )}
@@ -314,29 +395,15 @@ export default function Tourpass({
         )}
         {tab === 'explore' ? (
           <>
-            {exploreTask === 'browse' && (
-              <GyeonggiCityExplorer
-                places={places}
-                selectedCityId={selectedCityId}
-                selection={selection}
-                onSelectCity={setSelectedCityId}
-                onDetail={setDetail}
-                onToggle={toggle}
-              />
-            )}
             <div className="explore-heading">
               <span className="pill">{heading.pill(places.length)}</span>
-              {exploreTask === 'browse' ? (
-                <h2>{heading.title}</h2>
-              ) : (
-                <h1>{heading.title}</h1>
-              )}
+              <h1>{heading.title}</h1>
               <p>{heading.body}</p>
             </div>
             <div
               className="task-switch"
               role="group"
-              aria-label="여행 만들기 작업"
+              aria-label="경기 둘러보기 작업"
             >
               {(
                 [
@@ -356,21 +423,14 @@ export default function Tourpass({
               ))}
             </div>
             {exploreTask === 'browse' && (
-              <div className="explore-banner">
-                {hero.image && (
-                  <Image
-                    src={hero.image.path}
-                    alt=""
-                    fill
-                    sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1400px) calc(100vw - 96px), 1304px"
-                  />
-                )}
-                <p>바다를 따라 걷고, 갯골에서 쉬어가는 하루</p>
-                <span>
-                  배곧한울공원 · 사진: {hero.image?.author} /{' '}
-                  {hero.image?.license} · 장소 상세에서 출처 확인
-                </span>
-              </div>
+              <GyeonggiCityExplorer
+                places={places}
+                selectedCityId={selectedCityId}
+                selection={selection}
+                onSelectCity={setSelectedCityId}
+                onDetail={setDetail}
+                onToggle={toggle}
+              />
             )}
             <RecommendationPanel
               active={exploreTask === 'recommend'}
@@ -380,6 +440,7 @@ export default function Tourpass({
               prompt={prompt}
               busy={busy}
               ready={ready}
+              loading={loading}
               result={result}
               places={places}
               selectionCount={selection.length}
@@ -388,12 +449,14 @@ export default function Tourpass({
               onRegion={setRegion}
               onPrompt={setPrompt}
               onDetail={setDetail}
+              onBrowse={() => goExplore('browse')}
+              onRetrySession={() => void loadSession()}
               onApply={(recommendation) => {
                 setSelection(recommendation.stops.map((stop) => stop.placeId));
                 setName(recommendation.title.slice(0, 60));
                 goExplore('review');
                 setNotice(
-                  '추천 장소를 담았습니다. 순서와 날짜를 확인하고 저장하세요.',
+                  '추천 장소를 담았어요. 순서와 날짜를 확인한 뒤 저장해 보세요.',
                 );
               }}
             />
@@ -419,21 +482,19 @@ export default function Tourpass({
                 name={name}
                 date={date}
                 ready={ready}
+                loading={loading}
                 busy={busy}
                 hidden={exploreTask !== 'review'}
                 onBrowse={() => setExploreTask('browse')}
                 onRecommend={() => setExploreTask('recommend')}
+                onRetrySession={() => void loadSession()}
                 onDetail={setDetail}
-                onMoveUp={(index) =>
-                  setSelection((current) => {
-                    const next = [...current];
-                    [next[index - 1], next[index]] = [
-                      next[index],
-                      next[index - 1],
-                    ];
-                    return next;
-                  })
-                }
+                onMoveUp={(index) => moveStop(index, index - 1)}
+                onMoveDown={(index) => moveStop(index, index + 1)}
+                onClear={() => {
+                  setSelection([]);
+                  setNotice('담은 장소를 모두 비웠어요.');
+                }}
                 onToggle={toggle}
                 onName={setName}
                 onDate={setDate}
@@ -447,7 +508,9 @@ export default function Tourpass({
               <div>
                 <span className="pill">관광 안내와 행사 등록</span>
                 <h1>여행 도우미</h1>
-                <p>관광 자료를 찾아보고 행사 포스터를 여행으로 이어 보세요.</p>
+                <p>
+                  관광 자료를 찾아보거나 행사 포스터를 여행으로 저장해 보세요.
+                </p>
               </div>
             </div>
             <div className="task-switch" role="group" aria-label="도우미 작업">
@@ -481,10 +544,13 @@ export default function Tourpass({
                   <Poster
                     places={places}
                     capabilities={capabilities}
+                    onBrowse={() => goExplore()}
                     onSaved={(j) => {
                       setSaved((current) => [j, ...current]);
                       setTab('journeys');
-                      setNotice('행사 여행을 저장했습니다.');
+                      setNotice(
+                        '행사 여행을 저장했어요. 내 여행에서 확인해 보세요.',
+                      );
                     }}
                   />
                 </div>
@@ -492,17 +558,27 @@ export default function Tourpass({
             ) : (
               <div className="empty">
                 <p>
-                  보관함 연결 후 도우미를 사용할 수 있어요. 위에서 연결 상태를
-                  확인해 주세요.
+                  {loading
+                    ? '여행 보관함을 연결하고 있어요…'
+                    : '여행 보관함을 연결하지 못했어요. 위에서 연결 상태를 확인하거나 다시 시도해 주세요.'}
                 </p>
                 {!loading && (
-                  <button
-                    type="button"
-                    className="secondary"
-                    onClick={() => void loadSession()}
-                  >
-                    다시 시도
-                  </button>
+                  <div className="empty-actions">
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() => void loadSession()}
+                    >
+                      다시 시도
+                    </button>
+                    <button
+                      type="button"
+                      className="primary compact"
+                      onClick={() => goExplore()}
+                    >
+                      장소 찾기
+                    </button>
+                  </div>
                 )}
               </div>
             )}
@@ -516,11 +592,19 @@ export default function Tourpass({
             onExploreRegion={(r) => {
               setRegion(r);
               setQuery('');
-              goExplore();
+              scrollToCatalogRef.current = true;
+              setNotice(
+                r === '전체'
+                  ? '전체 관광지 목록으로 이동했어요.'
+                  : `${r} 권역 장소를 표시하고 있어요.`,
+              );
+              setTab('explore');
+              setExploreTask('browse');
             }}
           />
         ) : tab === 'profile' ? (
           <MyProfile
+            key={`${preferences.region}::${preferences.prompt}`}
             auth={auth}
             onLogout={logout}
             busy={busy}
@@ -560,11 +644,18 @@ export default function Tourpass({
         )}
       </main>
       <footer>
-        <a className="brand" href="#main" onClick={() => goExplore()}>
+        <a
+          className="brand"
+          href="#main"
+          onClick={(e) => {
+            e.preventDefault();
+            goExplore();
+          }}
+        >
           ≈ 경기 하루이음
         </a>
         <p>경기도의 장소와 당신의 하루를 잇습니다.</p>
-        <span>관광 정보·사진 출처는 각 장소의 상세에서 확인하세요.</span>
+        <span>관광 정보·사진 출처는 각 장소 상세에서 확인할 수 있습니다.</span>
       </footer>
       {selection.length > 0 &&
         !(tab === 'explore' && exploreTask === 'review') && (
@@ -579,12 +670,13 @@ export default function Tourpass({
             </button>
           </div>
         )}
-      <BottomNavigation tab={tab} savedCount={saved.length} onTab={setTab} />
+      <BottomNavigation tab={tab} savedCount={saved.length} onTab={handleTab} />
       {detail && (
         <PlaceDetail
           detail={detail}
           selected={selection.includes(detail.id)}
           full={selection.length >= 8}
+          selectionCount={selection.length}
           capabilities={capabilities}
           onClose={() => setDetail(null)}
           onToggle={toggle}

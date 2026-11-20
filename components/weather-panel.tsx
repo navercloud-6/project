@@ -69,28 +69,19 @@ export function WeatherPanel({
     .filter((p): p is Place => Boolean(p));
 
   return (
-    <div className="weather-page">
+    <div className="weather-page" aria-busy={loading}>
       <div className="section-heading">
         <div>
-          <span className="pill">경기(시흥권) 권역별 기상과 여행 가이드</span>
-          <h1>바다와 갯골의 오늘 날씨</h1>
+          <span className="pill">시흥권 권역별 기상과 외출 가이드</span>
+          <h1>경기 날씨</h1>
           <p>
-            방문할 경기 권역의 기온·바람·강수 예보를 확인하고 날씨에 어울리는
-            장소를 담아보세요.
+            시흥 10개 권역의 현재 기온·바람·5일 예보를 확인하고 날씨에 어울리는
+            장소를 담아 보세요.
           </p>
         </div>
-        <button
-          type="button"
-          className="secondary compact"
-          onClick={() => onExploreRegion(selectedRegion)}
-        >
-          {selectedRegion === '전체'
-            ? '전체 관광지 둘러보기'
-            : `${selectedRegion} 장소 둘러보기`}
-        </button>
       </div>
 
-      <div className="weather-regions" role="group" aria-label="경기 권역 선택">
+      <div className="weather-regions" role="group" aria-label="시흥 권역 선택">
         {REGION_LIST.map((r) => (
           <button
             key={r}
@@ -103,7 +94,7 @@ export function WeatherPanel({
             aria-pressed={selectedRegion === r}
             onClick={() => setSelectedRegion(r)}
           >
-            {r === '전체' ? '경기(시흥권) 전체' : r}
+            {r === '전체' ? '시흥권 전체' : r}
           </button>
         ))}
       </div>
@@ -113,7 +104,7 @@ export function WeatherPanel({
           <span>{error}</span>
           <button
             type="button"
-            className="secondary"
+            className="secondary compact"
             onClick={() => setRetryKey((k) => k + 1)}
           >
             다시 시도
@@ -122,10 +113,14 @@ export function WeatherPanel({
       )}
 
       {loading && !weather ? (
-        <div className="empty">경기 권역별 날씨 정보를 불러오고 있습니다…</div>
+        <div className="empty">날씨 정보를 불러오고 있어요…</div>
       ) : (
         weather && (
-          <>
+          <div
+            className={
+              loading ? 'weather-content is-loading' : 'weather-content'
+            }
+          >
             <section
               className="weather-hero-card"
               aria-labelledby="weather-current-title"
@@ -135,18 +130,16 @@ export function WeatherPanel({
                   <span className="pill">
                     {weather.mode === 'live'
                       ? 'Open-Meteo 실시간 기상'
-                      : '데모 기상 안내 (오프라인·시연 폴백)'}
+                      : '데모 기상 안내'}
                   </span>
                   <span className="weather-observed">
-                    기준: {weather.observedAt} · 북위{' '}
-                    {weather.coordinates.lat.toFixed(3)}°, 동경{' '}
-                    {weather.coordinates.lng.toFixed(3)}°
+                    {loading ? '업데이트 중…' : `기준: ${weather.observedAt}`}
                   </span>
                 </div>
                 <h2 id="weather-current-title">
                   {weather.region === '전체'
-                    ? '경기도 시흥권 대표 (시청·장곡)'
-                    : `경기 · ${weather.region}`}
+                    ? '시흥권 대표 (시청·장곡)'
+                    : `시흥 · ${weather.region}`}
                 </h2>
                 <p className="weather-area-note">{weather.areaNote}</p>
 
@@ -171,7 +164,7 @@ export function WeatherPanel({
                     <dd>{weather.current.humidity}%</dd>
                   </div>
                   <div>
-                    <dt>바람 (풍속)</dt>
+                    <dt>풍속</dt>
                     <dd>{weather.current.windSpeed.toFixed(1)} m/s</dd>
                   </div>
                   <div>
@@ -190,8 +183,8 @@ export function WeatherPanel({
                 <h3>{weather.advisory.headline}</h3>
                 <p>{weather.advisory.detail}</p>
                 <p className="fine">
-                  기상 정보는 권역 대표 좌표 기준 참고용이며, 해안·산림 국지
-                  기상이나 시설 운영 여부는 방문 전 공식 안내를 확인하세요.
+                  권역 대표 좌표 기준 참고 정보입니다. 해안·산림 국지 기상과
+                  시설 운영 여부는 방문 전 공식 안내를 확인해 주세요.
                 </p>
               </div>
             </section>
@@ -204,7 +197,8 @@ export function WeatherPanel({
                 <div>
                   <h2 id="weather-daily-title">5일 일별 예보</h2>
                   <p>
-                    여행 날짜를 정할 때 최저·최고 기온과 강수확률을 참고하세요.
+                    여행 날짜를 고를 때 최저·최고 기온과 강수확률을 참고해
+                    보세요.
                   </p>
                 </div>
               </div>
@@ -244,15 +238,13 @@ export function WeatherPanel({
             >
               <div className="section-heading">
                 <div>
-                  <h2 id="weather-places-title">
-                    오늘 날씨에 어울리는 경기 명소
-                  </h2>
+                  <h2 id="weather-places-title">오늘 날씨에 어울리는 장소</h2>
                   <p>
                     {weather.region === '전체'
-                      ? '경기(시흥권) 전역'
+                      ? '시흥권 전역'
                       : `${weather.region} 권역 중심`}
                     에서 {SUITABILITY_LABEL[weather.advisory.suitability]}{' '}
-                    기준으로 골랐습니다.
+                    기준으로 골랐어요.
                   </p>
                 </div>
                 <button
@@ -261,23 +253,38 @@ export function WeatherPanel({
                   onClick={() => onExploreRegion(selectedRegion)}
                 >
                   {selectedRegion === '전체'
-                    ? '전체 장소 더 보기'
+                    ? '전체 장소 찾기'
                     : `${selectedRegion} 장소 더 보기`}
                 </button>
               </div>
-              <div className="weather-place-grid">
-                {recommendedPlaces.map((p) => (
-                  <PlaceCard
-                    key={p.id}
-                    place={p}
-                    selected={selection.includes(p.id)}
-                    onDetail={onDetailPlace}
-                    onToggle={onTogglePlace}
-                  />
-                ))}
-              </div>
+              {recommendedPlaces.length > 0 ? (
+                <div className="weather-place-grid">
+                  {recommendedPlaces.map((p) => (
+                    <PlaceCard
+                      key={p.id}
+                      place={p}
+                      selected={selection.includes(p.id)}
+                      onDetail={onDetailPlace}
+                      onToggle={onTogglePlace}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="empty">
+                  <p>이 권역의 추천 장소가 아직 없어요.</p>
+                  <div className="empty-actions">
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() => onExploreRegion('전체')}
+                    >
+                      전체 장소 찾기
+                    </button>
+                  </div>
+                </div>
+              )}
             </section>
-          </>
+          </div>
         )
       )}
     </div>

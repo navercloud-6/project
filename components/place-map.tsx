@@ -333,7 +333,7 @@ function NaverMapCanvas({
         ref={containerRef}
         className="naver-map-canvas"
         role="application"
-        aria-label="네이버 지도 — 경기도(시흥권) 관광지 위치와 여행 동선"
+        aria-label={`네이버 지도 — ${isProvinceView(mapPlaces) ? '경기도' : '경기도(시흥권)'} 관광지 위치와 여행 동선`}
       />
       {!ready && (
         <div className="naver-map-loading" role="status" aria-live="polite">

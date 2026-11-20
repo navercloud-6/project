@@ -1,6 +1,10 @@
+'use client';
+import { useEffect, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import { PlaceMap } from './place-map';
 import { PlaceCard } from './place-card';
+
+const PAGE_SIZE = 18;
 
 export function PlaceCatalog({
   places,
@@ -33,14 +37,32 @@ export function PlaceCatalog({
   onToggle: (id: string) => void;
   onDetail: (place: Place) => void;
 }) {
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const hasFilter = query.trim() !== '' || region !== '전체';
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [query, region]);
+
+  const visiblePlaces = filtered.slice(0, visibleCount);
+  const remaining = Math.max(0, filtered.length - visiblePlaces.length);
+
   return (
     <section
       id="places"
       className="catalog"
       hidden={hidden}
-      aria-label="여행 장소 목록"
+      aria-labelledby="catalog-title"
     >
+      <div className="catalog-heading">
+        <div>
+          <span className="city-explorer-eyebrow">전체 관광지 검색</span>
+          <h2 id="catalog-title">키워드와 지역으로 찾기</h2>
+          <p>
+            장소 이름·지역·태그로 검색하거나 카드와 지도를 전환해 살펴보세요.
+          </p>
+        </div>
+      </div>
       <div className="catalog-toolbar">
         <div className="filters">
           <label className="search">
@@ -103,9 +125,27 @@ export function PlaceCatalog({
         </div>
       </div>
       <p className="catalog-note">
-        검토 전 관광 자료 · 방문 전 공식 안내에서 운영·요금·예약을 확인하세요.
+        검토 전 관광 자료입니다. 방문 전 공식 안내에서 운영·요금·예약을 확인해
+        주세요.
       </p>
-      {viewMode === 'map' ? (
+      {!filtered.length ? (
+        <div className="empty">
+          <h3>조건에 맞는 장소가 없어요.</h3>
+          <p>검색어나 지역 필터를 바꿔 다시 찾아보세요.</p>
+          <div className="empty-actions">
+            <button
+              type="button"
+              className="secondary"
+              onClick={() => {
+                onQuery('');
+                onRegion('전체');
+              }}
+            >
+              전체 장소 보기
+            </button>
+          </div>
+        </div>
+      ) : viewMode === 'map' ? (
         <PlaceMap
           places={places}
           visiblePlaces={filtered}
@@ -115,32 +155,33 @@ export function PlaceCatalog({
           onDetail={onDetail}
         />
       ) : (
-        <div className="place-grid">
-          {filtered.map((p) => (
-            <PlaceCard
-              key={p.id}
-              place={p}
-              selected={selection.includes(p.id)}
-              onDetail={onDetail}
-              onToggle={onToggle}
-            />
-          ))}
-        </div>
-      )}
-      {!filtered.length && (
-        <div className="empty">
-          <h3>조건에 맞는 장소가 없어요.</h3>
-          <p>검색어나 지역을 바꿔 보세요.</p>
-          <button
-            className="secondary"
-            onClick={() => {
-              onQuery('');
-              onRegion('전체');
-            }}
-          >
-            전체 장소 보기
-          </button>
-        </div>
+        <>
+          <div className="place-grid">
+            {visiblePlaces.map((p) => (
+              <PlaceCard
+                key={p.id}
+                place={p}
+                selected={selection.includes(p.id)}
+                onDetail={onDetail}
+                onToggle={onToggle}
+              />
+            ))}
+          </div>
+          {remaining > 0 && (
+            <div className="catalog-pagination">
+              <span className="total">
+                {visiblePlaces.length} / {filtered.length}곳 표시 중
+              </span>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+              >
+                장소 더 보기 (+{Math.min(PAGE_SIZE, remaining)}곳)
+              </button>
+            </div>
+          )}
+        </>
       )}
     </section>
   );

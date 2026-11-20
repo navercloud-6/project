@@ -3,7 +3,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: '경기 하루이음 | 나만의 하루를 잇다',
   description:
-    '경기도의 바다와 갯골을 만나는 여행. AI와 함께 계획하고 나만의 하루이음으로 기록하세요.',
+    '경기도 31개 시·군의 관광지를 둘러보고, AI와 함께 나만의 하루 여행을 계획하고 기록해 보세요.',
 };
 export default function RootLayout({
   children,
