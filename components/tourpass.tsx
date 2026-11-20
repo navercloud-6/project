@@ -19,6 +19,7 @@ import { PlaceCatalog } from './place-catalog';
 import { TripBuilder } from './trip-builder';
 import { RecommendationPanel } from './recommendation-panel';
 import { WeatherPanel } from './weather-panel';
+import { GyeonggiCityExplorer } from './gyeonggi-city-explorer';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey, Recommendation } from '@/lib/domain/contracts';
 
@@ -50,6 +51,7 @@ export default function Tourpass({
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
   const [query, setQuery] = useState('');
   const [region, setRegion] = useState('전체');
+  const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [prompt, setPrompt] = useState('');
   const [preferences, setPreferences] = useState<TravelPreferences>({
     region: '전체',
@@ -280,6 +282,16 @@ export default function Tourpass({
         )}
         {tab === 'explore' ? (
           <>
+            {exploreTask === 'browse' && (
+              <GyeonggiCityExplorer
+                places={places}
+                selectedCityId={selectedCityId}
+                selection={selection}
+                onSelectCity={setSelectedCityId}
+                onDetail={setDetail}
+                onToggle={toggle}
+              />
+            )}
             <div className="explore-heading">
               <span className="pill">
                 {exploreTask === 'review'
@@ -288,13 +300,17 @@ export default function Tourpass({
                     ? '맞춤 코스 제안'
                     : '경기 관광지 20곳'}
               </span>
-              <h1>
-                {exploreTask === 'review'
-                  ? '담은 여행 확인'
-                  : exploreTask === 'recommend'
-                    ? '취향에 맞는 여행 추천'
-                    : '경기 둘러보기'}
-              </h1>
+              {exploreTask === 'browse' ? (
+                <h2>경기 둘러보기</h2>
+              ) : (
+                <h1>
+                  {exploreTask === 'review'
+                    ? '담은 여행 확인'
+                    : exploreTask === 'recommend'
+                      ? '취향에 맞는 여행 추천'
+                      : '경기 둘러보기'}
+                </h1>
+              )}
               <p>
                 {exploreTask === 'review'
                   ? '방문 순서와 날짜를 정한 뒤 여행을 저장하세요.'
@@ -333,7 +349,6 @@ export default function Tourpass({
                     alt=""
                     fill
                     sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1400px) calc(100vw - 96px), 1304px"
-                    preload
                   />
                 )}
                 <p>바다를 따라 걷고, 갯골에서 쉬어가는 하루</p>
