@@ -119,6 +119,7 @@ export function WeatherPanel({
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -139,7 +140,7 @@ export function WeatherPanel({
     return () => {
       active = false;
     };
-  }, [selectedRegion]);
+  }, [selectedRegion, retryKey]);
 
   const recommendedPlaces = (weather?.recommendedPlaceIds ?? [])
     .map((id) => places.find((p) => p.id === id))
@@ -186,9 +187,16 @@ export function WeatherPanel({
       </div>
 
       {error && (
-        <p role="alert" className="tool-error">
-          {error}
-        </p>
+        <div role="alert" className="tool-error">
+          <span>{error}</span>
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => setRetryKey((k) => k + 1)}
+          >
+            다시 시도
+          </button>
+        </div>
       )}
 
       {loading && !weather ? (
@@ -325,6 +333,15 @@ export function WeatherPanel({
                     기준으로 골랐습니다.
                   </p>
                 </div>
+                <button
+                  type="button"
+                  className="secondary compact"
+                  onClick={() => onExploreRegion(selectedRegion)}
+                >
+                  {selectedRegion === '전체'
+                    ? '전체 장소 더 보기'
+                    : `${selectedRegion} 장소 더 보기`}
+                </button>
               </div>
               <div className="weather-place-grid">
                 {recommendedPlaces.map((p) => (

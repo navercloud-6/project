@@ -12,6 +12,7 @@ export function PlaceDetail({
   capabilities,
   onClose,
   onToggle,
+  onReview,
 }: {
   detail: Place;
   selected: boolean;
@@ -19,6 +20,7 @@ export function PlaceDetail({
   capabilities: Capabilities;
   onClose: () => void;
   onToggle: (id: string) => void;
+  onReview?: () => void;
 }) {
   return (
     <Modal title={detail.name} onClose={onClose}>
@@ -57,12 +59,20 @@ export function PlaceDetail({
         </p>
       )}
       {full && !selected && (
-        <p role="status">
-          한 여행에는 최대 8곳까지 담을 수 있어요. 담은 여행에서 장소를 제외한
-          뒤 다시 담아 주세요.
-        </p>
+        <div className="tool-result" role="status">
+          <p>
+            한 여행에는 최대 8곳까지 담을 수 있어요. 담은 여행에서 장소를 제외한
+            뒤 다시 담아 주세요.
+          </p>
+          {onReview && (
+            <button type="button" className="secondary" onClick={onReview}>
+              담은 여행에서 정리하기
+            </button>
+          )}
+        </div>
       )}
       <button
+        type="button"
         className="primary"
         disabled={full && !selected}
         onClick={() => onToggle(detail.id)}

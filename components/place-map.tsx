@@ -459,7 +459,7 @@ export function PlaceMap({
                 className="detail-link"
                 onClick={() => onDetail(activePlace)}
               >
-                장소 정보
+                장소 상세
               </button>
               {onToggle && (
                 <button

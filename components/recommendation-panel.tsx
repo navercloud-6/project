@@ -18,6 +18,7 @@ export function RecommendationPanel({
   onRegion,
   onPrompt,
   onApply,
+  onDetail,
 }: {
   active: boolean;
   aiEnabled: boolean;
@@ -34,6 +35,7 @@ export function RecommendationPanel({
   onRegion: (region: string) => void;
   onPrompt: (prompt: string) => void;
   onApply: (result: Recommendation) => void;
+  onDetail?: (place: Place) => void;
 }) {
   return (
     <>
@@ -126,12 +128,26 @@ export function RecommendationPanel({
             교체됩니다.
           </p>
           <ol className="recommend-stops">
-            {result.stops.map((s) => (
-              <li key={s.placeId}>
-                <strong>{places.find((p) => p.id === s.placeId)?.name}</strong>
-                <p>{s.reason}</p>
-              </li>
-            ))}
+            {result.stops.map((s) => {
+              const place = places.find((p) => p.id === s.placeId);
+              return (
+                <li key={s.placeId}>
+                  {place && onDetail ? (
+                    <button
+                      type="button"
+                      className="text-button"
+                      onClick={() => onDetail(place)}
+                    >
+                      {place.name}
+                    </button>
+                  ) : (
+                    <strong>{place?.name}</strong>
+                  )}
+                  {place && <small>{place.region}</small>}
+                  <p>{s.reason}</p>
+                </li>
+              );
+            })}
           </ol>
           <button className="primary compact" onClick={() => onApply(result)}>
             이 제안으로 구성하기

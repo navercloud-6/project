@@ -13,8 +13,9 @@ export function PlaceCard({
   onToggle: (id: string) => void;
 }) {
   return (
-    <article className="place">
+    <article className={selected ? 'place selected' : 'place'}>
       <button
+        type="button"
         className="place-photo"
         onClick={() => onDetail(p)}
         aria-label={`${p.name} 상세 보기`}
@@ -30,22 +31,32 @@ export function PlaceCard({
           <span className="no-photo">시흥의 또 다른 풍경</span>
         )}
         <span className="region-label">{p.region}</span>
+        {selected && <span className="selected-badge">담은 장소</span>}
       </button>
       <div className="place-body">
         <div className="tags">
-          {p.tags.slice(0, 2).join(' / ') || '시흥 여행'}
+          {p.tags.slice(0, 2).join(' · ') || '시흥 여행'}
         </div>
         <h3>
-          <button className="text-button" onClick={() => onDetail(p)}>
+          <button
+            type="button"
+            className="text-button"
+            onClick={() => onDetail(p)}
+          >
             {p.name}
           </button>
         </h3>
         <p>{p.description}</p>
         <div className="place-bottom">
-          <button className="detail-link" onClick={() => onDetail(p)}>
-            장소 정보
+          <button
+            type="button"
+            className="detail-link"
+            onClick={() => onDetail(p)}
+          >
+            장소 상세
           </button>
           <button
+            type="button"
             className={selected ? 'add selected' : 'add'}
             aria-pressed={selected}
             onClick={() => onToggle(p.id)}

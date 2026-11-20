@@ -281,6 +281,13 @@ export default function Tourpass({
         {tab === 'explore' ? (
           <>
             <div className="explore-heading">
+              <span className="pill">
+                {exploreTask === 'review'
+                  ? '여행 코스 완성'
+                  : exploreTask === 'recommend'
+                    ? '맞춤 코스 제안'
+                    : '시흥 관광지 20곳'}
+              </span>
               <h1>
                 {exploreTask === 'review'
                   ? '담은 여행 확인'
@@ -291,7 +298,9 @@ export default function Tourpass({
               <p>
                 {exploreTask === 'review'
                   ? '방문 순서와 날짜를 정한 뒤 여행을 저장하세요.'
-                  : '마음에 드는 장소를 담아 나만의 하루를 만드세요.'}
+                  : exploreTask === 'recommend'
+                    ? '선호 지역과 여행 취향을 알려주시면 어울리는 코스를 골라드려요.'
+                    : '마음에 드는 장소를 최대 8곳까지 담아 나만의 하루를 만드세요.'}
               </p>
             </div>
             <div
@@ -308,6 +317,7 @@ export default function Tourpass({
               ).map(([task, label]) => (
                 <button
                   key={task}
+                  type="button"
                   aria-pressed={exploreTask === task}
                   onClick={() => setExploreTask(task)}
                 >
@@ -348,6 +358,7 @@ export default function Tourpass({
               onGenerate={() => void generate()}
               onRegion={setRegion}
               onPrompt={setPrompt}
+              onDetail={setDetail}
               onApply={(recommendation) => {
                 setSelection(recommendation.stops.map((stop) => stop.placeId));
                 setName(recommendation.title.slice(0, 60));
@@ -381,6 +392,8 @@ export default function Tourpass({
                 busy={busy}
                 hidden={exploreTask !== 'review'}
                 onBrowse={() => setExploreTask('browse')}
+                onRecommend={() => setExploreTask('recommend')}
+                onDetail={setDetail}
                 onMoveUp={(index) => {
                   setSelection((current) => {
                     const next = [...current];
@@ -402,18 +415,21 @@ export default function Tourpass({
           <div className="assistant-page">
             <div className="section-heading">
               <div>
+                <span className="pill">관광 안내와 행사 등록</span>
                 <h1>여행 도우미</h1>
                 <p>관광 자료를 찾아보고 행사 포스터를 여행으로 이어 보세요.</p>
               </div>
             </div>
             <div className="task-switch" role="group" aria-label="도우미 작업">
               <button
+                type="button"
                 aria-pressed={assistantTask === 'guide'}
                 onClick={() => setAssistantTask('guide')}
               >
                 관광 안내
               </button>
               <button
+                type="button"
                 aria-pressed={assistantTask === 'poster'}
                 onClick={() => setAssistantTask('poster')}
               >
@@ -427,6 +443,10 @@ export default function Tourpass({
                     places={places}
                     capabilities={capabilities}
                     onDetail={setDetail}
+                    onBrowse={() => {
+                      setTab('explore');
+                      setExploreTask('browse');
+                    }}
                   />
                 </div>
                 <div hidden={assistantTask !== 'poster'}>
@@ -442,10 +462,21 @@ export default function Tourpass({
                 </div>
               </div>
             ) : (
-              <p>
-                보관함 연결 후 도우미를 사용할 수 있어요. 위에서 연결 상태를
-                확인해 주세요.
-              </p>
+              <div className="empty">
+                <p>
+                  보관함 연결 후 도우미를 사용할 수 있어요. 위에서 연결 상태를
+                  확인해 주세요.
+                </p>
+                {!loading && (
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={() => void loadSession()}
+                  >
+                    다시 시도
+                  </button>
+                )}
+              </div>
             )}
           </div>
         ) : tab === 'weather' ? (
@@ -468,13 +499,19 @@ export default function Tourpass({
             busy={busy}
             saved={saved}
             ready={ready}
+            loading={loading}
             regions={regions}
             preferences={preferences}
             onSave={savePreferences}
+            onRetrySession={() => void loadSession()}
             onJourneys={() => setTab('journeys')}
-            onRecommend={() => {
-              setPrompt(preferences.prompt);
-              setRegion(preferences.region);
+            onExplore={() => {
+              setTab('explore');
+              setExploreTask('browse');
+            }}
+            onRecommend={(draft) => {
+              setPrompt(draft?.prompt ?? preferences.prompt);
+              setRegion(draft?.region ?? preferences.region);
               setResult(null);
               setExploreTask('recommend');
               setTab('explore');
@@ -484,12 +521,20 @@ export default function Tourpass({
           <MyJourneys
             saved={saved}
             ready={ready}
+            loading={loading}
+            auth={auth}
             places={places}
             capabilities={capabilities}
+            onRetrySession={() => void loadSession()}
             onExplore={() => {
               setTab('explore');
               setExploreTask('browse');
             }}
+            onRecommend={() => {
+              setTab('explore');
+              setExploreTask('recommend');
+            }}
+            onProfile={() => setTab('profile')}
             onRecord={(journey, place) => setRecord({ journey, place })}
             onDetail={setDetail}
             onSaved={updateJourney}
@@ -514,7 +559,11 @@ export default function Tourpass({
         !(tab === 'explore' && exploreTask === 'review') && (
           <div className="selection-bar">
             <span role="status">장소 {selection.length}곳을 담았어요</span>
-            <button className="primary compact" onClick={reviewSelection}>
+            <button
+              type="button"
+              className="primary compact"
+              onClick={reviewSelection}
+            >
               담은 여행 확인
             </button>
           </div>
@@ -528,6 +577,10 @@ export default function Tourpass({
           capabilities={capabilities}
           onClose={() => setDetail(null)}
           onToggle={toggle}
+          onReview={() => {
+            setDetail(null);
+            reviewSelection();
+          }}
         />
       )}
       {record && (

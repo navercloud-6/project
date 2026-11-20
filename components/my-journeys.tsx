@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
-import type { Capabilities } from '@/lib/application/ports';
+import type { AuthStatus, Capabilities } from '@/lib/application/ports';
 import { EditJourney } from './assistant/edit-journey';
 import { LanguageTools } from './assistant/language-tools';
 import { PhotoCredit } from './photo-credit';
@@ -10,18 +10,28 @@ import { PlaceMap } from './place-map';
 export function MyJourneys({
   saved,
   ready,
+  loading,
+  auth,
   places,
   capabilities,
   onExplore,
+  onRecommend,
+  onProfile,
+  onRetrySession,
   onRecord,
   onDetail,
   onSaved,
 }: {
   saved: Journey[];
   ready: boolean;
+  loading?: boolean;
+  auth?: AuthStatus | null;
   places: Place[];
   capabilities: Capabilities;
   onExplore: () => void;
+  onRecommend?: () => void;
+  onProfile?: () => void;
+  onRetrySession?: () => void;
   onRecord: (journey: Journey, place: Place) => void;
   onDetail: (place: Place) => void;
   onSaved: (journey: Journey) => void;
@@ -34,28 +44,58 @@ export function MyJourneys({
           <h1>내 여행</h1>
           <p>계획한 곳을 다시 보고, 다녀온 순간을 기록하세요.</p>
         </div>
-        <button className="primary compact" onClick={onExplore}>
+        <button type="button" className="primary compact" onClick={onExplore}>
           새 여행 만들기
         </button>
       </div>
-      <p className="privacy-note">
-        이 브라우저 전용 보관함입니다. 쿠키를 지우거나 세션이 30일 후 만료되면
-        저장된 여행에 접근할 수 없습니다.
-      </p>
+      <div className="privacy-note">
+        <span>
+          {auth?.authenticated
+            ? '네이버 계정에 연결된 보관함입니다. 같은 계정으로 다른 기기에서도 여행과 방문 기록을 확인할 수 있어요.'
+            : '이 브라우저 전용 보관함입니다. 쿠키를 지우거나 세션이 30일 후 만료되면 저장된 여행에 접근할 수 없습니다.'}
+        </span>
+        {onProfile && !auth?.authenticated && (
+          <button type="button" className="detail-link" onClick={onProfile}>
+            네이버 계정·보관 안내
+          </button>
+        )}
+      </div>
       {!ready ? (
         <div className="empty">
-          위에서 여행 보관함의 연결 상태를 확인해 주세요.
+          <p>위에서 여행 보관함의 연결 상태를 확인해 주세요.</p>
+          {!loading && onRetrySession && (
+            <button
+              type="button"
+              className="secondary"
+              onClick={onRetrySession}
+            >
+              다시 시도
+            </button>
+          )}
         </div>
       ) : !saved.length ? (
         <div className="empty">
-          <span className="empty-wave">≈</span>
+          <span className="empty-wave" aria-hidden="true">
+            ≈
+          </span>
           <h2>첫 번째 시흥 여행을 만들어 보세요.</h2>
           <p>
             장소를 담고 저장하면 이곳에서 여행과 방문 기록을 확인할 수 있어요.
           </p>
-          <button className="secondary" onClick={onExplore}>
-            장소 둘러보기
-          </button>
+          <div className="empty-actions">
+            <button
+              type="button"
+              className="primary compact"
+              onClick={onExplore}
+            >
+              장소 둘러보기
+            </button>
+            {onRecommend && (
+              <button type="button" className="secondary" onClick={onRecommend}>
+                여행 추천받기
+              </button>
+            )}
+          </div>
         </div>
       ) : (
         <div className="journey-grid">
@@ -66,6 +106,7 @@ export function MyJourneys({
                 {cover?.image && (
                   <figure className="journey-cover">
                     <button
+                      type="button"
                       className="journey-cover-photo"
                       onClick={() => onDetail(cover)}
                       aria-label={`${cover.name} 상세 보기`}
@@ -104,6 +145,7 @@ export function MyJourneys({
                         <div>
                           <strong>
                             <button
+                              type="button"
                               className="text-button"
                               onClick={() => onDetail(p)}
                               aria-label={`${p.name} 상세 보기`}
@@ -118,6 +160,7 @@ export function MyJourneys({
                           </p>
                         </div>
                         <button
+                          type="button"
                           className="secondary"
                           onClick={() => onRecord(j, p)}
                         >
@@ -147,7 +190,7 @@ export function MyJourneys({
                   />
                 </details>
                 <details className="journey-options">
-                  <summary>여행 수정·번역</summary>
+                  <summary>대화로 여행 수정</summary>
                   <EditJourney
                     key={j.id}
                     journey={j}
@@ -155,6 +198,9 @@ export function MyJourneys({
                     capabilities={capabilities}
                     onSaved={onSaved}
                   />
+                </details>
+                <details className="journey-options">
+                  <summary>여행 번역</summary>
                   <LanguageTools journeyId={j.id} capabilities={capabilities} />
                 </details>
               </article>

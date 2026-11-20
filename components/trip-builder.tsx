@@ -9,6 +9,8 @@ export function TripBuilder({
   busy,
   hidden,
   onBrowse,
+  onRecommend,
+  onDetail,
   onMoveUp,
   onToggle,
   onName,
@@ -22,6 +24,8 @@ export function TripBuilder({
   busy: boolean;
   hidden: boolean;
   onBrowse: () => void;
+  onRecommend?: () => void;
+  onDetail?: (place: Place) => void;
   onMoveUp: (index: number) => void;
   onToggle: (id: string) => void;
   onName: (name: string) => void;
@@ -44,15 +48,32 @@ export function TripBuilder({
       <div className="ticket-body">
         <div className="section-heading">
           <strong>담은 장소</strong>
-          <span>{selected.length} / 8</span>
+          <span>{selected.length} / 8곳</span>
         </div>
         {!selected.length ? (
           <div className="empty">
             <h3>아직 담은 장소가 없어요.</h3>
-            <p>장소를 담으면 순서와 날짜를 정할 수 있어요.</p>
-            <button className="secondary" onClick={onBrowse}>
-              장소 찾기
-            </button>
+            <p>
+              직접 장소를 고르거나 취향에 맞는 추천을 받아 코스를 만들어 보세요.
+            </p>
+            <div className="empty-actions">
+              <button
+                type="button"
+                className="primary compact"
+                onClick={onBrowse}
+              >
+                장소 찾기
+              </button>
+              {onRecommend && (
+                <button
+                  type="button"
+                  className="secondary"
+                  onClick={onRecommend}
+                >
+                  추천받기
+                </button>
+              )}
+            </div>
           </div>
         ) : (
           <ol className="selected-list">
@@ -67,7 +88,17 @@ export function TripBuilder({
                   )}
                 </span>
                 <div className="selection-name">
-                  <strong>{p.name}</strong>
+                  {onDetail ? (
+                    <button
+                      type="button"
+                      className="text-button"
+                      onClick={() => onDetail(p)}
+                    >
+                      {p.name}
+                    </button>
+                  ) : (
+                    <strong>{p.name}</strong>
+                  )}
                   <small>{p.region}</small>
                 </div>
                 <button

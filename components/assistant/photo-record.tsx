@@ -21,7 +21,7 @@ export function PhotoRecord({
   const [exists, setExists] = useState(false);
   const [version, setVersion] = useState(0);
   const [file, setFile] = useState<File | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [busyKind, setBusyKind] = useState<'upload' | 'write' | null>(null);
   const [error, setError] = useState('');
   const [draft, setDraft] = useState('');
   useEffect(() => {
@@ -39,7 +39,7 @@ export function PhotoRecord({
   }, [url]);
   async function upload() {
     if (!file) return;
-    setBusy(true);
+    setBusyKind('upload');
     setError('');
     try {
       const r = await request(url, {
@@ -55,11 +55,11 @@ export function PhotoRecord({
     } catch (e) {
       setError((e as Error).message);
     } finally {
-      setBusy(false);
+      setBusyKind(null);
     }
   }
   async function write() {
-    setBusy(true);
+    setBusyKind('write');
     setError('');
     try {
       const d = await (
@@ -73,9 +73,10 @@ export function PhotoRecord({
     } catch (e) {
       setError((e as Error).message);
     } finally {
-      setBusy(false);
+      setBusyKind(null);
     }
   }
+  const busy = busyKind !== null;
   return (
     <section className="photo-record">
       <h3>사진으로 남기는 하루</h3>
@@ -100,7 +101,11 @@ export function PhotoRecord({
           disabled={busy || !file}
           onClick={upload}
         >
-          {exists ? '사진 교체하기' : '사진 저장하기'}
+          {busyKind === 'upload'
+            ? '사진 저장 중…'
+            : exists
+              ? '사진 교체하기'
+              : '사진 저장하기'}
         </button>
         <button
           type="button"
@@ -108,7 +113,9 @@ export function PhotoRecord({
           disabled={busy || !exists || !capabilities.clova}
           onClick={write}
         >
-          {busy ? '처리 중…' : '사진으로 일기 초안 만들기'}
+          {busyKind === 'write'
+            ? '일기 초안 만드는 중…'
+            : '사진으로 일기 초안 만들기'}
         </button>
       </div>
       <p className="fine">

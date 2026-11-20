@@ -14,7 +14,7 @@ export function LanguageTools({
   const [target, setTarget] = useState('en');
   const [text, setText] = useState('');
   const [audio, setAudio] = useState('');
-  const [busy, setBusy] = useState(false);
+  const [busyKind, setBusyKind] = useState<'voice' | 'translate' | null>(null);
   const [error, setError] = useState('');
   useEffect(
     () => () => {
@@ -23,7 +23,7 @@ export function LanguageTools({
     [audio],
   );
   async function run(kind: 'voice' | 'translate') {
-    setBusy(true);
+    setBusyKind(kind);
     setError('');
     try {
       const r = await assistant({ action: kind, placeId, journeyId, target });
@@ -32,9 +32,10 @@ export function LanguageTools({
     } catch (e) {
       setError((e as Error).message);
     } finally {
-      setBusy(false);
+      setBusyKind(null);
     }
   }
+  const busy = busyKind !== null;
   return (
     <div className="language-tools">
       <div className="tool-actions">
@@ -45,7 +46,7 @@ export function LanguageTools({
             disabled={busy || !capabilities.voice}
             onClick={() => run('voice')}
           >
-            설명 듣기
+            {busyKind === 'voice' ? '음성 불러오는 중…' : '설명 듣기'}
           </button>
         )}
         <label htmlFor={id}>번역 언어</label>
@@ -67,7 +68,7 @@ export function LanguageTools({
           disabled={busy || !capabilities.translate}
           onClick={() => run('translate')}
         >
-          {busy ? '처리 중…' : '번역 보기'}
+          {busyKind === 'translate' ? '번역하는 중…' : '번역 보기'}
         </button>
       </div>
       {(!capabilities.translate || (placeId && !capabilities.voice)) && (

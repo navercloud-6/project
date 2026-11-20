@@ -75,40 +75,46 @@ export function Poster({
     <section className="tool-section">
       <span className="pill">포스터에서 여행으로</span>
       <h2>행사 일정을 놓치지 마세요</h2>
-      <p className="fine">
-        JPEG·PNG·WebP, 2MB 이하. 인식 버튼을 누르면 NAVER Cloud로 이미지가
-        전송됩니다. 포스터 원본은 보관하지 않습니다.
-      </p>
-      <label htmlFor="poster-file">행사 포스터</label>
-      <input
-        id="poster-file"
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        onChange={(e) => {
-          setFile(e.target.files?.[0] || null);
-          setError('');
-        }}
-      />
-      <button
-        className="secondary"
-        disabled={busy || !file || !capabilities.ocr}
-        onClick={extract}
-      >
-        {busy ? '처리 중…' : '포스터 읽기'}
-      </button>
-      {!capabilities.ocr && (
+      <div className="poster-ocr-box">
+        <label htmlFor="poster-file">포스터 자동 입력 (선택)</label>
         <p className="fine">
-          OCR 설정 전에는 아래 항목을 직접 입력해 체험할 수 있습니다.
+          {capabilities.ocr
+            ? 'JPEG·PNG·WebP, 2MB 이하. 포스터 읽기를 누르면 NAVER Cloud로 이미지가 전송되며 원본은 보관하지 않습니다.'
+            : '현재 OCR 미설정 상태입니다. 아래 양식에 행사 정보를 직접 입력해 여행으로 저장할 수 있어요.'}
+        </p>
+        <div className="tool-actions">
+          <input
+            id="poster-file"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            disabled={busy || !capabilities.ocr}
+            onChange={(e) => {
+              setFile(e.target.files?.[0] || null);
+              setError('');
+            }}
+          />
+          <button
+            type="button"
+            className="secondary"
+            disabled={busy || !file || !capabilities.ocr}
+            onClick={extract}
+          >
+            {busy ? '포스터 읽는 중…' : '포스터 읽기'}
+          </button>
+        </div>
+        {text && (
+          <details>
+            <summary>인식한 원문 확인</summary>
+            <p className="ocr-text">{text}</p>
+          </details>
+        )}
+      </div>
+      <ErrorText text={error} />
+      {message && (
+        <p className="tool-result" role="status">
+          {message}
         </p>
       )}
-      {text && (
-        <details>
-          <summary>인식한 원문 확인</summary>
-          <p className="ocr-text">{text}</p>
-        </details>
-      )}
-      <ErrorText text={error} />
-      {message && <p role="status">{message}</p>}
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -120,6 +126,7 @@ export function Poster({
           id="event-title"
           required
           maxLength={60}
+          placeholder="예: 시흥 갯골 축제"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -136,6 +143,7 @@ export function Poster({
           id="event-location"
           required
           maxLength={200}
+          placeholder="예: 시흥갯골생태공원 잔디광장"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
@@ -158,7 +166,7 @@ export function Poster({
           일치하는지 원본 안내에서 확인하세요.
         </p>
         <button className="primary" disabled={busy}>
-          확인한 일정으로 여행 저장
+          {busy ? '행사 여행 저장 중…' : '확인한 일정으로 여행 저장'}
         </button>
       </form>
     </section>

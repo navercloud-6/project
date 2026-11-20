@@ -3,7 +3,11 @@ import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { loadPreferences, storePreferences } from '../lib/adapters/preferences';
+import { MyJourneys } from '../components/my-journeys';
 import { MyProfile } from '../components/my-profile';
+import { PlaceDetail } from '../components/place-detail';
+import { TripBuilder } from '../components/trip-builder';
+import { places } from '../lib/domain/catalog';
 import type { Journey } from '../lib/domain/contracts';
 
 test('마이는 방문 기록이 있는 고유 장소만 집계하고 연결 전에는 집계를 숨긴다', () => {
@@ -107,4 +111,72 @@ test('손상된 JSON·브라우저 저장 제한은 호출자가 안내할 수 �
       ),
     /quota/,
   );
+});
+
+test('빈 목록·8곳 상한·내 여행 접이식 작업은 막다른 흐름 없이 다음 행동을 분리해 제공한다', () => {
+  const capabilities = {
+    clova: false,
+    voice: false,
+    translate: false,
+    ocr: false,
+  };
+  const emptyBuilder = renderToStaticMarkup(
+    createElement(TripBuilder, {
+      selected: [],
+      name: '나의 시흥 여행',
+      date: '2026-11-19',
+      ready: true,
+      busy: false,
+      hidden: false,
+      onBrowse() {},
+      onRecommend() {},
+      onMoveUp() {},
+      onToggle() {},
+      onName() {},
+      onDate() {},
+      onSave() {},
+    }),
+  );
+  assert.match(emptyBuilder, /장소 찾기/);
+  assert.match(emptyBuilder, /추천받기/);
+
+  const fullDetail = renderToStaticMarkup(
+    createElement(PlaceDetail, {
+      detail: places[0],
+      selected: false,
+      full: true,
+      capabilities,
+      onClose() {},
+      onToggle() {},
+      onReview() {},
+    }),
+  );
+  assert.match(fullDetail, /담은 여행에서 정리하기/);
+
+  const savedJourneys = renderToStaticMarkup(
+    createElement(MyJourneys, {
+      saved: [
+        {
+          id: 'j1',
+          name: '바다 코스',
+          date: '2026-11-19',
+          createdAt: '',
+          placeIds: [places[0].id],
+          records: {},
+        },
+      ],
+      ready: true,
+      auth: { enabled: true, authenticated: true },
+      places,
+      capabilities,
+      onExplore() {},
+      onRecord() {},
+      onDetail() {},
+      onSaved() {},
+    }),
+  );
+  assert.match(savedJourneys, /네이버 계정에 연결된 보관함/);
+  assert.match(savedJourneys, /<summary>코스 지도 보기<\/summary>/);
+  assert.match(savedJourneys, /<summary>대화로 여행 수정<\/summary>/);
+  assert.match(savedJourneys, /<summary>여행 번역<\/summary>/);
 });

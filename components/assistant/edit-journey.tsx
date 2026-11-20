@@ -83,7 +83,6 @@ export function EditJourney({
   }
   return (
     <div className="edit-tool">
-      <h3>대화로 여행 바꾸기</h3>
       <p className="fine">
         {capabilities.clova
           ? '원하는 변경을 말해 주세요. 변경안을 확인한 뒤 적용합니다.'
@@ -102,22 +101,27 @@ export function EditJourney({
           minLength={2}
           maxLength={500}
           required
+          placeholder="예: 순서 반대로, 2번째 빼기"
           onChange={(e) => setPrompt(e.target.value)}
         />
         <button className="secondary" disabled={busy}>
-          {busy ? '처리 중…' : '변경안 만들기'}
+          {busy && !preview ? '변경안 만드는 중…' : '변경안 만들기'}
         </button>
       </form>
       <ErrorText text={error} />
-      {done && <p role="status">{done}</p>}
+      {done && (
+        <p className="tool-result" role="status">
+          {done}
+        </p>
+      )}
       {preview && (
         <div className="tool-result">
-          <strong>
+          <span className="pill">
             {preview.proposal.mode === 'demo' ? '데모 변경안' : 'AI 변경안'}
-          </strong>
+          </span>
           <p>{preview.proposal.explanation}</p>
           <p>
-            {preview.proposal.name} · {preview.proposal.date}
+            <strong>{preview.proposal.name}</strong> · {preview.proposal.date}
           </p>
           <div className="edit-comparison">
             <div>
@@ -141,10 +145,16 @@ export function EditJourney({
             방문 기록·사진이 있는 장소는 제외할 수 없습니다.
           </p>
           <div className="tool-actions">
-            <button className="primary compact" disabled={busy} onClick={apply}>
-              이 변경 적용하기
+            <button
+              type="button"
+              className="primary compact"
+              disabled={busy}
+              onClick={apply}
+            >
+              {busy ? '적용 중…' : '이 변경 적용하기'}
             </button>
             <button
+              type="button"
               className="secondary"
               disabled={busy}
               onClick={() => setPreview(null)}
