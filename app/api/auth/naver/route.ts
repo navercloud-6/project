@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   try {
     checkOrigin(request);
     const jar = await cookies();
-    const login = auth.begin(jar.get(sessionCookie)?.value);
+    const login = await auth.begin(jar.get(sessionCookie)?.value);
     jar.set(sessionCookie, login.token, cookieOptions());
     jar.set('tourpass-oauth-state', login.state, cookieOptions(600));
     return new Response(null, {

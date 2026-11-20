@@ -12,13 +12,13 @@ export function createJourneys(
   repository: JourneyRepository,
   identity: IdentityPort,
 ) {
-  function getJourney(owner: string, id: string) {
-    const journey = repository.find(owner, id);
+  async function getJourney(owner: string, id: string) {
+    const journey = await repository.find(owner, id);
     if (!journey)
       throw new ApplicationError('NOT_FOUND', '여행을 찾을 수 없습니다.');
     return journey;
   }
-  function saveJourney(owner: string, input: JourneyDraft) {
+  async function saveJourney(owner: string, input: JourneyDraft) {
     const journey: Journey = {
       ...input,
       id: identity.id(),
@@ -26,12 +26,12 @@ export function createJourneys(
       revision: identity.id(),
       records: {},
     };
-    repository.insert(owner, journey);
+    await repository.insert(owner, journey);
     return journey;
   }
-  function saveRecord(owner: string, input: RecordInput) {
-    return repository.transaction(() => {
-      const journey = getJourney(owner, input.journeyId);
+  async function saveRecord(owner: string, input: RecordInput) {
+    return repository.transaction(async () => {
+      const journey = await getJourney(owner, input.journeyId);
       if (!journey.placeIds.includes(input.placeId))
         throw new ApplicationError(
           'NOT_FOUND',
@@ -42,49 +42,52 @@ export function createJourneys(
         rating: input.rating,
         note: input.note,
       };
-      repository.update(owner, journey);
+      await repository.update(owner, journey);
       return journey;
     });
   }
-  function applyEdit(
+  async function applyEdit(
     owner: string,
     id: string,
     expected: string,
     proposal: Pick<Journey, 'name' | 'date' | 'placeIds'>,
   ) {
-    return repository.transaction(() => {
-      const current = getJourney(owner, id);
+    return repository.transaction(async () => {
+      const current = await getJourney(owner, id);
       assertEditable(
         current,
         expected,
         proposal,
-        repository.photoPlaces(owner, id),
+        await repository.photoPlaces(owner, id),
       );
       const next = { ...current, ...proposal, revision: identity.id() };
-      repository.update(owner, next);
+      await repository.update(owner, next);
       return next;
     });
   }
-  function photoFor(owner: string, journey: string, place: string) {
-    getJourney(owner, journey);
+  async function photoFor(owner: string, journey: string, place: string) {
+    await getJourney(owner, journey);
     return repository.photo(owner, journey, place);
   }
-  function savePhoto(
+  async function savePhoto(
     owner: string,
     journey: string,
     place: string,
     image: Uint8Array,
   ) {
-    return repository.transaction(() => {
-      const current = getJourney(owner, journey);
+    return repository.transaction(async () => {
+      const current = await getJourney(owner, journey);
       if (!current.placeIds.includes(place))
         throw new ApplicationError(
           'INVALID_INPUT',
           '여행에 담은 장소의 사진만 저장할 수 있습니다.',
         );
-      repository.putPhoto(owner, journey, place, { id: identity.id(), image });
+      await repository.putPhoto(owner, journey, place, {
+        id: identity.id(),
+        image,
+      });
       current.revision = identity.id();
-      repository.update(owner, current);
+      await repository.update(owner, current);
       return current;
     });
   }

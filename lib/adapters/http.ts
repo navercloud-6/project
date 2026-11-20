@@ -12,7 +12,7 @@ export const cookieOptions = (maxAge = 30 * 86400) => ({
 });
 export async function session(create = false) {
   const jar = await cookies();
-  const { owner, token } = resolveSession(
+  const { owner, token } = await resolveSession(
     jar.get('tourpass-session')?.value,
     create,
   );
