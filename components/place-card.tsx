@@ -28,14 +28,14 @@ export function PlaceCard({
             sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 960px) calc((100vw - 68px) / 2), (max-width: 1400px) calc((100vw - 136px) / 3), 422px"
           />
         ) : (
-          <span className="no-photo">시흥의 또 다른 풍경</span>
+          <span className="no-photo">경기도의 또 다른 풍경</span>
         )}
         <span className="region-label">{p.region}</span>
         {selected && <span className="selected-badge">담은 장소</span>}
       </button>
       <div className="place-body">
         <div className="tags">
-          {p.tags.slice(0, 2).join(' · ') || '시흥 여행'}
+          {p.tags.slice(0, 2).join(' · ') || '경기 여행'}
         </div>
         <h3>
           <button

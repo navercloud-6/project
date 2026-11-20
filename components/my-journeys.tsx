@@ -78,7 +78,7 @@ export function MyJourneys({
           <span className="empty-wave" aria-hidden="true">
             ≈
           </span>
-          <h2>첫 번째 시흥 여행을 만들어 보세요.</h2>
+          <h2>첫 번째 경기 여행을 만들어 보세요.</h2>
           <p>
             장소를 담고 저장하면 이곳에서 여행과 방문 기록을 확인할 수 있어요.
           </p>
@@ -126,7 +126,7 @@ export function MyJourneys({
                   </figure>
                 )}
                 <div className="saved-top">
-                  <span>시흥 하루이음 · 시연용</span>
+                  <span>경기 하루이음 · 시연용</span>
                   <h2>{j.name}</h2>
                   <p>
                     {j.date}{' '}

@@ -1,4 +1,4 @@
-# 작업 지침 — 시흥 하루이음
+# 작업 지침 — 경기 하루이음
 
 <!-- doc-standard:start — doc-standard에서 동기화한다. 이 구간은 직접 고치지 않는다. -->
 - 작업 전 [요구사항](docs/01-func/01-requirements.md) → [기술 구조](docs/03-tech/01-architecture.md) 순서로 읽는다. 충돌 시 요구사항을 우선하고, 변경 사항은 구현 전에 문서에 반영한다.

@@ -57,7 +57,7 @@ export function Guide({
   return (
     <section className="tool-section">
       <span className="pill">근거 있는 관광 안내</span>
-      <h2>궁금한 시흥, 출처와 함께</h2>
+      <h2>궁금한 경기, 출처와 함께</h2>
       <p className="fine">
         {capabilities.clova
           ? '검색한 관광 자료를 바탕으로 AI가 답합니다.'

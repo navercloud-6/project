@@ -100,20 +100,21 @@ export function PlaceMap({
           )}
         </div>
         <span className="map-caption">
-          시흥시 권역·개략 위치도 (검토 전 시연 자료 · 실제 도로 경로 아님)
+          경기도(시흥권) 권역·개략 위치도 (검토 전 시연 자료 · 실제 도로 경로
+          아님)
         </span>
       </div>
 
       <div
         className="map-canvas-shell"
         role="region"
-        aria-label="시흥 관광지 인터랙티브 지도"
+        aria-label="경기 관광지 인터랙티브 지도"
       >
         <svg
           className="siheung-map-svg"
           viewBox="0 0 800 520"
           role="img"
-          aria-label="시흥시 권역별 관광지 위치와 여행 동선 지도"
+          aria-label="경기도(시흥권) 권역별 관광지 위치와 여행 동선 지도"
         >
           <defs>
             <linearGradient id={seaGradient} x1="0" y1="0" x2="1" y2="1">
@@ -417,7 +418,7 @@ export function PlaceMap({
               onClick={() => onDetail(activePlace)}
               aria-label={`${activePlace.name} 상세 보기`}
             >
-              <span>시흥의 풍경</span>
+              <span>경기도의 풍경</span>
             </button>
           )}
           <div className="map-card-body">
@@ -429,7 +430,7 @@ export function PlaceMap({
                 </span>
               )}
               <span className="tags">
-                {activePlace.tags.join(' · ') || '시흥 여행'}
+                {activePlace.tags.join(' · ') || '경기 여행'}
               </span>
             </div>
             <h3>

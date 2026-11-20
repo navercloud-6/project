@@ -15,7 +15,7 @@ export const WEATHER_REGIONS: Record<
   전체: {
     lat: 37.38,
     lng: 126.803,
-    areaNote: '시흥시청·장곡 중심 대표 기상 기준점',
+    areaNote: '경기도 시흥권 대표 기상 기준점(시흥시청·장곡 중심)',
     tempOffset: 0,
     windOffset: 0,
     coastal: false,
@@ -111,7 +111,7 @@ export const weatherQuerySchema = z.object({
     .default('전체')
     .refine(
       (v) => validWeatherRegions.has(v),
-      '지원하지 않는 시흥 권역입니다.',
+      '지원하지 않는 경기 권역입니다.',
     ),
 });
 
@@ -214,7 +214,7 @@ export function buildAdvisory(
     return {
       suitability: 'indoor',
       headline: '비·눈 소식이 있어 실내 전시나 박물관 코스를 먼저 추천해요',
-      detail: `${region === '전체' ? '시흥 전역' : region}에 강수가 예상됩니다. 우산을 챙기시고 미끄러운 갯벌·방조제 데크 대신 박물관·실내 체험 공간 위주로 동선을 구성해 보세요.`,
+      detail: `${region === '전체' ? '경기(시흥권) 전역' : region}에 강수가 예상됩니다. 우산을 챙기시고 미끄러운 갯벌·방조제 데크 대신 박물관·실내 체험 공간 위주로 동선을 구성해 보세요.`,
     };
   }
   if (

@@ -240,7 +240,7 @@ test('OpenAPI 3.1 명세와 Scalar 핸들러가 핵심 경로와 스키마를 �
   assert.match(html, /\/api\/openapi/);
   assert.match(html, /createApiReference/);
 });
-test('시흥 날씨 API는 실시간 Open-Meteo 파싱, 오프라인 데모 폴백, 권역 검증을 수행한다', async () => {
+test('경기 날씨 API는 실시간 Open-Meteo 파싱, 오프라인 데모 폴백, 권역 검증을 수행한다', async () => {
   const oldFetch = globalThis.fetch;
   try {
     globalThis.fetch = async (url) => {

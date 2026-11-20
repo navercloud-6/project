@@ -68,10 +68,10 @@ const recommendationSchema = {
 export const openApiDocument = {
   openapi: '3.1.0',
   info: {
-    title: '시흥 하루이음 HTTP API',
+    title: '경기 하루이음 HTTP API',
     version: '1.0.0',
     description:
-      '시흥 관광지 탐색, 자연어 여행 추천(CLOVA Studio / 데모), 여행 패스·방문 기록·사진 보관(SQLite), 근거 기반 관광 안내·대화형 여행 편집·번역(Papago)·음성(CLOVA Voice)·포스터 OCR 연동을 제공하는 내부 Route Handler API 명세입니다.',
+      '경기도 관광지 탐색(시흥권 시연 데이터 기반), 자연어 여행 추천(CLOVA Studio / 데모), 여행 패스·방문 기록·사진 보관(SQLite), 근거 기반 관광 안내·대화형 여행 편집·번역(Papago)·음성(CLOVA Voice)·포스터 OCR 연동을 제공하는 내부 Route Handler API 명세입니다.',
   },
   servers: [{ url: '/', description: '현재 애플리케이션 오리진 (APP_ORIGIN)' }],
   tags: [
@@ -89,7 +89,8 @@ export const openApiDocument = {
     { name: 'Poster', description: '행사 포스터 OCR 추출 및 일정 초안 생성' },
     {
       name: 'Weather',
-      description: '시흥 권역별 실시간·데모 기상 예보 및 맞춤 관광지 조회',
+      description:
+        '경기(시흥권) 권역별 실시간·데모 기상 예보 및 맞춤 관광지 조회',
     },
     { name: 'Docs', description: 'OpenAPI 3.1 명세 및 Scalar API 레퍼런스' },
   ],
@@ -716,13 +717,13 @@ export const openApiDocument = {
     '/api/weather': {
       get: {
         tags: ['Weather'],
-        summary: '시흥 권역별 현재 기상·5일 예보 및 맞춤 관광지 조회',
+        summary: '경기(시흥권) 권역별 현재 기상·5일 예보 및 맞춤 관광지 조회',
         parameters: [
           {
             name: 'region',
             in: 'query',
             required: false,
-            description: '시흥 권역명 (미지정 시 전체)',
+            description: '경기(시흥권) 권역명 (미지정 시 전체)',
             schema: { type: 'string', default: '전체' },
           },
         ],
