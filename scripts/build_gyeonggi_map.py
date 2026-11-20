@@ -109,6 +109,11 @@ def build(source_path):
     seoul_point = seoul_geometry.representative_point()
     result = {
         "viewBox": f"0 0 {width} {height}",
+        "projection": {
+            "west": west, "north": north,
+            "longitudeScale": longitude_scale, "scale": scale,
+            "offsetX": offset_x, "offsetY": offset_y,
+        },
         "source": {
             "date": "2026-10-01",
             "url": f"https://github.com/vuski/admdongkor/tree/{SOURCE_COMMIT}/ver20261001",

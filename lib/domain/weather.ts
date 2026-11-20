@@ -243,12 +243,16 @@ export function pickRecommendedPlaces(
   region: string,
   suitability: 'outdoor' | 'mixed' | 'indoor',
 ): string[] {
+  // Weather observations still cover Siheung, so do not suggest other cities.
+  const weatherPlaces = places.filter((place) => place.cityId === '41390');
   const scoped =
-    region === '전체' ? places : places.filter((p) => p.region === region);
+    region === '전체'
+      ? weatherPlaces
+      : weatherPlaces.filter((p) => p.region === region);
   const pool =
     scoped.length >= 2
       ? scoped
-      : [...scoped, ...places.filter((p) => p.region !== region)];
+      : [...scoped, ...weatherPlaces.filter((p) => p.region !== region)];
 
   const scorePlace = (p: (typeof places)[number]) => {
     const text = `${p.name} ${p.description} ${p.tags.join(' ')}`;

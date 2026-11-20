@@ -298,7 +298,7 @@ export default function Tourpass({
                   ? '여행 코스 완성'
                   : exploreTask === 'recommend'
                     ? '맞춤 코스 제안'
-                    : '경기 관광지 20곳'}
+                    : `경기 관광지 ${places.length}곳`}
               </span>
               {exploreTask === 'browse' ? (
                 <h2>경기 둘러보기</h2>

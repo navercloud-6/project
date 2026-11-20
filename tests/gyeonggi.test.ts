@@ -5,6 +5,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { GyeonggiCityExplorer } from '../components/gyeonggi-city-explorer';
 import { gyeonggiCities, gyeonggiMap } from '../lib/domain/gyeonggi';
 import { places } from '../lib/domain/catalog';
+import { ImageConfigContext } from 'next/dist/shared/lib/image-config-context.shared-runtime';
+import { imageConfigDefault } from 'next/dist/shared/lib/image-config';
 
 test('행정구를 병합한 경기도 경계 31개와 관광지의 시·군 식별자가 대응한다', () => {
   const cityIds = new Set(gyeonggiCities.map((city) => city.id));
@@ -31,16 +33,32 @@ test('행정구를 병합한 경기도 경계 31개와 관광지의 시·군 식
 });
 
 test('도시 관광지 패널은 시흥 자료를 다른 도시에 표시하지 않고 기존 담기 상태를 반영한다', () => {
-  const render = (selectedCityId: string | null) => {
+  const render = (selectedCityId: string | null, catalog = places) => {
     const markup = renderToStaticMarkup(
-      createElement(GyeonggiCityExplorer, {
-        places,
-        selectedCityId,
-        selection: [places[0].id],
-        onSelectCity() {},
-        onDetail() {},
-        onToggle() {},
-      }),
+      createElement(
+        ImageConfigContext.Provider,
+        {
+          value: {
+            ...imageConfigDefault,
+            remotePatterns: [
+              {
+                protocol: 'https',
+                hostname: 'tong.visitkorea.or.kr',
+                pathname: '/cms/**',
+                search: '',
+              },
+            ],
+          },
+        },
+        createElement(GyeonggiCityExplorer, {
+          places: catalog,
+          selectedCityId,
+          selection: [places[0].id],
+          onSelectCity() {},
+          onDetail() {},
+          onToggle() {},
+        }),
+      ),
     );
     return markup.match(/<aside\b[\s\S]*?<\/aside>/)![0];
   };
@@ -48,8 +66,24 @@ test('도시 관광지 패널은 시흥 자료를 다른 도시에 표시하지 
   assert.equal([...siheung.matchAll(/<li>/g)].length, 20);
   assert.ok(siheung.includes(places[0].name));
   assert.ok(siheung.includes(`${places[0].name} 담기 취소`));
-  for (const selectedCityId of [null, '41110', '41820']) {
-    const panel = render(selectedCityId);
+  for (const city of gyeonggiCities) {
+    const panel = render(city.id);
+    const expected = places.filter((place) => place.cityId === city.id);
+    assert.ok(expected.length > 0 && expected.length <= 20);
+    assert.equal([...panel.matchAll(/<li>/g)].length, expected.length);
+    for (const place of expected)
+      assert.ok(
+        panel.includes(
+          place.name
+            .replaceAll('&', '&amp;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#x27;'),
+        ),
+      );
+    if (city.id !== '41390') assert.ok(!panel.includes(places[0].name));
+  }
+  for (const selectedCityId of [null, '41110']) {
+    const panel = render(selectedCityId, []);
     assert.ok(!panel.includes(places[0].name));
     assert.equal([...panel.matchAll(/<li>/g)].length, 0);
     assert.match(

@@ -1,5 +1,6 @@
 // Run against an isolated test server, never a production database.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:3100';
 async function call(path, method = 'GET', body, cookie, origin = base) {
   return fetch(base + path, {
@@ -99,6 +100,30 @@ for (const docPath of ['/api/docs', '/scalar']) {
   assert.match(docRes.headers.get('content-type') || '', /text\/html/i);
   assert.match(await docRes.text(), /\/api\/openapi/);
 }
+const catalog = JSON.parse(
+  readFileSync(new URL('../data/places.json', import.meta.url), 'utf8'),
+);
+const newCityPlace = catalog.find((place) => place.cityId === '41110');
+assert.ok(newCityPlace, '수원 관광지가 등록되어 있어야 한다');
+const newCitySave = await call(
+  '/api/journeys',
+  'POST',
+  {
+    name: '새 도시 관광지',
+    date: '2026-11-20',
+    placeIds: [newCityPlace.id],
+  },
+  cookie,
+);
+assert.equal(newCitySave.status, 201);
+const newCityJourney = (await newCitySave.json()).journey;
+const newCityList = (
+  await (await call('/api/journeys', 'GET', undefined, cookie)).json()
+).journeys;
+assert.deepEqual(
+  newCityList.find((item) => item.id === newCityJourney.id).placeIds,
+  [newCityPlace.id],
+);
 console.log(
   'HTTP smoke passed: sessions, CSRF, validation, persistence, ownership, recommendation, body limit, weather, OpenAPI & Scalar.',
 );

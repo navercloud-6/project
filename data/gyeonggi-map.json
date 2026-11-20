@@ -1,5 +1,13 @@
 {
   "viewBox": "0 0 800 720",
+  "projection": {
+    "west": 126.37970947309786,
+    "north": 38.29203792732757,
+    "longitudeScale": 0.7933533402912352,
+    "scale": 463.35213747356323,
+    "offsetX": 129.86066915005216,
+    "offsetY": 36.0
+  },
   "source": {
     "date": "2026-10-01",
     "url": "https://github.com/vuski/admdongkor/tree/3bc00489b76696db864bdbea4b19985cdfa8b403/ver20261001",

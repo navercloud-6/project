@@ -2,9 +2,9 @@
 
 ## 소개
 
-경기도 관광지(시흥권 시연 데이터 기반)를 탐색하고 AI 여행 추천·패스 구성·방문 기록을 제공하는 Next.js MVP다. 범위와 정책은 [요구사항](docs/01-func/01-requirements.md)을 따른다.
+경기도 31개 시·군의 관광지를 탐색하고 AI 여행 추천·패스 구성·방문 기록을 제공하는 Next.js MVP다. 범위와 정책은 [요구사항](docs/01-func/01-requirements.md)을 따른다.
 
-탐색 화면 상단에서 경기도 시·군을 선택하면 오른쪽에 등록 관광지가 표시된다. 현재 시흥 20곳을 제공하며 다른 시·군은 준비 중으로 안내한다. 이후 목표와 남은 작업은 [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)에서 구분한다.
+탐색 화면 상단에서 경기도 시·군을 선택하면 오른쪽에 등록 관광지가 표시된다. 기존 시흥 자료와 한국관광공사 TourAPI 수집 자료를 함께 제공한다. 이후 목표와 남은 작업은 [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)에서 구분한다.
 
 ### 주요 화면
 
@@ -25,6 +25,16 @@ npm run dev
 ```
 
 [로컬 서버](http://localhost:3000)에 접속한다. 다른 주소·포트를 쓰면 `APP_ORIGIN`도 맞춘다. DB는 첫 API 요청 시 `.runtime/tourpass.sqlite`에 생성된다. 키 설정과 운영 배포는 [배포 가이드](docs/05-ops/01-deploy.md)를 따른다.
+
+### 관광 데이터 갱신
+
+[한국관광공사 국문 관광정보 API](https://www.data.go.kr/data/15101578/openapi.do)의 활용 승인을 받고 `.env.local`에 `TOUR_API_KEY`를 설정한다. 아래 명령은 경기도 관광지·문화시설을 수집한다. 수집·사진 선택 기준은 [요구사항](docs/01-func/01-requirements.md#시군별-관광-데이터-확장)을 따른다. 키와 원본 응답은 커밋하지 않는다.
+
+```sh
+npm run data:tourapi
+```
+
+이후 일반 실행·빌드에는 TourAPI 인증키가 필요하지 않다.
 
 ## 사용 방법
 

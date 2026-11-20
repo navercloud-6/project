@@ -1,5 +1,15 @@
 const config = {
   poweredByHeader: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'tong.visitkorea.or.kr',
+        pathname: '/cms/**',
+        search: '',
+      },
+    ],
+  },
   async headers() {
     return [
       {

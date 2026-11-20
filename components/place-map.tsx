@@ -2,6 +2,8 @@
 import Image from 'next/image';
 import { useEffect, useId, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
+import { gyeonggiMap } from '@/lib/domain/gyeonggi';
+import { projectRoute } from '@/lib/domain/coordinates';
 
 type RegionAnchor = { name: string; x: number; y: number };
 
@@ -72,8 +74,13 @@ export function PlaceMap({
     visiblePlaces[0] ??
     null;
 
+  const provinceView = mapPlaces.some((place) => place.cityId !== '41390');
+  const pointFor = (place: Place) =>
+    provinceView
+      ? projectRoute(place.coordinates.lat, place.coordinates.lng)
+      : place.coordinates;
   const polylinePoints = routePlaces
-    .map((p) => `${p.coordinates.x},${p.coordinates.y}`)
+    .map((p) => `${pointFor(p).x},${pointFor(p).y}`)
     .join(' ');
 
   return (
@@ -100,8 +107,10 @@ export function PlaceMap({
           )}
         </div>
         <span className="map-caption">
-          경기도(시흥권) 권역·개략 위치도 (검토 전 시연 자료 · 실제 도로 경로
-          아님)
+          {provinceView
+            ? '경기도 관광지 위치도'
+            : '경기도(시흥권) 권역·개략 위치도'}{' '}
+          (검토 전 자료 · 실제 도로 경로 아님)
         </span>
       </div>
 
@@ -114,7 +123,7 @@ export function PlaceMap({
           className="siheung-map-svg"
           viewBox="0 0 800 520"
           role="img"
-          aria-label="경기도(시흥권) 권역별 관광지 위치와 여행 동선 지도"
+          aria-label={`${provinceView ? '경기도' : '경기도(시흥권)'} 관광지 위치와 여행 동선 지도`}
         >
           <defs>
             <linearGradient id={seaGradient} x1="0" y1="0" x2="1" y2="1">
@@ -127,113 +136,147 @@ export function PlaceMap({
             </linearGradient>
           </defs>
 
-          {/* 서해 배경 */}
-          <rect
-            x="0"
-            y="0"
-            width="800"
-            height="520"
-            fill={`url(#${seaGradient})`}
-            rx="12"
-          />
+          {provinceView ? (
+            <>
+              <rect
+                width="800"
+                height="520"
+                fill={`url(#${seaGradient})`}
+                rx="12"
+              />
+              <g
+                transform="translate(133.333333 20) scale(0.666666667)"
+                aria-hidden="true"
+              >
+                <path
+                  d={gyeonggiMap.context.path}
+                  fill="#e7e9ed"
+                  stroke="#b9c5cf"
+                  fillRule="evenodd"
+                />
+                {gyeonggiMap.cities.map((city) => (
+                  <path
+                    key={city.id}
+                    d={city.path}
+                    fill={`url(#${landGradient})`}
+                    stroke="#b9d5cb"
+                    strokeWidth="1.5"
+                    fillRule="evenodd"
+                  />
+                ))}
+              </g>
+            </>
+          ) : (
+            <>
+              {/* 서해 배경 */}
+              <rect
+                x="0"
+                y="0"
+                width="800"
+                height="520"
+                fill={`url(#${seaGradient})`}
+                rx="12"
+              />
 
-          {/* 서해 물결 장식 */}
-          <g stroke="#b8d9ed" strokeWidth="1.5" fill="none" opacity="0.7">
-            <path d="M 28 120 Q 48 112 68 120 T 108 120" />
-            <path d="M 45 220 Q 65 212 85 220 T 125 220" />
-            <path d="M 24 490 Q 44 482 64 490 T 104 490" />
-          </g>
-          <text x="36" y="160" className="map-sea-label">
-            서해 (황해)
-          </text>
-          <text x="235" y="488" className="map-sea-label">
-            시화호
-          </text>
+              {/* 서해 물결 장식 */}
+              <g stroke="#b8d9ed" strokeWidth="1.5" fill="none" opacity="0.7">
+                <path d="M 28 120 Q 48 112 68 120 T 108 120" />
+                <path d="M 45 220 Q 65 212 85 220 T 125 220" />
+                <path d="M 24 490 Q 44 482 64 490 T 104 490" />
+              </g>
+              <text x="36" y="160" className="map-sea-label">
+                서해 (황해)
+              </text>
+              <text x="235" y="488" className="map-sea-label">
+                시화호
+              </text>
 
-          {/* 시흥 내륙 지형 폴리곤 */}
-          <path
-            d="M 380 18 L 620 18 L 765 95 L 778 330 L 665 435 L 435 430 L 315 398 L 220 385 L 135 415 L 102 385 L 128 340 L 210 325 L 245 268 L 318 182 L 352 105 Z"
-            fill={`url(#${landGradient})`}
-            stroke="#b9d5cb"
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-          />
+              {/* 시흥 내륙 지형 폴리곤 */}
+              <path
+                d="M 380 18 L 620 18 L 765 95 L 778 330 L 665 435 L 435 430 L 315 398 L 220 385 L 135 415 L 102 385 L 128 340 L 210 325 L 245 268 L 318 182 L 352 105 Z"
+                fill={`url(#${landGradient})`}
+                stroke="#b9d5cb"
+                strokeWidth="2.5"
+                strokeLinejoin="round"
+              />
 
-          {/* 거북섬 (인공섬) 지형 */}
-          <path
-            d="M 96 426 Q 138 412 184 440 Q 186 476 142 482 Q 98 478 96 426 Z"
-            fill="#f4faf7"
-            stroke="#b9d5cb"
-            strokeWidth="2.2"
-          />
+              {/* 거북섬 (인공섬) 지형 */}
+              <path
+                d="M 96 426 Q 138 412 184 440 Q 186 476 142 482 Q 98 478 96 426 Z"
+                fill="#f4faf7"
+                stroke="#b9d5cb"
+                strokeWidth="2.2"
+              />
 
-          {/* 시화방조제 연결선 (오이도 ~ 거북섬/대부도 방향) */}
-          <path
-            d="M 148 408 L 132 428"
-            stroke="#9abcc9"
-            strokeWidth="3"
-            strokeDasharray="4 3"
-          />
+              {/* 시화방조제 연결선 (오이도 ~ 거북섬/대부도 방향) */}
+              <path
+                d="M 148 408 L 132 428"
+                stroke="#9abcc9"
+                strokeWidth="3"
+                strokeDasharray="4 3"
+              />
 
-          {/* 갯골 생태 수로 & 호조벌 물길 */}
-          <path
-            d="M 332 196 Q 395 215 455 235 T 575 215"
-            fill="none"
-            stroke="#a5d1e8"
-            strokeWidth="7"
-            strokeLinecap="round"
-            opacity="0.75"
-          />
-          <path
-            d="M 455 235 Q 485 268 535 280"
-            fill="none"
-            stroke="#a5d1e8"
-            strokeWidth="4.5"
-            strokeLinecap="round"
-            opacity="0.65"
-          />
+              {/* 갯골 생태 수로 & 호조벌 물길 */}
+              <path
+                d="M 332 196 Q 395 215 455 235 T 575 215"
+                fill="none"
+                stroke="#a5d1e8"
+                strokeWidth="7"
+                strokeLinecap="round"
+                opacity="0.75"
+              />
+              <path
+                d="M 455 235 Q 485 268 535 280"
+                fill="none"
+                stroke="#a5d1e8"
+                strokeWidth="4.5"
+                strokeLinecap="round"
+                opacity="0.65"
+              />
 
-          {/* 은계호수 · 물왕호수 수면 표현 */}
-          <ellipse
-            cx="525"
-            cy="116"
-            rx="22"
-            ry="11"
-            fill="#bde0f2"
-            stroke="#8ec2de"
-            strokeWidth="1.2"
-          />
-          <ellipse
-            cx="685"
-            cy="276"
-            rx="30"
-            ry="15"
-            fill="#bde0f2"
-            stroke="#8ec2de"
-            strokeWidth="1.2"
-          />
+              {/* 은계호수 · 물왕호수 수면 표현 */}
+              <ellipse
+                cx="525"
+                cy="116"
+                rx="22"
+                ry="11"
+                fill="#bde0f2"
+                stroke="#8ec2de"
+                strokeWidth="1.2"
+              />
+              <ellipse
+                cx="685"
+                cy="276"
+                rx="30"
+                ry="15"
+                fill="#bde0f2"
+                stroke="#8ec2de"
+                strokeWidth="1.2"
+              />
 
-          {/* 소래산 능선 표현 */}
-          <path
-            d="M 442 82 L 478 44 L 514 82 Z"
-            fill="#dfeee6"
-            stroke="#9ec4b3"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-          />
+              {/* 소래산 능선 표현 */}
+              <path
+                d="M 442 82 L 478 44 L 514 82 Z"
+                fill="#dfeee6"
+                stroke="#9ec4b3"
+                strokeWidth="1.5"
+                strokeLinejoin="round"
+              />
 
-          {/* 권역 라벨 */}
-          {REGION_ANCHORS.map((r) => (
-            <text
-              key={r.name}
-              x={r.x}
-              y={r.y}
-              className="map-region-text"
-              textAnchor="middle"
-            >
-              {r.name}
-            </text>
-          ))}
+              {/* 권역 라벨 */}
+              {REGION_ANCHORS.map((r) => (
+                <text
+                  key={r.name}
+                  x={r.x}
+                  y={r.y}
+                  className="map-region-text"
+                  textAnchor="middle"
+                >
+                  {r.name}
+                </text>
+              ))}
+            </>
+          )}
 
           {/* 여행 패스 동선 연결선 */}
           {routePlaces.length > 1 && (
@@ -297,7 +340,7 @@ export function PlaceMap({
               <g
                 key={p.id}
                 className={isActive ? 'map-marker active' : 'map-marker'}
-                transform={`translate(${p.coordinates.x}, ${p.coordinates.y})`}
+                transform={`translate(${pointFor(p).x}, ${pointFor(p).y})`}
                 role="button"
                 tabIndex={0}
                 aria-label={`${p.name} (${p.region})${inRoute ? ` · 코스 ${routeIndex + 1}번째` : ''}${hasRecord ? ' · 방문 기록 완료' : ''}`}
