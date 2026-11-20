@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import { useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
 import type { AuthStatus, Capabilities } from '@/lib/application/ports';
@@ -7,6 +8,47 @@ import { EditJourney } from './assistant/edit-journey';
 import { LanguageTools } from './assistant/language-tools';
 import { PhotoCredit } from './photo-credit';
 import { PlaceMap } from './place-map';
+
+function JourneyCourseMap({
+  journey,
+  places,
+  naverMapClientId,
+  onDetail,
+  onRecord,
+}: {
+  journey: Journey;
+  places: Place[];
+  naverMapClientId?: string;
+  onDetail: (place: Place) => void;
+  onRecord: (place: Place) => void;
+}) {
+  const [opened, setOpened] = useState(false);
+  return (
+    <details
+      className="journey-options"
+      onToggle={(event) => {
+        if (event.currentTarget.open) setOpened(true);
+      }}
+    >
+      <summary>코스 지도 보기</summary>
+      {opened && (
+        <PlaceMap
+          compact
+          places={places}
+          visiblePlaces={journey.placeIds
+            .map((id) => places.find((p) => p.id === id))
+            .filter((p): p is Place => Boolean(p))}
+          routeIds={journey.placeIds}
+          records={journey.records}
+          naverMapClientId={naverMapClientId}
+          onDetail={onDetail}
+          onRecord={onRecord}
+        />
+      )}
+    </details>
+  );
+}
+
 export function MyJourneys({
   saved,
   ready,
@@ -14,6 +56,7 @@ export function MyJourneys({
   auth,
   places,
   capabilities,
+  naverMapClientId = '',
   onExplore,
   onRecommend,
   onProfile,
@@ -28,6 +71,7 @@ export function MyJourneys({
   auth?: AuthStatus | null;
   places: Place[];
   capabilities: Capabilities;
+  naverMapClientId?: string;
   onExplore: () => void;
   onRecommend?: () => void;
   onProfile?: () => void;
@@ -175,20 +219,13 @@ export function MyJourneys({
                     행사 장소: {j.event.location} · 포스터 입력 일정
                   </p>
                 )}
-                <details className="journey-options">
-                  <summary>코스 지도 보기</summary>
-                  <PlaceMap
-                    compact
-                    places={places}
-                    visiblePlaces={j.placeIds.map(
-                      (id) => places.find((p) => p.id === id)!,
-                    )}
-                    routeIds={j.placeIds}
-                    records={j.records}
-                    onDetail={onDetail}
-                    onRecord={(p) => onRecord(j, p)}
-                  />
-                </details>
+                <JourneyCourseMap
+                  journey={j}
+                  places={places}
+                  naverMapClientId={naverMapClientId}
+                  onDetail={onDetail}
+                  onRecord={(p) => onRecord(j, p)}
+                />
                 <details className="journey-options">
                   <summary>대화로 여행 수정</summary>
                   <EditJourney
