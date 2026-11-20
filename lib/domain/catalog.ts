@@ -1,4 +1,5 @@
 import data from '@/data/places.json';
+import { projectRoute } from '@/lib/domain/coordinates';
 
 export type PlaceCoordinates = {
   lat: number;
@@ -32,12 +33,13 @@ export const placeCoordinates: Record<string, PlaceCoordinates> = {
 
 export const places = data.map((p) => ({
   ...p,
-  coordinates: placeCoordinates[p.id] ?? {
-    lat: 37.38,
-    lng: 126.78,
-    x: 400,
-    y: 260,
-  },
+  coordinates:
+    'coordinates' in p && p.coordinates
+      ? {
+          ...p.coordinates,
+          ...projectRoute(p.coordinates.lat, p.coordinates.lng),
+        }
+      : placeCoordinates[p.id],
 }));
 export type Place = (typeof places)[number];
 export const placeIds = new Set(places.map((p) => p.id));
