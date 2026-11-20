@@ -10,7 +10,7 @@
 
 ## 화면 검증
 
-1365px·390px에서 탐색·경기도 지도·편집·내 여행·도우미·날씨·마이·모달·하단 메뉴의 가로 넘침과 조작을 확인한다. 참고 화면은 [데스크톱](../screenshots/desktop.jpg)·[모바일](../screenshots/mobile.jpg)이다.
+1365px·390px에서 탐색·경기도 지도·편집·내 여행·도우미·날씨·프로필·모달·하단 메뉴의 가로 넘침과 조작을 확인한다. 참고 화면은 [데스크톱](../screenshots/desktop.jpg)·[모바일](../screenshots/mobile.jpg)이다.
 
 ## 최신 판정
 
@@ -18,7 +18,7 @@
 
 | 검사 | 최신 결과 |
 | --- | --- |
-| 단위·모의 연동 43개 | 임시 PostgreSQL 스키마(`test_*`) 격리 환경에서 모두 통과했고 종료 후 잔여 스키마 0건을 확인했다. |
+| 단위·모의 연동 47개 | 임시 PostgreSQL 스키마(`test_*`) 격리 환경에서 모두 통과했다. |
 | 서식·타입·빌드·문서 | `format:check`, `typecheck`, `build`, `check_docs.py`, `git diff --check`를 통과했다. |
 | 프로덕션 HTTP (이전 검증) | `tests/http.mjs`, `tests/extensions-http.mjs`, `tests/auth-http.mjs`를 테스트 PostgreSQL 서버에서 통과했다(실제 네이버 로그인 미호출). |
 | 배포 스크립트 (이전 검증) | `tests/acg_test.py`, `tests/deploy_test.py`(6개)와 `deploy/deploy-container.sh` 문법 검사를 통과했다. |

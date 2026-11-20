@@ -19,6 +19,7 @@ import { TripBuilder } from './trip-builder';
 import { RecommendationPanel } from './recommendation-panel';
 import { WeatherPanel } from './weather-panel';
 import { GyeonggiCityExplorer } from './gyeonggi-city-explorer';
+import { gyeonggiCities } from '@/lib/domain/gyeonggi';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey, Recommendation } from '@/lib/domain/contracts';
 
@@ -178,7 +179,7 @@ export default function Tourpass({
       }
     } catch {
       setNotice(
-        '저장한 여행 취향을 불러오지 못했어요. 마이에서 다시 설정할 수 있어요.',
+        '저장한 여행 취향을 불러오지 못했어요. 프로필에서 다시 설정할 수 있어요.',
       );
     }
   }, []);
@@ -590,14 +591,20 @@ export default function Tourpass({
             onTogglePlace={toggle}
             onDetailPlace={setDetail}
             onExploreRegion={(r) => {
-              setRegion(r);
-              setQuery('');
-              scrollToCatalogRef.current = true;
-              setNotice(
-                r === '전체'
-                  ? '전체 관광지 목록으로 이동했어요.'
-                  : `${r} 권역 장소를 표시하고 있어요.`,
+              const matchedCity = gyeonggiCities.find(
+                (city) => city.name === r,
               );
+              setQuery('');
+              if (r === '전체') {
+                setSelectedCityId(null);
+                setRegion('전체');
+                scrollToCatalogRef.current = true;
+                setNotice('전체 관광지 목록으로 이동했어요.');
+              } else {
+                setSelectedCityId(matchedCity?.id ?? null);
+                setRegion(regions.includes(r) ? r : '전체');
+                setNotice(`${r} 관광지 목록으로 이동했어요.`);
+              }
               setTab('explore');
               setExploreTask('browse');
             }}

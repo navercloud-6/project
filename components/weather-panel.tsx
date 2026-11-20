@@ -7,6 +7,18 @@ import type { Place } from '@/lib/domain/catalog';
 import { WEATHER_REGIONS, type WeatherResponse } from '@/lib/domain/weather';
 
 const REGION_LIST = Object.keys(WEATHER_REGIONS);
+const QUICK_REGIONS = [
+  '전체',
+  '수원시',
+  '용인시',
+  '고양시',
+  '성남시',
+  '화성시',
+  '파주시',
+  '가평군',
+  '여주시',
+  '시흥시',
+] as const;
 
 function formatDayLabel(dateStr: string, index: number): string {
   if (index === 0) return '오늘';
@@ -72,31 +84,51 @@ export function WeatherPanel({
     <div className="weather-page" aria-busy={loading}>
       <div className="section-heading">
         <div>
-          <span className="pill">시흥권 권역별 기상과 외출 가이드</span>
+          <span className="pill">경기도 시·군별 기상과 외출 가이드</span>
           <h1>경기 날씨</h1>
           <p>
-            시흥 10개 권역의 현재 기온·바람·5일 예보를 확인하고 날씨에 어울리는
-            장소를 담아 보세요.
+            경기도 31개 시·군의 현재 기온·바람·5일 예보를 확인하고 날씨에
+            어울리는 장소를 담아 보세요.
           </p>
         </div>
       </div>
 
-      <div className="weather-regions" role="group" aria-label="시흥 권역 선택">
-        {REGION_LIST.map((r) => (
-          <button
-            key={r}
-            type="button"
-            className={
-              selectedRegion === r
-                ? 'weather-region-chip active'
-                : 'weather-region-chip'
-            }
-            aria-pressed={selectedRegion === r}
-            onClick={() => setSelectedRegion(r)}
+      <div className="weather-selector">
+        <label className="weather-city-picker">
+          <span>시·군 선택</span>
+          <select
+            value={selectedRegion}
+            onChange={(e) => setSelectedRegion(e.target.value)}
+            aria-label="경기도 시·군 선택"
           >
-            {r === '전체' ? '시흥권 전체' : r}
-          </button>
-        ))}
+            {REGION_LIST.map((r) => (
+              <option key={r} value={r}>
+                {r === '전체' ? '경기도 전체 (수원 대표)' : r}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div
+          className="weather-regions"
+          role="group"
+          aria-label="경기도 주요 시·군 빠른 선택"
+        >
+          {QUICK_REGIONS.map((r) => (
+            <button
+              key={r}
+              type="button"
+              className={
+                selectedRegion === r
+                  ? 'weather-region-chip active'
+                  : 'weather-region-chip'
+              }
+              aria-pressed={selectedRegion === r}
+              onClick={() => setSelectedRegion(r)}
+            >
+              {r === '전체' ? '경기도 전체' : r}
+            </button>
+          ))}
+        </div>
       </div>
 
       {error && (
@@ -138,8 +170,8 @@ export function WeatherPanel({
                 </div>
                 <h2 id="weather-current-title">
                   {weather.region === '전체'
-                    ? '시흥권 대표 (시청·장곡)'
-                    : `시흥 · ${weather.region}`}
+                    ? '경기도 대표 (수원 중심)'
+                    : `경기도 · ${weather.region}`}
                 </h2>
                 <p className="weather-area-note">{weather.areaNote}</p>
 
@@ -183,7 +215,7 @@ export function WeatherPanel({
                 <h3>{weather.advisory.headline}</h3>
                 <p>{weather.advisory.detail}</p>
                 <p className="fine">
-                  권역 대표 좌표 기준 참고 정보입니다. 해안·산림 국지 기상과
+                  시·군 대표 좌표 기준 참고 정보입니다. 해안·산림 국지 기상과
                   시설 운영 여부는 방문 전 공식 안내를 확인해 주세요.
                 </p>
               </div>
@@ -240,9 +272,7 @@ export function WeatherPanel({
                 <div>
                   <h2 id="weather-places-title">오늘 날씨에 어울리는 장소</h2>
                   <p>
-                    {weather.region === '전체'
-                      ? '시흥권 전역'
-                      : `${weather.region} 권역 중심`}
+                    {weather.region === '전체' ? '경기도 전역' : weather.region}
                     에서 {SUITABILITY_LABEL[weather.advisory.suitability]}{' '}
                     기준으로 골랐어요.
                   </p>
@@ -271,7 +301,7 @@ export function WeatherPanel({
                 </div>
               ) : (
                 <div className="empty">
-                  <p>이 권역의 추천 장소가 아직 없어요.</p>
+                  <p>이 지역의 추천 장소가 아직 없어요.</p>
                   <div className="empty-actions">
                     <button
                       type="button"

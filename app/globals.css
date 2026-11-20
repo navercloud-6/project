@@ -1,17 +1,20 @@
 :root {
-  --ink: #183343;
-  --blue: #1258a5;
-  --blue-hover: #094482;
-  --teal: #176b63;
-  --muted: #556a78;
-  --line: #dce5ea;
-  --sky: #eaf3fa;
-  --paper: #f3f6f8;
+  --ink: #162a20;
+  --brand: #02823a;
+  --brand-hover: #026b30;
+  --brand-vivid: #03c75a;
+  --brand-deep: #065f2d;
+  --brand-soft: #eaf8ef;
+  --brand-border: #bfe5cd;
+  --control-border: #c2d4c9;
+  --muted: #4f6358;
+  --line: #d8e4dd;
+  --paper: #f4f7f5;
   --surface: #fff;
-  --surface-subtle: #f5f8fa;
+  --surface-subtle: #f4f8f5;
   --focus: #e79323;
-  --success-bg: #e7f3ec;
-  --success-ink: #1e563d;
+  --success-bg: #e7f6ed;
+  --success-ink: #0f5a30;
   --danger-bg: #fff1ec;
   --danger-ink: #943a22;
   --radius-badge: 8px;
@@ -32,8 +35,8 @@
   );
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-short: 120ms;
-  --color-shadow: oklch(28% 0.025 260 / 0.04);
-  --color-shadow-raised: oklch(28% 0.025 260 / 0.07);
+  --color-shadow: oklch(28% 0.02 150 / 0.04);
+  --color-shadow-raised: oklch(28% 0.02 150 / 0.07);
   --shadow-navigation:
     inset 0 1px 0 #fff, 0 3px 8px var(--color-shadow),
     0 12px 28px var(--color-shadow-raised);
@@ -85,7 +88,7 @@ button:disabled {
   opacity: 0.5;
 }
 a {
-  color: var(--blue);
+  color: var(--brand);
 }
 button {
   color: inherit;
@@ -123,7 +126,7 @@ input,
 textarea,
 select {
   width: 100%;
-  border: 1px solid #c4d2dc;
+  border: 1px solid var(--control-border);
   background: #fff;
   border-radius: var(--radius-control);
   padding: 12px;
@@ -170,7 +173,7 @@ form select {
   font-weight: 600;
 }
 .brand b {
-  color: var(--blue);
+  color: var(--brand);
 }
 .brand small {
   display: block;
@@ -182,7 +185,7 @@ form select {
 .brand-mark {
   font-size: 58px;
   line-height: 1;
-  color: var(--blue);
+  color: var(--brand-vivid);
   transform: rotate(-12deg);
 }
 .bottom-navigation {
@@ -244,8 +247,8 @@ form select {
   letter-spacing: -0.02em;
 }
 .bottom-navigation :is(a, button)[aria-current] {
-  background: var(--sky);
-  color: var(--blue);
+  background: var(--brand-soft);
+  color: var(--brand);
   font-weight: 800;
   box-shadow: none;
 }
@@ -278,8 +281,8 @@ form select {
   font-size: 11px;
   font-weight: 700;
   line-height: 1;
-  background: var(--sky);
-  color: var(--blue);
+  background: var(--brand-soft);
+  color: var(--brand);
   padding: 0 5px;
   border-radius: var(--radius-pill);
   font-variant-numeric: tabular-nums;
@@ -290,14 +293,14 @@ form select {
 }
 @media (hover: hover) {
   .bottom-navigation :is(a, button):hover {
-    background: var(--sky);
-    color: var(--blue);
+    background: var(--brand-soft);
+    color: var(--brand);
   }
 }
 .service-label {
   font-size: 12px;
-  color: var(--teal);
-  border: 1px solid #cbe3dd;
+  color: var(--brand-deep);
+  border: 1px solid var(--brand-border);
   border-radius: 20px;
   padding: 5px 12px;
 }
@@ -328,7 +331,7 @@ main {
 }
 .ai-icon {
   font-size: 30px;
-  color: var(--teal);
+  color: var(--brand-deep);
 }
 .planner h2 {
   font-size: 29px;
@@ -349,7 +352,7 @@ main {
 }
 .suggestions button {
   background: var(--surface);
-  border: 1px solid #cddde6;
+  border: 1px solid var(--control-border);
   border-radius: var(--radius-pill);
   padding: 6px 12px;
   min-height: 34px;
@@ -361,9 +364,9 @@ main {
     color var(--dur-short) var(--ease-out);
 }
 .suggestions button:hover {
-  background: var(--sky);
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .primary,
 .secondary {
@@ -380,22 +383,22 @@ main {
 }
 .primary {
   width: 100%;
-  background: var(--blue);
+  background: var(--brand);
   color: white;
 }
 .primary:hover:not(:disabled) {
-  background: var(--blue-hover);
+  background: var(--brand-hover);
 }
 .secondary {
   background: var(--surface);
-  border: 1px solid #c8d6df;
+  border: 1px solid var(--control-border);
   color: var(--ink);
   white-space: nowrap;
 }
 .secondary:hover:not(:disabled) {
-  background: var(--sky);
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .compact {
   width: auto;
@@ -476,7 +479,7 @@ main {
   position: relative;
   height: 180px;
   padding: 0;
-  background: var(--sky);
+  background: var(--brand-soft);
   overflow: hidden;
 }
 .place-photo img {
@@ -505,7 +508,7 @@ main {
   padding: 24px;
 }
 .tags {
-  color: var(--teal);
+  color: var(--brand-deep);
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 7px;
@@ -522,7 +525,7 @@ main {
   transition: color var(--dur-short) var(--ease-out);
 }
 .text-button:hover {
-  color: var(--blue);
+  color: var(--brand);
 }
 .place-body > p {
   display: -webkit-box;
@@ -550,18 +553,18 @@ main {
   transition: color var(--dur-short) var(--ease-out);
 }
 .detail-link:hover {
-  color: var(--blue);
+  color: var(--brand);
 }
 .add {
-  border: 1px solid #d1dfeb;
-  color: var(--blue);
+  border: 1px solid var(--brand-border);
+  color: var(--brand);
   border-radius: 6px;
   padding: 7px 10px;
   font-size: 12px;
   font-weight: 600;
 }
 .add.selected {
-  background: var(--sky);
+  background: var(--brand-soft);
 }
 .trip-builder {
   align-self: start;
@@ -572,15 +575,15 @@ main {
   overflow: hidden;
 }
 .ticket-top {
-  background: var(--blue);
+  background: var(--brand);
   color: white;
   padding: 25px 25px 10px;
   position: relative;
-  border-bottom: 2px dashed #9cc3e3;
+  border-bottom: 2px dashed #7fd8a4;
 }
 .ticket-top > span {
   font-size: 12px;
-  color: #d4eaff;
+  color: #d8f8e4;
 }
 .ticket-top h2 {
   font-size: 27px;
@@ -589,7 +592,7 @@ main {
 .ticket-wave {
   font-size: 35px;
   letter-spacing: 12px;
-  color: #a9cfe9;
+  color: #8adba9;
 }
 .ticket-body {
   padding: 24px;
@@ -606,7 +609,7 @@ main {
   font-size: 13px;
   color: var(--muted);
   text-align: center;
-  background: #f5f8fa;
+  background: var(--surface-subtle);
   padding: 28px 8px;
   margin-bottom: 25px;
 }
@@ -635,10 +638,10 @@ main {
   flex-shrink: 0;
   width: 22px;
   height: 22px;
-  background: var(--sky);
+  background: var(--brand-soft);
   border-radius: 50%;
   font-size: 11px;
-  color: var(--blue);
+  color: var(--brand);
 }
 .selected-list li > div {
   min-width: 0;
@@ -650,8 +653,8 @@ main {
   width: 52px;
   height: 52px;
   border-radius: var(--radius-control);
-  background: var(--sky);
-  color: var(--teal);
+  background: var(--brand-soft);
+  color: var(--brand-deep);
   overflow: hidden;
 }
 .selection-thumbnail img {
@@ -688,9 +691,9 @@ main {
     color var(--dur-short) var(--ease-out);
 }
 .icon-button:hover:not(:disabled) {
-  background: var(--sky);
-  border-color: #c8dceb;
-  color: var(--blue);
+  background: var(--brand-soft);
+  border-color: var(--brand-border);
+  color: var(--brand);
 }
 .ticket-body label {
   font-size: 12px;
@@ -700,17 +703,17 @@ main {
 }
 .recommendation {
   margin-top: 28px;
-  background: #f0f7f4;
-  border-left: 4px solid var(--teal);
+  background: #eff9f3;
+  border-left: 4px solid var(--brand-deep);
   padding: 28px;
   border-radius: 0 12px 12px 0;
 }
 .pill {
   display: inline-block;
-  color: var(--teal);
+  color: var(--brand-deep);
   font-size: 12px;
   font-weight: 700;
-  background: #e3f1eb;
+  background: var(--brand-soft);
   padding: 4px 10px;
   border-radius: var(--radius-badge);
   margin-bottom: 11px;
@@ -744,7 +747,7 @@ main {
 }
 .message {
   background: var(--success-bg);
-  border: 1px solid #c5e2d2;
+  border: 1px solid var(--brand-border);
   padding: 12px 16px;
   border-radius: var(--radius-control);
   margin-bottom: 8px;
@@ -778,7 +781,7 @@ main {
   line-height: 1;
 }
 .message-close:hover {
-  background: rgba(24, 51, 67, 0.08);
+  background: rgba(22, 42, 32, 0.08);
 }
 .my-journeys {
   padding: 35px 0 70px;
@@ -790,7 +793,7 @@ main {
 }
 .privacy-note {
   font-size: 12px;
-  background: #f3f6f8;
+  background: var(--paper);
   color: var(--muted);
   padding: 14px 18px;
   margin-bottom: 30px;
@@ -817,7 +820,7 @@ main {
   width: 100%;
   aspect-ratio: 16 / 9;
   padding: 0;
-  background: var(--sky);
+  background: var(--brand-soft);
 }
 .journey-cover-photo img {
   display: block;
@@ -835,15 +838,15 @@ main {
   overflow-wrap: anywhere;
 }
 .saved-top {
-  background: var(--sky);
+  background: var(--brand-soft);
   color: var(--ink);
   padding: var(--panel-padding);
-  border-bottom: 1px dashed #b8cedd;
+  border-bottom: 1px dashed var(--brand-border);
   overflow-wrap: anywhere;
 }
 .saved-top > span {
   font-size: 11px;
-  color: var(--teal);
+  color: var(--brand-deep);
 }
 .saved-top h2 {
   margin: 10px 0;
@@ -889,7 +892,7 @@ main {
 .empty {
   text-align: center;
   padding: 60px 20px;
-  background: #f5f8fa;
+  background: var(--surface-subtle);
   border-radius: 12px;
 }
 .empty p {
@@ -899,7 +902,7 @@ main {
 .empty-wave {
   display: block;
   font-size: 70px;
-  color: var(--blue);
+  color: var(--brand);
   line-height: 1.2;
   margin-bottom: 20px;
 }
@@ -934,10 +937,10 @@ dialog {
   max-width: calc(100vw - 32px);
   max-height: 85vh;
   color: var(--ink);
-  box-shadow: 0 20px 80px #18334333;
+  box-shadow: 0 20px 80px #162a2033;
 }
 dialog::backdrop {
-  background: #152e46a6;
+  background: #102419a6;
 }
 .dialog-content {
   padding: 28px;
@@ -995,7 +998,7 @@ dd {
   border: 0;
 }
 .no-photo {
-  color: var(--teal);
+  color: var(--brand-deep);
   font-size: 14px;
 }
 @media (min-width: 1350px) {
@@ -1226,7 +1229,7 @@ dd {
 }
 .tool-result {
   margin-top: 20px;
-  background: #eef5f8;
+  background: var(--surface-subtle);
   padding: 18px;
   border-radius: 9px;
   overflow-wrap: anywhere;
@@ -1310,7 +1313,7 @@ dd {
 }
 .journey-options > summary:hover {
   background: var(--surface-subtle);
-  color: var(--blue);
+  color: var(--brand);
 }
 .journey-options > :not(summary) {
   padding-inline: 24px;
@@ -1403,7 +1406,7 @@ summary {
   border: 1px solid var(--line);
   border-radius: 9px;
   padding: 3px;
-  background: #f5f9fc;
+  background: var(--surface-subtle);
   gap: 3px;
 }
 .view-button {
@@ -1414,7 +1417,7 @@ summary {
   color: var(--muted);
 }
 .view-button.active {
-  background: var(--blue);
+  background: var(--brand);
   color: #fff;
 }
 .place-map-wrap {
@@ -1452,16 +1455,16 @@ summary {
   height: 10px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid var(--teal);
+  border: 2px solid var(--brand);
   display: inline-block;
 }
 .legend-dot.route {
-  background: var(--blue);
-  border-color: var(--blue);
+  background: var(--brand);
+  border-color: var(--brand);
 }
 .legend-dot.recorded {
-  background: var(--teal);
-  border-color: var(--teal);
+  background: var(--brand-deep);
+  border-color: var(--brand-deep);
 }
 .map-caption {
   font-size: 11px;
@@ -1471,7 +1474,7 @@ summary {
   border: 1px solid var(--line);
   border-radius: 14px;
   overflow: hidden;
-  background: var(--sky);
+  background: var(--brand-soft);
 }
 .naver-map-notice {
   margin: 0;
@@ -1487,7 +1490,7 @@ summary {
   position: relative;
   width: 100%;
   height: 460px;
-  background: var(--sky);
+  background: var(--brand-soft);
 }
 .naver-map-stage.compact {
   height: 320px;
@@ -1502,7 +1505,7 @@ summary {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(234, 244, 250, 0.9);
+  background: rgba(234, 248, 239, 0.92);
   color: var(--ink);
   font-size: 14px;
   font-weight: 600;
@@ -1520,12 +1523,12 @@ summary {
   color: var(--ink);
   font-size: 12px;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(16, 40, 56, 0.14);
+  box-shadow: 0 2px 8px rgba(16, 42, 28, 0.14);
 }
 .naver-map-fit-btn:hover {
   background: #fff;
-  border-color: var(--blue);
-  color: var(--blue);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .nm-pin {
   position: relative;
@@ -1544,30 +1547,30 @@ summary {
   height: 22px;
   border-radius: 50%;
   background: #fff;
-  border: 2.5px solid #176b63;
-  color: #176b63;
+  border: 2.5px solid var(--brand);
+  color: var(--brand);
   font-size: 11px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(16, 40, 56, 0.22);
+  box-shadow: 0 2px 6px rgba(16, 42, 28, 0.22);
 }
 .nm-dot-core {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #176b63;
+  background: var(--brand);
 }
 .nm-pin.is-route .nm-dot {
   width: 28px;
   height: 28px;
-  background: #1258a5;
+  background: var(--brand);
   border-color: #fff;
   color: #fff;
 }
 .nm-pin.is-recorded .nm-dot {
-  background: #176b63;
+  background: var(--brand-deep);
   border-color: #fff;
   color: #fff;
 }
@@ -1580,10 +1583,10 @@ summary {
   border: 3px solid #e79323;
   box-shadow:
     0 0 0 3px rgba(231, 147, 35, 0.28),
-    0 3px 10px rgba(16, 40, 56, 0.28);
+    0 3px 10px rgba(16, 42, 28, 0.28);
 }
 .nm-pin.is-active:not(.is-route):not(.is-recorded) .nm-dot {
-  background: #176b63;
+  background: var(--brand-deep);
   color: #fff;
 }
 .nm-pin.is-active:not(.is-route):not(.is-recorded) .nm-dot-core {
@@ -1597,18 +1600,18 @@ summary {
   padding: 3px 8px;
   border-radius: 6px;
   background: rgba(255, 255, 255, 0.94);
-  border: 1px solid #cbe0ec;
-  color: #183343;
+  border: 1px solid var(--brand-border);
+  color: var(--ink);
   font-size: 11px;
   font-weight: 700;
   line-height: 1.3;
   white-space: nowrap;
   pointer-events: none;
-  box-shadow: 0 2px 6px rgba(16, 40, 56, 0.14);
+  box-shadow: 0 2px 6px rgba(16, 42, 28, 0.14);
 }
 .nm-pin.is-active .nm-label {
-  background: #183343;
-  border-color: #183343;
+  background: var(--ink);
+  border-color: var(--ink);
   color: #fff;
 }
 .map-place-picker {
@@ -1633,22 +1636,10 @@ summary {
   color: var(--ink);
   font-size: 13px;
 }
-.siheung-map-svg {
+.place-map-svg {
   display: block;
   width: 100%;
   height: auto;
-}
-.map-sea-label {
-  fill: #5185a8;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-}
-.map-region-text {
-  fill: #527067;
-  font-size: 12px;
-  font-weight: 700;
-  pointer-events: none;
 }
 .map-marker {
   cursor: pointer;
@@ -1665,7 +1656,7 @@ summary {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  background: #f3f8fb;
+  background: var(--surface-subtle);
   border: 1px solid var(--line);
   border-radius: 10px;
   padding: 10px 14px;
@@ -1685,16 +1676,16 @@ summary {
   align-items: center;
   gap: 6px;
   background: #fff;
-  border: 1px solid #cddde6;
+  border: 1px solid var(--control-border);
   border-radius: 20px;
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
 }
 .route-chip.active {
-  border-color: var(--blue);
-  background: var(--sky);
-  color: var(--blue);
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand);
 }
 .route-chip-num {
   display: inline-flex;
@@ -1703,7 +1694,7 @@ summary {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--blue);
+  background: var(--brand);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -1726,7 +1717,7 @@ summary {
   height: 100%;
   min-height: 150px;
   padding: 0;
-  background: var(--sky);
+  background: var(--brand-soft);
   overflow: hidden;
 }
 .map-card-photo img {
@@ -1739,7 +1730,7 @@ summary {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--teal);
+  color: var(--brand-deep);
   font-size: 13px;
   font-weight: 600;
 }
@@ -1762,8 +1753,8 @@ summary {
 .route-order-badge {
   font-size: 11px;
   font-weight: 700;
-  color: var(--blue);
-  background: var(--sky);
+  color: var(--brand);
+  background: var(--brand-soft);
   padding: 3px 8px;
   border-radius: 5px;
 }
@@ -1781,7 +1772,7 @@ summary {
 }
 .map-card-record {
   font-size: 12px !important;
-  color: var(--teal) !important;
+  color: var(--brand-deep) !important;
   font-weight: 600;
 }
 .map-card-actions {
@@ -1801,12 +1792,12 @@ summary {
 .map-external-link {
   font-size: 13px;
   font-weight: 600;
-  color: var(--teal);
+  color: var(--brand-deep);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 .map-external-link:hover {
-  color: var(--blue);
+  color: var(--brand);
 }
 @media (max-width: 760px) {
   .naver-map-stage {
@@ -1839,11 +1830,34 @@ summary {
   font-size: 38px;
   margin: 5px 0 10px;
 }
+.weather-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.weather-city-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  max-width: 340px;
+}
+.weather-city-picker > span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.weather-city-picker select {
+  flex: 1;
+  min-height: 44px;
+  padding: 8px 12px;
+}
 .weather-regions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 24px;
 }
 .weather-region-chip {
   border: 1px solid var(--line);
@@ -1860,13 +1874,13 @@ summary {
     color var(--dur-short) var(--ease-out);
 }
 .weather-region-chip:hover:not(.active) {
-  background: var(--sky);
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .weather-region-chip.active {
-  background: var(--blue);
-  border-color: var(--blue);
+  background: var(--brand);
+  border-color: var(--brand);
   color: #fff;
 }
 .weather-content {
@@ -1882,7 +1896,7 @@ summary {
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 28px;
-  background: linear-gradient(135deg, #f4f9fd, #ffffff);
+  background: linear-gradient(135deg, #eef9f2, #ffffff);
   margin-bottom: 36px;
 }
 .weather-meta-row {
@@ -1922,8 +1936,8 @@ summary {
   width: 64px;
   height: 64px;
   border-radius: 16px;
-  background: var(--sky);
-  color: var(--blue);
+  background: var(--brand-soft);
+  color: var(--brand);
 }
 .weather-temp-value {
   font-size: 44px;
@@ -1965,15 +1979,15 @@ summary {
 .weather-advisory-box {
   border-radius: 12px;
   padding: 22px;
-  background: #eef6f3;
-  border-left: 4px solid var(--teal);
+  background: #edf8f1;
+  border-left: 4px solid var(--brand-deep);
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .weather-advisory-box.mixed {
-  background: #f3f8fc;
-  border-left-color: var(--blue);
+  background: #f2f8f4;
+  border-left-color: var(--brand);
 }
 .weather-advisory-box.indoor {
   background: #f9f4ef;
@@ -2023,7 +2037,7 @@ summary {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  color: var(--blue);
+  color: var(--brand);
   margin: 6px 0;
   font-size: 12px;
   font-weight: 600;
@@ -2040,15 +2054,15 @@ summary {
   font-weight: 600;
 }
 .temp-divider {
-  color: #c4d2dc;
+  color: var(--control-border);
 }
 .temp-max {
-  color: var(--blue);
+  color: var(--brand);
 }
 .weather-day-rain {
   font-size: 11px;
-  color: var(--teal);
-  background: #e8f3ef;
+  color: var(--brand-deep);
+  background: var(--brand-soft);
   padding: 3px 8px;
   border-radius: 12px;
   font-weight: 600;
@@ -2138,8 +2152,8 @@ main:focus {
   color: var(--ink);
 }
 .task-switch button[aria-pressed='true'] {
-  background: var(--sky);
-  color: var(--blue);
+  background: var(--brand-soft);
+  color: var(--brand);
   font-weight: 700;
 }
 .explore-workspace {
@@ -2203,7 +2217,7 @@ main:focus {
   font-size: 14px;
 }
 .session-status {
-  background: var(--sky);
+  background: var(--brand-soft);
   border-radius: 8px;
   padding: 16px;
   display: flex;
@@ -2297,7 +2311,7 @@ main:focus {
   font-weight: 750;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
-  color: var(--blue);
+  color: var(--brand);
 }
 .profile-counts small {
   font-size: 14px;
@@ -2361,10 +2375,14 @@ main:focus {
 .naver-login {
   border: 0;
   border-radius: var(--radius-control);
-  background: #03c75a;
+  background: var(--brand-vivid);
   color: #fff;
   font-weight: 700;
   padding: 13px 20px;
+  transition: background var(--dur-short) var(--ease-out);
+}
+.naver-login:hover:not(:disabled) {
+  background: #02b14f;
 }
 .naver-login:disabled {
   opacity: 0.5;
@@ -2419,13 +2437,13 @@ main:focus {
   flex: 1 1 380px;
 }
 .place.selected {
-  border-color: var(--blue);
+  border-color: var(--brand);
 }
 .selected-badge {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: var(--blue);
+  background: var(--brand);
   color: #fff;
   border-radius: var(--radius-pill);
   padding: 3px 10px;
@@ -2433,26 +2451,26 @@ main:focus {
   font-weight: 700;
 }
 .add {
-  border: 1px solid var(--blue);
-  background: var(--sky);
-  color: var(--blue);
+  border: 1px solid var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand);
   border-radius: var(--radius-control);
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 700;
 }
 .add:hover {
-  background: var(--blue);
+  background: var(--brand);
   color: #fff;
 }
 .add.selected {
-  border-color: #c8d6df;
+  border-color: var(--control-border);
   background: #fff;
   color: var(--muted);
 }
 .add.selected:hover {
-  border-color: var(--blue);
-  color: var(--blue);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .empty-actions {
   display: flex;
@@ -2481,7 +2499,7 @@ main:focus {
   border-radius: var(--radius-control);
 }
 .poster-ocr-box {
-  background: #f5f8fa;
+  background: var(--surface-subtle);
   border: 1px solid var(--line);
   border-radius: var(--radius-control);
   padding: 16px;
@@ -2506,7 +2524,7 @@ main:focus {
 .recommend-stops small {
   display: block;
   font-size: 11px;
-  color: var(--teal);
+  color: var(--brand-deep);
   margin-top: 2px;
 }
 .weather-hero-card,
@@ -2542,7 +2560,7 @@ dialog {
   display: inline-block;
   font-size: 12px;
   font-weight: 700;
-  color: var(--teal);
+  color: var(--brand-deep);
   margin-bottom: 6px;
 }
 .city-explorer-heading h2 {
@@ -2578,7 +2596,7 @@ dialog {
 }
 .gyeonggi-map-panel {
   position: relative;
-  background: #f2f7f5;
+  background: #eff8f2;
 }
 .gyeonggi-map-heading {
   display: flex;
@@ -2611,10 +2629,10 @@ dialog {
   color: #649bc6;
 }
 .gyeonggi-map-weather-icon.wind {
-  color: #658f83;
+  color: #2f8556;
 }
 .gyeonggi-map-weather strong {
-  color: #34564b;
+  color: #1b432c;
   font-size: 23px;
   font-weight: 700;
   line-height: 1.2;
@@ -2626,7 +2644,7 @@ dialog {
   margin-left: 2px;
 }
 .gyeonggi-map-weather small {
-  color: #71847b;
+  color: #5c7365;
   font-size: 10px;
 }
 .gyeonggi-map-guidance {
@@ -2644,7 +2662,7 @@ dialog {
 .map-status-dot {
   width: 7px;
   height: 7px;
-  background: var(--teal);
+  background: var(--brand-vivid);
   border-radius: 50%;
 }
 .gyeonggi-map-svg {
@@ -2655,8 +2673,8 @@ dialog {
   min-height: 0;
 }
 .gyeonggi-city-shape {
-  fill: #d3e5de;
-  stroke: #f8fcfa;
+  fill: #d2ecd9;
+  stroke: #f6fcf8;
   stroke-width: 1.4;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -2664,17 +2682,17 @@ dialog {
   transition: fill 150ms ease;
 }
 .gyeonggi-city-shape:nth-of-type(3n) {
-  fill: #c6ddd2;
+  fill: #c3e5ce;
 }
 .gyeonggi-city-shape:nth-of-type(3n + 1) {
-  fill: #deebe2;
+  fill: #dff3e5;
 }
 .gyeonggi-city-shape:hover {
-  fill: #9ec5b6;
-  stroke: #517f70;
+  fill: #8fd8aa;
+  stroke: #02823a;
 }
 .gyeonggi-city-shape.is-selected {
-  fill: var(--blue);
+  fill: var(--brand);
   stroke: #fff;
   stroke-width: 2;
 }
@@ -2691,31 +2709,31 @@ dialog {
 .gyeonggi-map-labels text {
   font-size: 13px;
   font-weight: 700;
-  fill: #34564b;
-  stroke: #edf5f0;
+  fill: #1b432c;
+  stroke: #edf7f0;
   stroke-width: 2.5;
   paint-order: stroke;
   stroke-linejoin: round;
 }
 .gyeonggi-map-labels text.is-selected {
   fill: #fff;
-  stroke: var(--blue);
+  stroke: var(--brand);
 }
 .gyeonggi-map-context path {
-  fill: #e8edeb;
-  stroke: #d4dfd9;
+  fill: #e8eeea;
+  stroke: #cfe0d5;
   stroke-width: 1;
   stroke-dasharray: 3 3;
 }
 .gyeonggi-map-context text {
   text-anchor: middle;
-  fill: #8a9c94;
+  fill: #788e81;
   font-size: 15px;
   font-weight: 600;
 }
 .gyeonggi-map-compass {
-  fill: #7a9388;
-  stroke: #7a9388;
+  fill: #5e7e6c;
+  stroke: #5e7e6c;
   stroke-width: 1.2;
 }
 .gyeonggi-map-compass text {
@@ -2731,7 +2749,7 @@ dialog {
   gap: 12px;
   margin: 0 24px;
   padding-top: 14px;
-  border-top: 1px solid #d7e5de;
+  border-top: 1px solid var(--brand-border);
 }
 .gyeonggi-map-controls label {
   flex: 0 1 240px;
@@ -2740,7 +2758,7 @@ dialog {
 .gyeonggi-map-controls select {
   min-height: 44px;
   padding: 9px 12px;
-  border-color: #d1e0d8;
+  border-color: var(--control-border);
   background: #ffffffbd;
   font-size: 13px;
 }
@@ -2748,11 +2766,11 @@ dialog {
   min-height: 44px;
   padding: 0 12px;
   border-radius: var(--radius-control);
-  border: 1px solid #cfe0d7;
+  border: 1px solid var(--brand-border);
   background: rgba(255, 255, 255, 0.85);
   font-size: 13px;
   font-weight: 600;
-  color: var(--teal);
+  color: var(--brand-deep);
   white-space: nowrap;
   transition:
     background var(--dur-short) var(--ease-out),
@@ -2760,9 +2778,9 @@ dialog {
     color var(--dur-short) var(--ease-out);
 }
 .gyeonggi-map-controls button:hover {
-  background: var(--sky);
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .gyeonggi-map-controls button > span {
   font-size: 16px;
@@ -2787,7 +2805,7 @@ dialog {
   border-bottom: 1px solid var(--line);
 }
 .city-places-eyebrow {
-  color: var(--teal);
+  color: var(--brand-deep);
   font-size: 12px;
 }
 .city-places-title-row {
@@ -2801,8 +2819,8 @@ dialog {
   margin-bottom: 6px;
 }
 .city-place-count {
-  background: var(--sky);
-  color: var(--blue);
+  background: var(--brand-soft);
+  color: var(--brand);
   border-radius: var(--radius-pill);
   padding: 3px 10px;
   font-size: 12px;
@@ -2825,7 +2843,7 @@ dialog {
   list-style: none;
 }
 .city-place-list > li + li {
-  border-top: 1px solid #edf0f2;
+  border-top: 1px solid var(--line);
 }
 .city-place-card {
   display: grid;
@@ -2841,14 +2859,14 @@ dialog {
   overflow: hidden;
   border-radius: var(--radius-control);
   padding: 0;
-  background: var(--sky);
+  background: var(--brand-soft);
 }
 .city-place-photo img {
   object-fit: cover;
 }
 .city-place-photo > svg {
   width: 30px;
-  color: var(--blue);
+  color: var(--brand);
 }
 .city-place-body {
   min-width: 0;
@@ -2857,7 +2875,7 @@ dialog {
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: var(--teal);
+  color: var(--brand-deep);
   margin-bottom: 4px;
 }
 .city-place-body h4 {
@@ -2872,7 +2890,7 @@ dialog {
   transition: color var(--dur-short) var(--ease-out);
 }
 .city-place-body h4 button:hover {
-  color: var(--blue);
+  color: var(--brand);
 }
 .city-place-body > p {
   display: -webkit-box;
@@ -2925,8 +2943,8 @@ dialog {
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: var(--sky);
-  color: var(--blue);
+  background: var(--brand-soft);
+  color: var(--brand);
   margin-bottom: 18px;
   flex-shrink: 0;
 }
@@ -2965,7 +2983,7 @@ dialog {
 }
 .city-quick-picks button {
   min-height: 40px;
-  border: 1px solid #c8d6df;
+  border: 1px solid var(--control-border);
   border-radius: var(--radius-pill);
   padding: 7px 14px;
   background: var(--surface);
@@ -2978,9 +2996,9 @@ dialog {
     color var(--dur-short) var(--ease-out);
 }
 .city-quick-picks button:hover {
-  background: var(--sky);
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .city-empty-reset {
   margin-top: 16px;
@@ -3050,7 +3068,7 @@ form > .label-row:first-child {
   margin-top: 16px;
   padding: 12px 14px;
   border-radius: var(--radius-control);
-  background: var(--sky);
+  background: var(--brand-soft);
   color: var(--ink);
   font-size: 13px;
 }
@@ -3068,7 +3086,7 @@ form > .label-row:first-child {
 .saved-progress {
   font-size: 12px;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--brand);
   font-variant-numeric: tabular-nums;
 }
 .preference-heading {
@@ -3108,7 +3126,7 @@ form > .label-row:first-child {
   gap: 2px;
   min-height: 48px;
   padding: 6px 4px;
-  border: 1px solid #c8d6df;
+  border: 1px solid var(--control-border);
   border-radius: var(--radius-control);
   background: var(--surface);
   color: var(--muted);
@@ -3125,14 +3143,14 @@ form > .label-row:first-child {
   color: #d68b1f;
 }
 .rating-chip:hover:not(.active) {
-  background: var(--sky);
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .rating-chip.active {
-  background: var(--sky);
-  border-color: var(--blue);
-  color: var(--blue);
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 .poster-ocr-box.is-disabled {
   background: var(--surface-subtle);

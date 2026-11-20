@@ -32,7 +32,7 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 
 ## 네이버 지도와 관광 데이터
 
-- [PlaceMap](../../components/place-map.tsx)은 [naver-map.ts](../../lib/adapters/naver-map.ts)로 Web Dynamic Map v3 SDK를 1회 로드하고 `navermap_authFailure`를 감지한다. `NAVER_MAP_CLIENT_ID`는 `force-dynamic` 홈에서 런타임 주입하며, 미설정·실패 시 시흥 개략 SVG 또는 경기도 투영 SVG로 폴백한다.
+- [PlaceMap](../../components/place-map.tsx)은 [naver-map.ts](../../lib/adapters/naver-map.ts)로 Web Dynamic Map v3 SDK를 1회 로드하고 `navermap_authFailure`를 감지한다. `NAVER_MAP_CLIENT_ID`는 `force-dynamic` 홈에서 런타임 주입하며, 미설정·실패 시 경기도 투영 SVG로 폴백한다.
 - [import-tourapi.ts](../../scripts/import-tourapi.ts)는 한국관광공사 `KorService2`를 수집해 시흥 20곳을 유지하고 타 시·군 관광지를 갱신한다. 공공누리 제1유형·`tong.visitkorea.or.kr` 사진만 허용하며, AI 추천 후보는 지역 필터 후 최대 40곳만 전달한다. 공개 사진은 Next.js Image로 WebP 최적화·지연 로딩한다.
 
 ## HTTP API 계약

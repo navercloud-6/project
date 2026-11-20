@@ -125,7 +125,19 @@ test('신규 관광지는 여행 입력으로 저장할 수 있고 혼합 도시
     point,
     projectRoute(places[0].coordinates.lat, places[0].coordinates.lng),
   );
-  for (const id of pickRecommendedPlaces('전체', 'outdoor'))
+  const allRecommended = pickRecommendedPlaces('전체', 'outdoor');
+  assert.equal(allRecommended.length, 3);
+  assert.equal(
+    new Set(
+      allRecommended.map(
+        (id) => places.find((place) => place.id === id)?.cityId,
+      ),
+    ).size,
+    3,
+  );
+  for (const id of pickRecommendedPlaces('수원시', 'outdoor'))
+    assert.equal(places.find((place) => place.id === id)?.cityId, '41110');
+  for (const id of pickRecommendedPlaces('시흥시', 'outdoor'))
     assert.equal(places.find((place) => place.id === id)?.cityId, '41390');
 });
 

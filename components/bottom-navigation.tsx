@@ -11,13 +11,13 @@ const items = [
     ),
   },
   {
-    id: 'journeys',
-    label: '내 여행',
-    shortLabel: null,
+    id: 'weather',
+    label: '경기 날씨',
+    shortLabel: '날씨',
     icon: (
       <>
-        <rect x="3" y="4" width="18" height="17" rx="3" />
-        <path d="M8 2v4m8-4v4M8 11h8m-8 4h5" />
+        <path d="M12 2v2M5.6 5.6l1.4 1.4M2 12h2M18.4 5.6 17 7" />
+        <path d="M9 15.5a3.5 3.5 0 1 1 3.2-4.9A4.5 4.5 0 1 1 17.5 19H9a3.5 3.5 0 0 1 0-7" />
       </>
     ),
   },
@@ -33,19 +33,19 @@ const items = [
     ),
   },
   {
-    id: 'weather',
-    label: '경기 날씨',
-    shortLabel: '날씨',
+    id: 'journeys',
+    label: '내 여행',
+    shortLabel: null,
     icon: (
       <>
-        <path d="M12 2v2M5.6 5.6l1.4 1.4M2 12h2M18.4 5.6 17 7" />
-        <path d="M9 15.5a3.5 3.5 0 1 1 3.2-4.9A4.5 4.5 0 1 1 17.5 19H9a3.5 3.5 0 0 1 0-7" />
+        <rect x="3" y="4" width="18" height="17" rx="3" />
+        <path d="M8 2v4m8-4v4M8 11h8m-8 4h5" />
       </>
     ),
   },
   {
     id: 'profile',
-    label: '마이',
+    label: '프로필',
     shortLabel: null,
     icon: (
       <>

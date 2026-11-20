@@ -46,7 +46,7 @@ export function MyProfile({
       <div className="section-heading">
         <div>
           <span className="pill">나의 여행과 취향</span>
-          <h1>마이</h1>
+          <h1>프로필</h1>
           <p>저장한 여행 현황을 보고 다음 추천에 쓸 취향을 관리해 보세요.</p>
         </div>
       </div>
