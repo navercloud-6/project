@@ -2223,3 +2223,517 @@ dialog {
 .detail-image {
   border-radius: var(--radius-control);
 }
+
+/* Province discovery sits above the existing Siheung travel workspace. */
+.city-explorer {
+  --city-map-height: clamp(640px, 56vw, 750px);
+  padding-top: 24px;
+  margin-bottom: 48px;
+}
+.city-explorer-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.city-explorer-eyebrow,
+.city-places-eyebrow {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+.city-explorer-heading h1 {
+  font-size: clamp(26px, 3vw, 36px);
+  margin-bottom: 10px;
+}
+.city-explorer-heading p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-bottom: 0;
+}
+.city-explorer-region-count {
+  color: var(--muted);
+  font-size: 12px;
+  padding-bottom: 4px;
+  white-space: nowrap;
+}
+.city-explorer-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+  gap: 24px;
+}
+.gyeonggi-map-panel,
+.city-places-panel {
+  height: var(--city-map-height);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+}
+.gyeonggi-map-panel {
+  position: relative;
+  background: #f2f7f5;
+}
+.gyeonggi-map-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 24px 0;
+  font-size: 13px;
+  font-weight: 700;
+}
+.gyeonggi-map-weather {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 62px;
+}
+.gyeonggi-map-weather-icon {
+  color: #e3a126;
+}
+.gyeonggi-map-weather-icon.cloud,
+.gyeonggi-map-weather-icon.cloud-sun {
+  color: #8b9fa8;
+}
+.gyeonggi-map-weather-icon.rain,
+.gyeonggi-map-weather-icon.snow {
+  color: #649bc6;
+}
+.gyeonggi-map-weather-icon.wind {
+  color: #658f83;
+}
+.gyeonggi-map-weather strong {
+  color: #34564b;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.gyeonggi-map-weather strong > span {
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 2px;
+}
+.gyeonggi-map-weather small {
+  color: #71847b;
+  font-size: 10px;
+}
+.gyeonggi-map-guidance {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 24px 12px;
+}
+.gyeonggi-map-heading > span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.map-status-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--teal);
+  border-radius: 50%;
+}
+.gyeonggi-map-svg {
+  display: block;
+  flex: 1 1 0;
+  width: 100%;
+  height: 0;
+  min-height: 0;
+}
+.gyeonggi-city-shape {
+  fill: #d3e5de;
+  stroke: #f8fcfa;
+  stroke-width: 1.4;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  cursor: pointer;
+  transition: fill 150ms ease;
+}
+.gyeonggi-city-shape:nth-of-type(3n) {
+  fill: #c6ddd2;
+}
+.gyeonggi-city-shape:nth-of-type(3n + 1) {
+  fill: #deebe2;
+}
+.gyeonggi-city-shape:hover {
+  fill: #9ec5b6;
+  stroke: #517f70;
+}
+.gyeonggi-city-shape.is-selected {
+  fill: var(--blue);
+  stroke: #fff;
+  stroke-width: 2;
+}
+.gyeonggi-city-shape:focus-visible {
+  outline: none;
+  stroke: #c66b0c;
+  stroke-width: 3;
+}
+.gyeonggi-map-labels {
+  pointer-events: none;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+.gyeonggi-map-labels text {
+  font-size: 13px;
+  font-weight: 700;
+  fill: #34564b;
+  stroke: #edf5f0;
+  stroke-width: 2.5;
+  paint-order: stroke;
+  stroke-linejoin: round;
+}
+.gyeonggi-map-labels text.is-selected {
+  fill: #fff;
+  stroke: var(--blue);
+}
+.gyeonggi-map-context path {
+  fill: #e8edeb;
+  stroke: #d4dfd9;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.gyeonggi-map-context text {
+  text-anchor: middle;
+  fill: #8a9c94;
+  font-size: 15px;
+  font-weight: 600;
+}
+.gyeonggi-map-compass {
+  fill: #7a9388;
+  stroke: #7a9388;
+  stroke-width: 1.2;
+}
+.gyeonggi-map-compass text {
+  stroke: none;
+  text-anchor: middle;
+  font-size: 12px;
+  font-weight: 700;
+}
+.gyeonggi-map-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 24px;
+  padding-top: 14px;
+  border-top: 1px solid #d7e5de;
+}
+.gyeonggi-map-controls label {
+  flex: 0 1 240px;
+  margin-bottom: 0;
+}
+.gyeonggi-map-controls select {
+  min-height: 44px;
+  padding: 9px 12px;
+  border-color: #d1e0d8;
+  background: #ffffffbd;
+  font-size: 13px;
+}
+.gyeonggi-map-controls button {
+  min-height: 44px;
+  font-size: 12px;
+  color: #416b5c;
+  white-space: nowrap;
+}
+.gyeonggi-map-controls button > span {
+  font-size: 18px;
+  vertical-align: -1px;
+  margin-right: 4px;
+}
+.gyeonggi-map-credit {
+  color: #71847b;
+  font-size: 10px;
+  line-height: 1.7;
+  margin: 12px 24px 18px;
+}
+.gyeonggi-map-credit a {
+  color: inherit;
+  text-underline-offset: 2px;
+}
+.city-places-panel {
+  background: #fff;
+}
+.city-places-heading {
+  padding: 26px 24px 22px;
+  border-bottom: 1px solid var(--line);
+}
+.city-places-eyebrow {
+  color: #7a8a96;
+  font-size: 10px;
+}
+.city-places-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.city-places-title-row h2 {
+  font-size: 23px;
+  margin-bottom: 8px;
+}
+.city-place-count {
+  background: var(--sky);
+  color: var(--blue);
+  border-radius: 20px;
+  padding: 2px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.city-places-heading > p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 0;
+}
+.city-place-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  padding: 0 20px;
+  margin: 0;
+  list-style: none;
+}
+.city-place-list > li + li {
+  border-top: 1px solid #edf0f2;
+}
+.city-place-card {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr);
+  gap: 14px;
+  padding: 20px 0;
+}
+.city-place-photo {
+  position: relative;
+  align-self: start;
+  width: 88px;
+  height: 96px;
+  overflow: hidden;
+  border-radius: 10px;
+  padding: 0;
+  background: var(--sky);
+}
+.city-place-photo img {
+  object-fit: cover;
+}
+.city-place-photo > svg {
+  width: 30px;
+  color: var(--blue);
+}
+.city-place-body {
+  min-width: 0;
+}
+.city-place-category {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--teal);
+  margin-bottom: 5px;
+}
+.city-place-body h3 {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.city-place-body h3 button {
+  padding: 0;
+  font-weight: 700;
+  text-align: left;
+}
+.city-place-body h3 button:hover {
+  color: var(--blue);
+}
+.city-place-body > p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.city-place-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.city-place-actions > span {
+  color: #84929b;
+  font-size: 10px;
+}
+.city-place-add {
+  min-height: 32px;
+  padding: 4px 0 4px 8px;
+  color: var(--blue);
+  font-size: 11px;
+  font-weight: 700;
+}
+.city-place-add.is-added {
+  color: var(--teal);
+}
+.city-places-note {
+  color: var(--muted);
+  font-size: 10px;
+  padding: 14px 20px;
+  margin-bottom: 0;
+  border-top: 1px solid var(--line);
+  background: #fbfcfd;
+}
+.city-places-empty {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 28px 24px;
+}
+.city-empty-art {
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  background: #f0f6f3;
+  color: #7da692;
+  margin-bottom: 24px;
+}
+.city-empty-art svg {
+  width: 45px;
+  height: 45px;
+}
+.city-places-empty > h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.city-places-empty > p {
+  max-width: 25ch;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 0;
+}
+.city-quick-picks {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+}
+.city-quick-picks > span {
+  color: #86948c;
+  font-size: 11px;
+}
+.city-quick-picks button {
+  min-height: 42px;
+  border: 1px solid #d5e4dc;
+  border-radius: 30px;
+  padding: 8px 20px;
+  color: #3c6d56;
+  font-size: 13px;
+  font-weight: 700;
+}
+.city-quick-picks button:hover {
+  background: #eff6f2;
+}
+.city-quick-picks button > span {
+  margin-left: 16px;
+}
+@media (max-width: 960px) {
+  .city-explorer-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+  .city-places-panel {
+    height: auto;
+    min-height: 360px;
+  }
+  .city-place-list {
+    flex: none;
+    max-height: 480px;
+  }
+  .city-places-empty {
+    min-height: 300px;
+  }
+  .city-explorer-region-count {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .city-explorer {
+    --city-map-height: 570px;
+    padding-top: 20px;
+    margin-bottom: 30px;
+  }
+  .city-explorer-heading h1 {
+    font-size: 26px;
+    max-width: 15ch;
+  }
+  .city-explorer-heading p {
+    font-size: 12px;
+  }
+  .gyeonggi-map-heading {
+    padding: 18px 16px 0;
+  }
+  .gyeonggi-map-weather {
+    top: 48px;
+    right: 16px;
+    min-width: 48px;
+  }
+  .gyeonggi-map-weather-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .gyeonggi-map-weather strong {
+    font-size: 21px;
+  }
+  .gyeonggi-map-guidance {
+    margin-inline: 16px;
+  }
+  .gyeonggi-map-controls {
+    margin-inline: 16px;
+    gap: 8px;
+  }
+  .gyeonggi-map-controls label {
+    flex-basis: 180px;
+  }
+  .gyeonggi-map-controls select {
+    font-size: 12px;
+  }
+  .gyeonggi-map-controls button {
+    font-size: 11px;
+  }
+  .gyeonggi-map-credit {
+    margin-inline: 16px;
+    font-size: 9px;
+  }
+  .city-places-heading {
+    padding: 22px 20px 18px;
+  }
+  .city-place-add {
+    min-height: 44px;
+    padding-block: 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gyeonggi-city-shape {
+    transition: none;
+  }
+}
