@@ -57,7 +57,7 @@ export default function Tourpass({
   });
   const [selection, setSelection] = useState<string[]>([]);
   const [result, setResult] = useState<Recommendation | null>(null);
-  const [name, setName] = useState('나의 시흥 여행');
+  const [name, setName] = useState('나의 경기 여행');
   const [date, setDate] = useState('');
   const [saved, setSaved] = useState<Journey[]>([]);
   const [busy, setBusy] = useState(false);
@@ -231,7 +231,7 @@ export default function Tourpass({
         <a
           className="brand"
           href="#main"
-          aria-label="시흥 하루이음 홈"
+          aria-label="경기 하루이음 홈"
           onClick={() => {
             setTab('explore');
             setExploreTask('browse');
@@ -241,7 +241,7 @@ export default function Tourpass({
             ≈
           </span>
           <span>
-            시흥 <b>하루이음</b>
+            경기 <b>하루이음</b>
             <small>가까운 곳에서, 새로운 하루</small>
           </span>
         </a>
@@ -286,14 +286,14 @@ export default function Tourpass({
                   ? '여행 코스 완성'
                   : exploreTask === 'recommend'
                     ? '맞춤 코스 제안'
-                    : '시흥 관광지 20곳'}
+                    : '경기 관광지 20곳'}
               </span>
               <h1>
                 {exploreTask === 'review'
                   ? '담은 여행 확인'
                   : exploreTask === 'recommend'
                     ? '취향에 맞는 여행 추천'
-                    : '시흥 둘러보기'}
+                    : '경기 둘러보기'}
               </h1>
               <p>
                 {exploreTask === 'review'
@@ -550,9 +550,9 @@ export default function Tourpass({
             setExploreTask('browse');
           }}
         >
-          ≈ 시흥 하루이음
+          ≈ 경기 하루이음
         </a>
-        <p>시흥의 장소와 당신의 하루를 잇습니다.</p>
+        <p>경기도의 장소와 당신의 하루를 잇습니다.</p>
         <span>관광 정보·사진 출처는 각 장소의 상세에서 확인하세요.</span>
       </footer>
       {selection.length > 0 &&

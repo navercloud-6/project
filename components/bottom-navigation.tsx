@@ -1,7 +1,7 @@
 const items = [
   {
     id: 'explore',
-    label: '시흥 둘러보기',
+    label: '경기 둘러보기',
     shortLabel: '둘러보기',
     icon: (
       <>
@@ -34,7 +34,7 @@ const items = [
   },
   {
     id: 'weather',
-    label: '시흥 날씨',
+    label: '경기 날씨',
     shortLabel: '날씨',
     icon: (
       <>

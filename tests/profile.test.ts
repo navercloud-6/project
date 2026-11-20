@@ -123,7 +123,7 @@ test('빈 목록·8곳 상한·내 여행 접이식 작업은 막다른 흐름 �
   const emptyBuilder = renderToStaticMarkup(
     createElement(TripBuilder, {
       selected: [],
-      name: '나의 시흥 여행',
+      name: '나의 경기 여행',
       date: '2026-11-19',
       ready: true,
       busy: false,

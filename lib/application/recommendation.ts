@@ -39,7 +39,7 @@ export function createRecommendation(ai: AIPort) {
         .sort((a, b) => b.score - a.score);
       return {
         mode: 'demo',
-        title: '시흥에서 보내는 하루',
+        title: '경기도에서 보내는 하루',
         summary:
           '입력 키워드와 저장된 만족도를 참고한 데모 제안입니다. 장소를 자유롭게 바꿔 나만의 여행을 만들어 보세요.',
         stops: ranked.slice(0, 3).map(({ p }) => ({

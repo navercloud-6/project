@@ -150,10 +150,10 @@ export function WeatherPanel({
     <div className="weather-page">
       <div className="section-heading">
         <div>
-          <span className="pill">시흥 권역별 기상과 여행 가이드</span>
+          <span className="pill">경기(시흥권) 권역별 기상과 여행 가이드</span>
           <h1>바다와 갯골의 오늘 날씨</h1>
           <p>
-            방문할 시흥 권역의 기온·바람·강수 예보를 확인하고 날씨에 어울리는
+            방문할 경기 권역의 기온·바람·강수 예보를 확인하고 날씨에 어울리는
             장소를 담아보세요.
           </p>
         </div>
@@ -168,7 +168,7 @@ export function WeatherPanel({
         </button>
       </div>
 
-      <div className="weather-regions" role="group" aria-label="시흥 권역 선택">
+      <div className="weather-regions" role="group" aria-label="경기 권역 선택">
         {REGION_LIST.map((r) => (
           <button
             key={r}
@@ -181,7 +181,7 @@ export function WeatherPanel({
             aria-pressed={selectedRegion === r}
             onClick={() => setSelectedRegion(r)}
           >
-            {r === '전체' ? '시흥 전체' : r}
+            {r === '전체' ? '경기(시흥권) 전체' : r}
           </button>
         ))}
       </div>
@@ -200,7 +200,7 @@ export function WeatherPanel({
       )}
 
       {loading && !weather ? (
-        <div className="empty">시흥 권역별 날씨 정보를 불러오고 있습니다…</div>
+        <div className="empty">경기 권역별 날씨 정보를 불러오고 있습니다…</div>
       ) : (
         weather && (
           <>
@@ -223,8 +223,8 @@ export function WeatherPanel({
                 </div>
                 <h2 id="weather-current-title">
                   {weather.region === '전체'
-                    ? '시흥시 대표 (시청·장곡)'
-                    : `시흥 ${weather.region}`}
+                    ? '경기도 시흥권 대표 (시청·장곡)'
+                    : `경기 · ${weather.region}`}
                 </h2>
                 <p className="weather-area-note">{weather.areaNote}</p>
 
@@ -323,11 +323,11 @@ export function WeatherPanel({
               <div className="section-heading">
                 <div>
                   <h2 id="weather-places-title">
-                    오늘 날씨에 어울리는 시흥 명소
+                    오늘 날씨에 어울리는 경기 명소
                   </h2>
                   <p>
                     {weather.region === '전체'
-                      ? '시흥 전역'
+                      ? '경기(시흥권) 전역'
                       : `${weather.region} 권역 중심`}
                     에서 {SUITABILITY_LABEL[weather.advisory.suitability]}{' '}
                     기준으로 골랐습니다.
