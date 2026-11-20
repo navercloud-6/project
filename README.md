@@ -2,17 +2,15 @@
 
 ## 소개
 
-경기도 31개 시·군의 관광지를 탐색하고 AI 여행 추천·패스 구성·방문 기록을 제공하는 Next.js MVP다. 범위와 정책은 [요구사항](docs/01-func/01-requirements.md)을 따른다.
-
-탐색 화면 상단에서 경기도 시·군을 선택하면 오른쪽에 등록 관광지가 표시된다. 기존 시흥 자료와 한국관광공사 TourAPI 수집 자료를 함께 제공한다. 이후 목표와 남은 작업은 [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)에서 구분한다.
+경기도 31개 시·군의 관광지를 탐색하고 AI 여행 추천·패스 구성·방문 기록을 제공하는 Next.js MVP다. 범위와 정책은 [요구사항](docs/01-func/01-requirements.md), 후속 과제는 [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)을 따른다.
 
 ### 주요 화면
 
-로컬 시연 화면: [데스크톱 탐색](docs/screenshots/desktop.jpg) · [모바일 여행 확인](docs/screenshots/mobile.jpg) · [데스크톱 도우미](docs/screenshots/assistant-desktop.jpg) · [모바일 도우미](docs/screenshots/assistant-mobile.jpg) · [사진 일기](docs/screenshots/photo-record.jpg).
+[데스크톱 탐색](docs/screenshots/desktop.jpg) · [모바일 여행 확인](docs/screenshots/mobile.jpg) · [데스크톱 도우미](docs/screenshots/assistant-desktop.jpg) · [모바일 도우미](docs/screenshots/assistant-mobile.jpg) · [사진 일기](docs/screenshots/photo-record.jpg).
 
 ## 기술 스택
 
-Next.js 16 App Router · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · PostgreSQL(`pg`) · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR·Maps·Cloud DB for PostgreSQL). 버전은 [package.json](package.json)과 [잠금 파일](package-lock.json)에서 관리한다.
+Next.js 16 App Router · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · PostgreSQL(`pg`) · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR·Maps·Cloud DB for PostgreSQL). 버전은 [package.json](package.json)에서 관리한다.
 
 ## 시작하기
 
@@ -25,62 +23,41 @@ cp .env.example .env.local
 npm run dev
 ```
 
-[로컬 서버](http://localhost:3000)에 접속한다. 다른 주소·포트를 쓰면 `APP_ORIGIN`도 맞춘다. 필요한 테이블과 인덱스는 첫 DB 요청 시 자동 생성된다. 키 설정과 운영 배포는 [배포 가이드](docs/05-ops/01-deploy.md)를 따른다.
+[http://localhost:3000](http://localhost:3000)에 접속한다(주소 변경 시 `APP_ORIGIN` 동기화). 테이블은 첫 DB 요청 시 자동 생성되며 키 설정·운영 배포는 [배포 가이드](docs/05-ops/01-deploy.md)를 따른다.
 
 ### 관광 데이터 갱신
 
-[한국관광공사 국문 관광정보 API](https://www.data.go.kr/data/15101578/openapi.do)의 활용 승인을 받고 `.env.local`에 `TOUR_API_KEY`를 설정한다. 아래 명령은 경기도 관광지·문화시설을 수집한다. 수집·사진 선택 기준은 [요구사항](docs/01-func/01-requirements.md#시군별-관광-데이터-확장)을 따른다. 키와 원본 응답은 커밋하지 않는다.
-
-```sh
-npm run data:tourapi
-```
-
-이후 일반 실행·빌드에는 TourAPI 인증키가 필요하지 않다.
+`.env.local`에 한국관광공사 `TOUR_API_KEY`를 설정한 뒤 `npm run data:tourapi`를 실행하면 경기도 관광지·문화시설을 갱신한다. 수집 기준은 [요구사항](docs/01-func/01-requirements.md#시군별-관광-데이터-확장)을 따르며 이후 일반 실행에는 키가 필요하지 않다.
 
 ## 사용 방법
 
 | 하단 탭 | 사용 흐름 |
 | --- | --- |
-| 경기 둘러보기 | 장소 찾기 또는 추천받기 → 여행에 담기 → 담은 여행에서 순서·이름·날짜를 정해 저장한다. |
-| 내 여행 | 코스 지도를 확인하고 방문 기록·사진·일기, 여행 수정·번역을 이용한다. |
-| 여행 도우미 | 관광 안내와 행사 등록 중 작업을 선택한다. 포스터를 읽거나 직접 입력해 저장하면 내 여행으로 이동한다. |
-| 경기 날씨 | 권역별 현재 날씨·5일 예보를 확인하고 추천 장소를 담는다. |
-| 마이 | 네이버 로그인·로그아웃, 여행 요약과 브라우저 여행 취향을 관리한다. |
+| 경기 둘러보기 | 시·군 지도·장소 찾기·추천받기로 장소를 담아 순서·이름·날짜를 저장한다. |
+| 내 여행 | 코스 지도, 방문 기록·사진·일기, 대화형 여행 수정·번역을 이용한다. |
+| 여행 도우미 | 관광 안내를 질문하거나 포스터 인식·직접 입력으로 행사 일정을 저장한다. |
+| 경기 날씨 | 시흥권 현재 날씨·5일 예보를 확인하고 추천 장소를 담는다. |
+| 마이 | 네이버 로그인·로그아웃, 여행 요약, 브라우저 여행 취향을 관리한다. |
 
-API 문서는 실행 서버의 `/api/docs` 또는 `/scalar`, JSON 명세는 `/api/openapi`에서 제공한다. 계약과 보안 경계는 [기술 구조](docs/03-tech/01-architecture.md#http-api-계약)를 따른다.
-
-서버 자원과 앱 응답 상태는 [Prometheus·Grafana 운영 모니터링](docs/05-ops/01-deploy.md#운영-모니터링)에서 확인한다.
+API 문서는 `/api/docs`(또는 `/scalar`), OpenAPI JSON은 `/api/openapi`에서 제공한다([기술 구조](docs/03-tech/01-architecture.md#http-api-계약)). 운영 상태는 [모니터링 가이드](docs/05-ops/01-deploy.md#운영-모니터링)에서 확인한다.
 
 ## 테스트
 
-[검증 범위와 최신 판정](docs/04-test/01-verification.md)은 별도로 관리한다.
+검증 전략과 최신 결과는 [테스트 명세](docs/04-test/01-verification.md)에서 관리한다.
 
 ```sh
-npm run format:check
-npm test
-npm run typecheck
-npm run build
+npm run format:check && npm test && npm run typecheck && npm run build
+python3 .github/scripts/check_docs.py
 ```
 
-서식 수정은 `npm run format`, 로컬 프로덕션 실행은 빌드 후 `npm start`를 사용한다. 단위·저장소 검사는 `DATABASE_URL`(또는 `TEST_DATABASE_URL`)에 지정한 테스트용 PostgreSQL에서 임시 스키마를 생성·정리하며 실행한다. HTTP 검사는 별도 테스트 DB와 AI 키 없는 서버에서 실행한다.
-
-```sh
-APP_ORIGIN=http://127.0.0.1:3100 DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/tourpass_test CLOVA_STUDIO_API_KEY= npm run start -- --port 3100
-# 별도 터미널에서 실행
-node tests/http.mjs
-TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs
-```
-
-로그인 HTTP 검사는 별도 테스트 DB 서버에 `NAVER_LOGIN_CLIENT_ID`·`NAVER_LOGIN_CLIENT_SECRET`을 더미 값으로 설정한 뒤 `node tests/auth-http.mjs`로 실행한다. 실제 네이버 요청 없이 리다이렉트·취소·state·로그아웃을 확인한다.
-
-문서 링크·분류 검사는 `python3 .github/scripts/check_docs.py`로 실행한다.
+서식 수정은 `npm run format`을 사용한다. 단위 검사는 `DATABASE_URL`(또는 `TEST_DATABASE_URL`)의 임시 스키마에서 실행한다. 프로덕션 HTTP 검사는 테스트 DB·AI 키 없는 서버(`PORT=3100`)에서 `node tests/http.mjs`, `TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs`를 실행하고, 로그인 HTTP 검사는 더미 `NAVER_LOGIN_CLIENT_ID`·`NAVER_LOGIN_CLIENT_SECRET` 서버에서 `node tests/auth-http.mjs`를 실행한다.
 
 ## 관련 문서
 
 - [작업 지침](AGENTS.md)은 작업 순서와 문서 관리 규칙을 정의한다.
-- [관광 데이터](data/places.json)는 장소·출처·사진 정보를 담는다.
-- [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)은 `frontend` 브랜치의 구현 순서·검증 계획·미확정 항목을 관리한다.
-- [프로젝트 평가 항목 안내](docs/evaluation.md)는 평가 영역별 배점과 세부 기준, 관련 명세 위치를 정리한다.
+- [관광 데이터](data/places.json)는 장소·출처·사진 카탈로그를 담는다.
+- [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)은 지도 확장 현황과 대기 항목을 관리한다.
+- [프로젝트 평가 항목 안내](docs/evaluation.md)는 평가 영역·배점과 근거 문서를 정리한다.
 
 ### 문서 분류 기준
 

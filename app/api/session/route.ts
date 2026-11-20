@@ -1,4 +1,9 @@
-import { session, checkOrigin, failure } from '@/lib/adapters/http';
+import {
+  session,
+  checkOrigin,
+  failure,
+  sessionCookie,
+} from '@/lib/adapters/http';
 import { cookies } from 'next/headers';
 import { auth } from '@/lib/server';
 export const runtime = 'nodejs';
@@ -17,12 +22,9 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     const jar = await cookies();
-    return Response.json(
-      await auth.status(jar.get('tourpass-session')?.value),
-      {
-        headers: { 'Cache-Control': 'no-store' },
-      },
-    );
+    return Response.json(await auth.status(jar.get(sessionCookie)?.value), {
+      headers: { 'Cache-Control': 'no-store' },
+    });
   } catch (e) {
     return failure(e);
   }

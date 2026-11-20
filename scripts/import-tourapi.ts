@@ -13,154 +13,51 @@ import mapData from '../data/gyeonggi-map.json';
 type TourRecord = Record<string, string>;
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const sourceUrl = 'https://www.data.go.kr/data/15101578/openapi.do';
-const priorityNames = [
-  '수원화성',
-  '화성행궁',
-  '광교호수공원',
-  '방화수류정',
-  '수원화성박물관',
-  '율동공원',
-  '성남중앙공원',
-  '판교박물관',
-  '성남아트센터',
-  '회룡사',
-  '의정부미술도서관',
-  '부대찌개거리',
-  '직동근린공원',
-  '안양예술공원',
-  '안양천',
-  '평촌중앙공원',
-  '김중업건축박물관',
-  '부천자연생태공원',
-  '한국만화박물관',
-  '상동호수공원',
-  '부천백만송이장미원',
-  '광명동굴',
-  '광명업사이클아트센터',
-  '안양천',
-  '오리서원',
-  '평택호관광단지',
-  '소풍동물원',
-  '평택시농업생태원',
-  '진위천유원지',
-  '소요산',
-  '니지모리스튜디오',
-  '동두천자연휴양림',
-  '경기북부어린이박물관',
-  '대부도',
-  '안산갈대습지공원',
-  '시화나래조력공원',
-  '경기도미술관',
-  '바다향기수목원',
-  '일산호수공원',
-  '행주산성',
-  '서오릉',
-  '아쿠아플라넷일산',
-  '현대모터스튜디오',
-  '서울대공원',
-  '서울랜드',
-  '국립과천과학관',
-  '국립현대미술관과천',
-  '구리한강시민공원',
-  '동구릉',
-  '장자호수공원',
-  '고구려대장간마을',
-  '다산정약용유적지',
-  '물의정원',
-  '광릉',
-  '수종사',
-  '실학박물관',
-  '물향기수목원',
-  '오산독산성',
-  '오산오색시장',
-  '오산미니어처빌리지',
-  '철쭉동산',
-  '초막골생태공원',
-  '수리산',
-  '반월호수',
-  '왕송호수',
-  '철도박물관',
-  '의왕레일파크',
-  '백운호수',
-  '미사경정공원',
-  '하남유니온파크',
-  '검단산',
-  '하남역사박물관',
-  '한국민속촌',
-  '에버랜드',
-  '용인농촌테마파크',
-  '호암미술관',
-  '경기도박물관',
-  '임진각',
-  '헤이리예술마을',
-  '오두산통일전망대',
-  '벽초지수목원',
-  '파주출판도시',
-  '이천도자예술마을',
-  '설봉공원',
-  '이천테르메덴',
-  '덕평공룡수목원',
-  '안성팜랜드',
-  '안성맞춤랜드',
-  '미리내성지',
-  '칠장사',
-  '안성맞춤박물관',
-  '김포장릉',
-  '라베니체',
-  '애기봉평화생태공원',
-  '김포아트빌리지',
-  '문수산성',
-  '제부도',
-  '궁평항',
-  '전곡항',
-  '동탄호수공원',
-  '화성융건릉',
-  '용주사',
-  '화담숲',
-  '남한산성도립공원',
-  '남한산성행궁',
-  '경기도자박물관',
-  '나리농원',
-  '양주회암사지',
-  '송추계곡',
-  '가나아트파크',
-  '장흥조각공원',
-  '포천아트밸리',
-  '포천산정호수',
-  '허브아일랜드',
-  '국립수목원',
-  '비둘기낭폭포',
-  '신륵사',
-  '여주영릉',
-  '강천섬유원지',
-  '여주도자세상',
-  '황학산수목원',
-  '재인폭포',
-  '연천호로고루',
-  '전곡선사박물관',
-  '연천당포성',
-  '임진강댑싸리정원',
-  '아침고요수목원',
-  '자라섬',
-  '쁘띠프랑스',
-  '잣향기푸른숲',
-  '호명호수공원',
-  '양평두물머리',
-  '세미원',
-  '용문사',
-  '양평군립미술관',
-  '황순원문학촌',
-];
+const priorityNames = `
+  수원화성 화성행궁 광교호수공원 방화수류정 수원화성박물관
+  율동공원 성남중앙공원 판교박물관 성남아트센터
+  회룡사 의정부미술도서관 부대찌개거리 직동근린공원
+  안양예술공원 안양천 평촌중앙공원 김중업건축박물관
+  부천자연생태공원 한국만화박물관 상동호수공원 부천백만송이장미원
+  광명동굴 광명업사이클아트센터 오리서원
+  평택호관광단지 소풍동물원 평택시농업생태원 진위천유원지
+  소요산 니지모리스튜디오 동두천자연휴양림 경기북부어린이박물관
+  대부도 안산갈대습지공원 시화나래조력공원 경기도미술관 바다향기수목원
+  일산호수공원 행주산성 서오릉 아쿠아플라넷일산 현대모터스튜디오
+  서울대공원 서울랜드 국립과천과학관 국립현대미술관과천
+  구리한강시민공원 동구릉 장자호수공원 고구려대장간마을
+  다산정약용유적지 물의정원 광릉 수종사 실학박물관
+  물향기수목원 오산독산성 오산오색시장 오산미니어처빌리지
+  철쭉동산 초막골생태공원 수리산 반월호수
+  왕송호수 철도박물관 의왕레일파크 백운호수
+  미사경정공원 하남유니온파크 검단산 하남역사박물관
+  한국민속촌 에버랜드 용인농촌테마파크 호암미술관 경기도박물관
+  임진각 헤이리예술마을 오두산통일전망대 벽초지수목원 파주출판도시
+  이천도자예술마을 설봉공원 이천테르메덴 덕평공룡수목원
+  안성팜랜드 안성맞춤랜드 미리내성지 칠장사 안성맞춤박물관
+  김포장릉 라베니체 애기봉평화생태공원 김포아트빌리지 문수산성
+  제부도 궁평항 전곡항 동탄호수공원 화성융건릉 용주사
+  화담숲 남한산성도립공원 남한산성행궁 경기도자박물관
+  나리농원 양주회암사지 송추계곡 가나아트파크 장흥조각공원
+  포천아트밸리 포천산정호수 허브아일랜드 국립수목원 비둘기낭폭포
+  신륵사 여주영릉 강천섬유원지 여주도자세상 황학산수목원
+  재인폭포 연천호로고루 전곡선사박물관 연천당포성 임진강댑싸리정원
+  아침고요수목원 자라섬 쁘띠프랑스 잣향기푸른숲 호명호수공원
+  양평두물머리 세미원 용문사 양평군립미술관 황순원문학촌
+`
+  .trim()
+  .split(/\s+/);
+
+const htmlEntities: Record<string, string> = {
+  nbsp: ' ',
+  amp: '&',
+  quot: '"',
+  apos: "'",
+  lt: '<',
+  gt: '>',
+};
 
 export function plainText(value = ''): string {
-  const entities: Record<string, string> = {
-    nbsp: ' ',
-    amp: '&',
-    quot: '"',
-    apos: "'",
-    lt: '<',
-    gt: '>',
-  };
   return value
     .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
     .replace(/<[^>]*>/g, ' ')
@@ -168,7 +65,7 @@ export function plainText(value = ''): string {
       /&(#x[0-9a-f]+|#\d+|nbsp|amp|quot|apos|lt|gt);/gi,
       (_, entity: string) => {
         if (!entity.startsWith('#'))
-          return entities[entity.toLowerCase()] ?? '';
+          return htmlEntities[entity.toLowerCase()] ?? '';
         const code =
           entity[1].toLowerCase() === 'x'
             ? parseInt(entity.slice(2), 16)
@@ -184,12 +81,13 @@ export function cityForRecord(item: TourRecord) {
   if (item.lDongRegnCd !== '41' || !/^\d{3}$/.test(item.lDongSignguCd ?? ''))
     return undefined;
   const city = mapData.cities.find(
-    (city) =>
-      item.addr1?.startsWith(`경기도 ${city.name} `) ||
-      item.addr1 === `경기도 ${city.name}`,
+    (c) =>
+      item.addr1?.startsWith(`경기도 ${c.name} `) ||
+      item.addr1 === `경기도 ${c.name}`,
   );
-  const code = `41${item.lDongSignguCd}`;
-  return city && code.slice(0, 4) === city.id.slice(0, 4) ? city : undefined;
+  return city && `41${item.lDongSignguCd}`.slice(0, 4) === city.id.slice(0, 4)
+    ? city
+    : undefined;
 }
 
 export function reusablePhoto(item: TourRecord): string | null {
@@ -213,8 +111,8 @@ export function reusablePhoto(item: TourRecord): string | null {
 }
 
 function validRecord(item: TourRecord): boolean {
-  const lat = Number(item.mapy),
-    lng = Number(item.mapx);
+  const lat = Number(item.mapy);
+  const lng = Number(item.mapx);
   return Boolean(
     cityForRecord(item) &&
       /^\d+$/.test(item.contentid) &&
@@ -227,9 +125,8 @@ function validRecord(item: TourRecord): boolean {
   );
 }
 
-function normalizedName(item: TourRecord): string {
-  return plainText(item.title).replace(/\s/g, '');
-}
+const normalizedName = (item: TourRecord) =>
+  plainText(item.title).replace(/\s/g, '');
 
 export function selectRecords(
   items: TourRecord[],
@@ -246,17 +143,16 @@ export function selectRecords(
       (/도서관|문화원|체육공원/.test(name) ? 30 : 0)
     );
   };
-  const sorted = items
+  const names = new Set<string>();
+  const ids = new Set<string>();
+  return items
     .filter((item) => validRecord(item) && cityForRecord(item)?.id === cityId)
     .sort(
       (a, b) =>
         score(b) - score(a) ||
         a.title.localeCompare(b.title, 'ko') ||
         a.contentid.localeCompare(b.contentid),
-    );
-  const names = new Set<string>(),
-    ids = new Set<string>();
-  return sorted
+    )
     .filter((item) => {
       const name = normalizedName(item);
       if (names.has(name) || ids.has(item.contentid)) return false;
@@ -334,6 +230,7 @@ export async function importTourApi() {
   }).format(new Date());
   const cacheRoot = resolve(root, '.runtime', 'tourapi', checkedOn);
   mkdirSync(cacheRoot, { recursive: true });
+
   async function request(method: string, params: Record<string, string>) {
     const cachePath = resolve(
       cacheRoot,
@@ -378,6 +275,7 @@ export async function importTourApi() {
     writeFileSync(cachePath, JSON.stringify(body.body));
     return body.body;
   }
+
   const records: TourRecord[] = [];
   for (const contentTypeId of ['12', '14']) {
     for (let page = 1; ; page++) {

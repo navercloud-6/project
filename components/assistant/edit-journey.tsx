@@ -2,12 +2,8 @@
 import { useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
-import {
-  assistant,
-  ErrorText,
-  type Capabilities,
-  type History,
-} from './shared';
+import { api } from '@/lib/adapters/client-api';
+import { ErrorText, type Capabilities, type History } from './shared';
 type Proposal = {
   name: string;
   date: string;
@@ -42,14 +38,12 @@ export function EditJourney({
     setDone('');
     try {
       setPreview(
-        await (
-          await assistant({
-            action: 'edit',
-            journeyId: journey.id,
-            prompt,
-            history,
-          })
-        ).json(),
+        await api('/api/assistant', 'POST', {
+          action: 'edit',
+          journeyId: journey.id,
+          prompt,
+          history,
+        }),
       );
     } catch (e) {
       setError((e as Error).message);
@@ -62,10 +56,12 @@ export function EditJourney({
     setBusy(true);
     setError('');
     try {
-      const d = await (
-        await assistant({ action: 'apply', journeyId: journey.id, ...preview })
-      ).json();
-      onSaved(d.journey);
+      const { journey: updated } = await api<{ journey: Journey }>(
+        '/api/assistant',
+        'POST',
+        { action: 'apply', journeyId: journey.id, ...preview },
+      );
+      onSaved(updated);
       setHistory(
         [
           ...history,

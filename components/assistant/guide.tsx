@@ -1,12 +1,8 @@
 'use client';
 import { useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
-import {
-  assistant,
-  ErrorText,
-  type Capabilities,
-  type History,
-} from './shared';
+import { api } from '@/lib/adapters/client-api';
+import { ErrorText, type Capabilities, type History } from './shared';
 export function Guide({
   places,
   capabilities,
@@ -32,14 +28,21 @@ export function Guide({
     setBusy(true);
     setError('');
     try {
-      const data = await (
-        await assistant({
-          action: 'guide',
-          question,
-          placeId: placeId || undefined,
-          history,
-        })
-      ).json();
+      const data = await api<{
+        answer: string;
+        mode: string;
+        sources: {
+          id: string;
+          title: string;
+          url: string;
+          checkedOn: string;
+        }[];
+      }>('/api/assistant', 'POST', {
+        action: 'guide',
+        question,
+        placeId: placeId || undefined,
+        history,
+      });
       setAnswer(data);
       setHistory(
         [

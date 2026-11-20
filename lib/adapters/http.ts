@@ -2,7 +2,9 @@ import { cookies } from 'next/headers';
 import { ZodError } from 'zod';
 import { resolveSession } from '@/lib/server';
 import { ApplicationError } from '@/lib/domain/errors';
+
 export const sessionCookie = 'tourpass-session';
+export const oauthStateCookie = 'tourpass-oauth-state';
 export const cookieOptions = (maxAge = 30 * 86400) => ({
   httpOnly: true,
   sameSite: 'lax' as const,
@@ -10,15 +12,23 @@ export const cookieOptions = (maxAge = 30 * 86400) => ({
   path: '/',
   maxAge,
 });
+export const redirect303 = (location: string) =>
+  new Response(null, {
+    status: 303,
+    headers: {
+      Location: location,
+      'Cache-Control': 'no-store',
+      'Referrer-Policy': 'no-referrer',
+    },
+  });
+
 export async function session(create = false) {
   const jar = await cookies();
   const { owner, token } = await resolveSession(
-    jar.get('tourpass-session')?.value,
+    jar.get(sessionCookie)?.value,
     create,
   );
-  if (token) {
-    jar.set(sessionCookie, token, cookieOptions());
-  }
+  if (token) jar.set(sessionCookie, token, cookieOptions());
   return owner;
 }
 export function checkOrigin(request: Request) {

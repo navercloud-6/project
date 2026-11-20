@@ -4,6 +4,7 @@ import {
   checkOrigin,
   cookieOptions,
   failure,
+  oauthStateCookie,
   sessionCookie,
 } from '@/lib/adapters/http';
 export const runtime = 'nodejs';
@@ -16,7 +17,7 @@ export async function POST(request: Request) {
       await auth.logout(jar.get(sessionCookie)?.value),
       cookieOptions(),
     );
-    jar.set('tourpass-oauth-state', '', cookieOptions(0));
+    jar.set(oauthStateCookie, '', cookieOptions(0));
     return Response.json(
       { ok: true },
       { headers: { 'Cache-Control': 'no-store' } },

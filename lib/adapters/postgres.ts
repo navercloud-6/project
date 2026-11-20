@@ -20,10 +20,8 @@ const globalPg = globalThis as unknown as {
   tourpassPg?: StoredPool;
   tourpassPgTx?: AsyncLocalStorage<PoolClient>;
 };
-
-const txStorage =
-  globalPg.tourpassPgTx ??
-  (globalPg.tourpassPgTx = new AsyncLocalStorage<PoolClient>());
+const txStorage = (globalPg.tourpassPgTx ??=
+  new AsyncLocalStorage<PoolClient>());
 
 const SCHEMA_SQL = `
   CREATE TABLE IF NOT EXISTS sessions (
@@ -61,98 +59,11 @@ const SCHEMA_SQL = `
   );
 `;
 
-function sslOption(mode: string) {
-  if (mode === 'require' || mode === 'true')
-    return { rejectUnauthorized: true };
-  if (mode === 'no-verify') return { rejectUnauthorized: false };
-  return undefined;
-}
-
-function getStore(): StoredPool {
-  const connectionString = process.env.DATABASE_URL?.trim();
-  if (!connectionString) {
-    throw new Error('DATABASE_URL 환경 변수가 필요합니다.');
-  }
-  const sslMode = (process.env.DATABASE_SSL || '').trim().toLowerCase();
-  const current = globalPg.tourpassPg;
-  if (
-    current &&
-    current.connectionString === connectionString &&
-    current.sslMode === sslMode
-  ) {
-    return current;
-  }
-  if (current) {
-    void current.pool.end().catch(() => {});
-  }
-  const pool = new Pool({
-    connectionString,
-    ssl: sslOption(sslMode),
-    max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
-  });
-  const next: StoredPool = { connectionString, sslMode, pool };
-  globalPg.tourpassPg = next;
-  return next;
-}
-
-async function ensureSchema(store: StoredPool): Promise<Pool> {
-  if (!store.initialized) {
-    store.initialized = (async () => {
-      const client = await store.pool.connect();
-      try {
-        await client.query('BEGIN');
-        await client.query('SELECT pg_advisory_xact_lock(7342019)');
-        await client.query(SCHEMA_SQL);
-        await client.query('COMMIT');
-      } catch (error) {
-        await client.query('ROLLBACK').catch(() => {});
-        store.initialized = undefined;
-        throw error;
-      } finally {
-        client.release();
-      }
-    })();
-  }
-  await store.initialized;
-  return store.pool;
-}
-
-export async function db(): Promise<Pool> {
-  return ensureSchema(getStore());
-}
-
-export async function closePool(): Promise<void> {
-  const current = globalPg.tourpassPg;
-  globalPg.tourpassPg = undefined;
-  if (current) {
-    await current.pool.end();
-  }
-}
-
-async function query<T extends QueryResultRow = QueryResultRow>(
-  text: string,
-  values?: unknown[],
-) {
-  const active = txStorage.getStore();
-  if (active) return active.query<T>(text, values);
-  const pool = await db();
-  return pool.query<T>(text, values);
-}
-
-export async function transaction<T>(
-  operation: (client: PoolClient) => Promise<T>,
-): Promise<T> {
-  const existing = txStorage.getStore();
-  if (existing) {
-    return operation(existing);
-  }
-  const pool = await db();
+async function runTx<T>(pool: Pool, fn: (client: PoolClient) => Promise<T>) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    const result = await txStorage.run(client, () => operation(client));
+    const result = await txStorage.run(client, () => fn(client));
     await client.query('COMMIT');
     return result;
   } catch (error) {
@@ -161,6 +72,77 @@ export async function transaction<T>(
   } finally {
     client.release();
   }
+}
+
+function getStore(): StoredPool {
+  const connectionString = process.env.DATABASE_URL?.trim();
+  if (!connectionString)
+    throw new Error('DATABASE_URL 환경 변수가 필요합니다.');
+  const sslMode = (process.env.DATABASE_SSL || '').trim().toLowerCase();
+  const current = globalPg.tourpassPg;
+  if (
+    current?.connectionString === connectionString &&
+    current.sslMode === sslMode
+  )
+    return current;
+  void current?.pool.end().catch(() => {});
+  const ssl =
+    sslMode === 'require' || sslMode === 'true'
+      ? { rejectUnauthorized: true }
+      : sslMode === 'no-verify'
+        ? { rejectUnauthorized: false }
+        : undefined;
+  const pool = new Pool({
+    connectionString,
+    ssl,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  });
+  return (globalPg.tourpassPg = { connectionString, sslMode, pool });
+}
+
+export async function db(): Promise<Pool> {
+  const store = getStore();
+  if (!store.initialized) {
+    store.initialized = runTx(store.pool, async (client) => {
+      await client.query('SELECT pg_advisory_xact_lock(7342019)');
+      await client.query(SCHEMA_SQL);
+    }).catch((error) => {
+      store.initialized = undefined;
+      throw error;
+    });
+  }
+  await store.initialized;
+  return store.pool;
+}
+
+export async function closePool(): Promise<void> {
+  const current = globalPg.tourpassPg;
+  globalPg.tourpassPg = undefined;
+  if (current) await current.pool.end();
+}
+
+async function query<T extends QueryResultRow = QueryResultRow>(
+  text: string,
+  values?: unknown[],
+) {
+  const active = txStorage.getStore();
+  return (active ?? (await db())).query<T>(text, values);
+}
+
+export async function transaction<T>(
+  operation: (client: PoolClient) => Promise<T>,
+): Promise<T> {
+  const existing = txStorage.getStore();
+  if (existing) return operation(existing);
+  return runTx(await db(), operation);
+}
+
+async function deleteSession(client: PoolClient, token: string) {
+  await client.query('DELETE FROM sessions WHERE token = $1', [token]);
+  await client.query('DELETE FROM account_sessions WHERE token = $1', [token]);
+  await client.query('DELETE FROM oauth_states WHERE session = $1', [token]);
 }
 
 export const journeyRepository: JourneyRepository = {
@@ -196,8 +178,9 @@ export const journeyRepository: JourneyRepository = {
       'SELECT id, image FROM photos WHERE owner = $1 AND journey = $2 AND place = $3',
       [owner, journey, place],
     );
-    if (!rows[0]) return undefined;
-    return { id: rows[0].id, image: new Uint8Array(rows[0].image) };
+    return rows[0]
+      ? { id: rows[0].id, image: new Uint8Array(rows[0].image) }
+      : undefined;
   },
   async photoPlaces(owner, journey) {
     const { rows } = await query<{ place: string }>(
@@ -268,12 +251,11 @@ export const authRepository: AuthRepository = {
         [previous, now],
       );
       const current = rows[0]?.owner;
-      if (!current) {
+      if (!current)
         throw new ApplicationError(
           'SESSION_REQUIRED',
           '로그인 세션이 만료되었습니다. 다시 시도해 주세요.',
         );
-      }
       if (current === previous) {
         await client.query('UPDATE journeys SET owner = $1 WHERE owner = $2', [
           owner,
@@ -284,13 +266,7 @@ export const authRepository: AuthRepository = {
           previous,
         ]);
       }
-      await client.query('DELETE FROM sessions WHERE token = $1', [previous]);
-      await client.query('DELETE FROM account_sessions WHERE token = $1', [
-        previous,
-      ]);
-      await client.query('DELETE FROM oauth_states WHERE session = $1', [
-        previous,
-      ]);
+      await deleteSession(client, previous);
       await client.query(
         'INSERT INTO sessions (token, expires) VALUES ($1, $2)',
         [next, now + 30 * 86400000],
@@ -301,15 +277,7 @@ export const authRepository: AuthRepository = {
       );
     });
   },
-  async revoke(hash) {
-    await transaction(async (client) => {
-      await client.query('DELETE FROM sessions WHERE token = $1', [hash]);
-      await client.query('DELETE FROM account_sessions WHERE token = $1', [
-        hash,
-      ]);
-      await client.query('DELETE FROM oauth_states WHERE session = $1', [hash]);
-    });
-  },
+  revoke: (hash) => transaction((client) => deleteSession(client, hash)),
 };
 
 export const limits: LimitPort = { consume: consumeLimit };

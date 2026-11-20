@@ -4,6 +4,8 @@ import {
   checkOrigin,
   cookieOptions,
   failure,
+  oauthStateCookie,
+  redirect303,
   sessionCookie,
 } from '@/lib/adapters/http';
 export const runtime = 'nodejs';
@@ -13,15 +15,8 @@ export async function POST(request: Request) {
     const jar = await cookies();
     const login = await auth.begin(jar.get(sessionCookie)?.value);
     jar.set(sessionCookie, login.token, cookieOptions());
-    jar.set('tourpass-oauth-state', login.state, cookieOptions(600));
-    return new Response(null, {
-      status: 303,
-      headers: {
-        Location: login.url,
-        'Cache-Control': 'no-store',
-        'Referrer-Policy': 'no-referrer',
-      },
-    });
+    jar.set(oauthStateCookie, login.state, cookieOptions(600));
+    return redirect303(login.url);
   } catch (error) {
     return failure(error);
   }
