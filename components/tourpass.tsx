@@ -33,9 +33,11 @@ const today = () =>
 export default function Tourpass({
   places,
   capabilities,
+  naverMapClientId = '',
 }: {
   places: Place[];
   capabilities: Capabilities;
+  naverMapClientId?: string;
 }) {
   const [tab, setTab] = useState<Tab>('explore');
   const [exploreTask, setExploreTask] = useState<
@@ -298,7 +300,7 @@ export default function Tourpass({
                   ? '여행 코스 완성'
                   : exploreTask === 'recommend'
                     ? '맞춤 코스 제안'
-                    : '경기 관광지 20곳'}
+                    : `경기 관광지 ${places.length}곳`}
               </span>
               {exploreTask === 'browse' ? (
                 <h2>경기 둘러보기</h2>
@@ -393,6 +395,7 @@ export default function Tourpass({
                 region={region}
                 viewMode={viewMode}
                 hidden={exploreTask !== 'browse'}
+                naverMapClientId={naverMapClientId}
                 onQuery={setQuery}
                 onRegion={setRegion}
                 onViewMode={setViewMode}
@@ -540,6 +543,7 @@ export default function Tourpass({
             auth={auth}
             places={places}
             capabilities={capabilities}
+            naverMapClientId={naverMapClientId}
             onRetrySession={() => void loadSession()}
             onExplore={() => {
               setTab('explore');

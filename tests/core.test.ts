@@ -94,7 +94,7 @@ test('키 없는 데모는 지역을 제한하고 만족도를 반영한다', as
   const key = process.env.CLOVA_STUDIO_API_KEY;
   delete process.env.CLOVA_STUDIO_API_KEY;
   try {
-    const r = await recommend('조용한 여행', '전체', [
+    const r = await recommend('조용한 여행', places[5].region, [
       { placeId: places[5].id, rating: 5 },
     ]);
     assert.equal(r.mode, 'demo');
@@ -295,23 +295,23 @@ test('경기 날씨 API는 실시간 Open-Meteo 파싱, 오프라인 데모 폴�
     globalThis.fetch = oldFetch;
   }
 });
-test('관광지 카탈로그 20곳이 모두 유효한 지도 좌표를 가진다', () => {
-  assert.equal(places.length, 20);
+test('경기도 관광지와 기존 시흥 20곳이 유효한 지도 좌표를 가진다', () => {
+  assert.equal(places.filter((p) => p.cityId === '41390').length, 20);
   for (const p of places) {
     assert.ok(
-      p.coordinates.lat >= 37.3 && p.coordinates.lat <= 37.5,
+      p.coordinates.lat >= 36.8 && p.coordinates.lat <= 38.35,
       `${p.id} 위도 범위 오류`,
     );
     assert.ok(
-      p.coordinates.lng >= 126.65 && p.coordinates.lng <= 126.86,
+      p.coordinates.lng >= 126.3 && p.coordinates.lng <= 127.9,
       `${p.id} 경도 범위 오류`,
     );
     assert.ok(
-      p.coordinates.x >= 50 && p.coordinates.x <= 760,
+      p.coordinates.x >= 0 && p.coordinates.x <= 800,
       `${p.id} SVG x 범위 오류`,
     );
     assert.ok(
-      p.coordinates.y >= 40 && p.coordinates.y <= 500,
+      p.coordinates.y >= 0 && p.coordinates.y <= 520,
       `${p.id} SVG y 범위 오류`,
     );
   }

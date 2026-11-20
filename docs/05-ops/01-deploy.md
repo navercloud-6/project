@@ -4,7 +4,7 @@
 
 ## 환경 변수와 NAVER Cloud 연결
 
-설정 이름·기본값은 [.env.example](../../.env.example)을 원본으로 사용한다. 로컬은 `.env.local`, 운영은 `/etc/siheung-tourpass/app.env`(권한 `0600`)에 저장하고 재시작한다. 키는 서버 전용이며 `NEXT_PUBLIC_`을 붙이지 않는다.
+설정 이름·기본값은 [.env.example](../../.env.example)을 원본으로 사용한다. 로컬은 `.env.local`, 운영은 `/etc/siheung-tourpass/app.env`(권한 `0600`)에 저장하고 재시작한다. 모든 설정은 `NEXT_PUBLIC_` 없이 런타임 환경 파일로 주입하며, 비밀 키는 서버 전용으로 유지한다(네이버 지도 Client ID만 서버 렌더 시 브라우저 SDK 로드에 전달한다).
 
 | 서비스 | 준비할 인증 정보 |
 | --- | --- |
@@ -13,6 +13,7 @@
 | CLOVA Voice | Voice를 활성화한 AI·NAVER API 앱 ID·Secret을 설정한다. |
 | Papago | 별도 Translation 앱 ID·Secret을 설정한다. |
 | General OCR | `/general`로 끝나는 HTTPS API Gateway Invoke URL(`*.apigw.ntruss.com`)·Secret을 설정한다. |
+| Maps (Web Dynamic Map) | Web Dynamic Map을 활성화한 Maps 앱의 Client ID(`NAVER_MAP_CLIENT_ID`)를 설정하고 콘솔의 Web 서비스 URL에 `APP_ORIGIN`을 등록한다. 미설정·인증 실패 시 내장 SVG 지도로 폴백한다. |
 
 키 없는 동작·전송 범위·과금 남용 한도는 [요구사항](../01-func/01-requirements.md)을 따른다. 실제 호출은 과금될 수 있다.
 

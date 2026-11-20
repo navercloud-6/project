@@ -11,6 +11,7 @@ export function PlaceCatalog({
   region,
   viewMode,
   hidden,
+  naverMapClientId = '',
   onQuery,
   onRegion,
   onViewMode,
@@ -25,6 +26,7 @@ export function PlaceCatalog({
   region: string;
   viewMode: 'grid' | 'map';
   hidden: boolean;
+  naverMapClientId?: string;
   onQuery: (query: string) => void;
   onRegion: (region: string) => void;
   onViewMode: (mode: 'grid' | 'map') => void;
@@ -108,6 +110,7 @@ export function PlaceCatalog({
           places={places}
           visiblePlaces={filtered}
           routeIds={selection}
+          naverMapClientId={naverMapClientId}
           onToggle={onToggle}
           onDetail={onDetail}
         />
