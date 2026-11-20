@@ -2277,6 +2277,7 @@ dialog {
   overflow: hidden;
 }
 .gyeonggi-map-panel {
+  position: relative;
   background: #f2f7f5;
 }
 .gyeonggi-map-heading {
@@ -2288,6 +2289,53 @@ dialog {
   font-size: 13px;
   font-weight: 700;
 }
+.gyeonggi-map-weather {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 62px;
+}
+.gyeonggi-map-weather-icon {
+  color: #e3a126;
+}
+.gyeonggi-map-weather-icon.cloud,
+.gyeonggi-map-weather-icon.cloud-sun {
+  color: #8b9fa8;
+}
+.gyeonggi-map-weather-icon.rain,
+.gyeonggi-map-weather-icon.snow {
+  color: #649bc6;
+}
+.gyeonggi-map-weather-icon.wind {
+  color: #658f83;
+}
+.gyeonggi-map-weather strong {
+  color: #34564b;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.gyeonggi-map-weather strong > span {
+  font-size: 14px;
+  font-weight: 500;
+  margin-left: 2px;
+}
+.gyeonggi-map-weather small {
+  color: #71847b;
+  font-size: 10px;
+}
+.gyeonggi-map-guidance {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 24px 12px;
+}
 .gyeonggi-map-heading > span:first-child {
   display: inline-flex;
   align-items: center;
@@ -2298,11 +2346,6 @@ dialog {
   height: 7px;
   background: var(--teal);
   border-radius: 50%;
-}
-.gyeonggi-map-hint {
-  color: #6c827d;
-  font-size: 11px;
-  font-weight: 400;
 }
 .gyeonggi-map-svg {
   display: block;
@@ -2649,8 +2692,20 @@ dialog {
   .gyeonggi-map-heading {
     padding: 18px 16px 0;
   }
-  .gyeonggi-map-hint {
-    font-size: 10px;
+  .gyeonggi-map-weather {
+    top: 48px;
+    right: 16px;
+    min-width: 48px;
+  }
+  .gyeonggi-map-weather-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .gyeonggi-map-weather strong {
+    font-size: 21px;
+  }
+  .gyeonggi-map-guidance {
+    margin-inline: 16px;
   }
   .gyeonggi-map-controls {
     margin-inline: 16px;

@@ -3,11 +3,25 @@
 import Image from 'next/image';
 import { useId } from 'react';
 import type { Place } from '@/lib/domain/catalog';
+import type { WeatherIcon } from '@/lib/domain/weather';
+import { WeatherSymbol, weatherIconLabels } from './weather-symbol';
 import {
   gyeonggiCities,
   gyeonggiMap,
   placesInCity,
 } from '@/lib/domain/gyeonggi';
+
+export type CityMapWeather = {
+  icon: WeatherIcon;
+  temperature: number;
+  mode: 'demo' | 'live';
+};
+
+const previewWeather: CityMapWeather = {
+  icon: 'sun',
+  temperature: 10,
+  mode: 'demo',
+};
 
 function LocationIcon({ className = '' }: { className?: string }) {
   return (
@@ -32,6 +46,7 @@ export function GyeonggiCityExplorer({
   places,
   selectedCityId,
   selection,
+  weather = previewWeather,
   onSelectCity,
   onDetail,
   onToggle,
@@ -39,6 +54,7 @@ export function GyeonggiCityExplorer({
   places: Place[];
   selectedCityId: string | null;
   selection: string[];
+  weather?: CityMapWeather;
   onSelectCity: (cityId: string | null) => void;
   onDetail: (place: Place) => void;
   onToggle: (placeId: string) => void;
@@ -69,7 +85,22 @@ export function GyeonggiCityExplorer({
             <span>
               <span className="map-status-dot" /> 경기도 여행 지도
             </span>
-            <span className="gyeonggi-map-hint">도시를 선택해 보세요</span>
+            <div
+              className="gyeonggi-map-weather"
+              role="img"
+              aria-label={`${weather.mode === 'demo' ? '예시 날씨' : '날씨'}: ${weatherIconLabels[weather.icon]}, ${weather.temperature}도`}
+            >
+              <WeatherSymbol
+                icon={weather.icon}
+                size={40}
+                className={`gyeonggi-map-weather-icon ${weather.icon}`}
+              />
+              <strong>
+                {weather.temperature}
+                <span>°C</span>
+              </strong>
+              {weather.mode === 'demo' && <small>예시 날씨</small>}
+            </div>
           </div>
           <svg
             className="gyeonggi-map-svg"
@@ -124,16 +155,23 @@ export function GyeonggiCityExplorer({
                 </text>
               ))}
             </g>
-            <g
-              className="gyeonggi-map-compass"
-              transform="translate(726 52)"
-              aria-hidden="true"
-            >
-              <text y="-16">N</text>
-              <path d="M0-7 5 8 0 5-5 8Z" />
-              <path d="M0 5V25" />
-            </g>
           </svg>
+          <div className="gyeonggi-map-guidance">
+            <svg
+              className="gyeonggi-map-compass"
+              viewBox="0 0 24 48"
+              width="24"
+              height="48"
+              role="img"
+              aria-label="북쪽 방향"
+            >
+              <text x="12" y="12">
+                N
+              </text>
+              <path d="m12 20 5 15-5-3-5 3Z" />
+              <path d="M12 32v12" />
+            </svg>
+          </div>
           <div className="gyeonggi-map-controls">
             <label>
               <span className="sr-only">지도에서 선택할 시·군</span>
