@@ -69,6 +69,7 @@ TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs
 - [작업 지침](AGENTS.md)은 작업 순서와 문서 관리 규칙을 정의한다.
 - [관광 데이터](data/places.json)는 장소·출처·사진 정보를 담는다.
 - [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)은 `frontend` 브랜치의 구현 순서·검증 계획·미확정 항목을 관리한다.
+- [프로젝트 평가 항목 안내](docs/evaluation.md)는 평가 영역별 배점과 세부 기준, 관련 명세 위치를 정리한다.
 
 ### 문서 분류 기준
 
