@@ -12,7 +12,7 @@
 
 ## 기술 스택
 
-Next.js 16 App Router · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · Node.js 24 내장 SQLite · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR). 버전은 [package.json](package.json)과 [잠금 파일](package-lock.json)에서 관리한다.
+Next.js 16 App Router · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · Node.js 24 내장 SQLite · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR·Maps). 버전은 [package.json](package.json)과 [잠금 파일](package-lock.json)에서 관리한다.
 
 ## 시작하기
 

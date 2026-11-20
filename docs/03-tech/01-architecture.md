@@ -27,7 +27,7 @@
 
 ## 경기도 지역 선택 지도
 
-[PlaceMap](../../components/place-map.tsx)은 관광지와 여행 동선을 표시하는 위치도다. 시흥만 표시할 때는 기존 개략 지도를 사용하고 다른 시·군을 포함하면 경기도 경계와 GPS 투영 좌표를 사용한다. [경기도 지도와 도시 관광지 패널](../../components/gyeonggi-city-explorer.tsx)은 [지도 요구사항](../01-func/01-requirements.md#경기도-지역-선택-지도)에 따른 별도 탐색 컴포넌트다. 남은 작업은 [작업 계획](../gyeonggi-city-map-plan.md)에서 관리한다.
+[PlaceMap](../../components/place-map.tsx)은 관광지 위치와 여행 동선을 네이버 지도로 표시하고, 키 미설정·오류 시 내장 SVG 개략 지도로 폴백한다. SVG 폴백은 시흥만 표시할 때 기존 개략 지도를, 다른 시·군을 포함하면 경기도 경계와 GPS 투영 좌표를 사용한다. [경기도 지도와 도시 관광지 패널](../../components/gyeonggi-city-explorer.tsx)은 [지도 요구사항](../01-func/01-requirements.md#경기도-지역-선택-지도)에 따른 별도 탐색 컴포넌트다. 남은 작업은 [작업 계획](../gyeonggi-city-map-plan.md)에서 관리한다.
 
 - 경계 데이터는 SGIS 행정동 경계를 보정한 [vuski/admdongkor의 2026-10-01 자료](https://github.com/vuski/admdongkor/tree/3bc00489b76696db864bdbea4b19985cdfa8b403/ver20261001)를 사용한다. 원본은 EPSG:4326이며, [데이터 라이선스](https://github.com/vuski/admdongkor/blob/master/LICENSE-DATA)에 따라 SGIS·가공자·CC BY 4.0 표기를 보존한다. 원본 파일은 개발용 임시 경로에 두고 화면용 경계와 출처 정보만 저장소에 포함한다.
 - 가공 단계에서 경기도만 추출하고 일반구를 상위 시로 병합한다. 공통 경계, 섬·분리된 영역과 서울 등 비대상 지역의 공백을 보존하면서 표시 크기에 맞게 단순화한다. 자료 기준일이 현재 행정구역 현황과 다르면 차이를 검토한 뒤 채택한다.
@@ -37,6 +37,15 @@
 - 지도와 오른쪽 관광지 목록은 탐색 화면 상단의 독립 컴포넌트로 조립한다. 관광 카탈로그에 시·군 식별자 `cityId`를 두고 오른쪽 목록은 이를 기준으로 필터링한다. 기존 장소 ID·여행 저장·상세 보기·담기 동작은 재사용한다.
 - 첫 구현은 브라우저에서 정적 경계 자료와 카탈로그를 표시하며 지도 API 키와 새 서버 API를 요구하지 않는다. AI 추천·날씨 연계는 별도 유스케이스·계약 변경으로 진행한다.
 - 지도 상단 날씨는 아이콘 종류·기온·예시/실시간 구분을 입력으로 받고 기본값은 맑음·10°C 예시다. [날씨 아이콘](../../components/weather-symbol.tsx)은 기존 날씨 화면과 공유하는 SVG 컴포넌트로 분리한다. 이 표시를 위해 새 API를 호출하지 않으며 기존 시흥 날씨 조회 동작은 유지한다.
+
+## 네이버 지도
+
+[PlaceMap](../../components/place-map.tsx)은 관광지 탐색의 지도 보기와 내 여행의 코스 지도에서 NAVER Cloud Platform Maps(Web Dynamic Map v3)를 사용한다. 상단 [경기도 지역 선택 지도](#경기도-지역-선택-지도)의 정적 SVG 경계 지도는 유지한다.
+
+- [네이버 지도 어댑터](../../lib/adapters/naver-map.ts)는 `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=...` 스크립트를 브라우저에서 한 번만 로드하고 `window.navermap_authFailure` 인증 실패 콜백을 감지한다.
+- `NAVER_MAP_CLIENT_ID`는 [서버 조립 지점](../../lib/server.ts)을 통해 `force-dynamic` 홈 페이지가 런타임에 읽어 클라이언트로 전달한다. `NEXT_PUBLIC_` 빌드 시 인라인을 사용하지 않으므로 Docker 단일 이미지에서 환경 파일만으로 전환할 수 있다. Client ID는 Web 서비스 URL 허용 목록으로 보호되는 공개 식별자이며 Secret 키는 사용하지 않는다.
+- 키가 없거나 스크립트 로드·인증에 실패하면 내장 SVG 개략 지도로 자동 폴백하고 사유를 캡션에 안내한다.
+- 내 여행의 접이식 코스 지도(`<details>`)는 패널이 열린 시점에 네이버 지도를 초기화하고 크기 변화를 감지해 뷰포트를 재계산한다.
 
 ## 관광 데이터 수집
 

@@ -1,7 +1,18 @@
 'use client';
 import Image from 'next/image';
-import { useEffect, useId, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
+import {
+  loadNaverMaps,
+  naverMapSearchUrl,
+  normalizeNaverMapClientId,
+  onNaverMapAuthFailure,
+  type NaverMap,
+  type NaverMapEventListener,
+  type NaverMaps,
+  type NaverMarker,
+  type NaverPolyline,
+} from '@/lib/adapters/naver-map';
 import { gyeonggiMap } from '@/lib/domain/gyeonggi';
 import { projectRoute } from '@/lib/domain/coordinates';
 
@@ -20,6 +31,697 @@ const REGION_ANCHORS: RegionAnchor[] = [
   { name: '거북섬', x: 72, y: 452 },
 ];
 
+const DEFAULT_CENTER = { lat: 37.38, lng: 126.74 };
+const FEATURED_LABEL_IDS = new Set([
+  'PLACE_REAL_001',
+  'PLACE_REAL_008',
+  'PLACE_REAL_009',
+  'PLACE_REAL_011',
+  'PLACE_REAL_012',
+]);
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function fitMapToPlaces(maps: NaverMaps, map: NaverMap, places: Place[]) {
+  if (places.length === 0) {
+    map.setCenter(new maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng));
+    map.setZoom(12, false);
+    return;
+  }
+  if (places.length === 1) {
+    const only = places[0];
+    map.setCenter(new maps.LatLng(only.coordinates.lat, only.coordinates.lng));
+    map.setZoom(14, false);
+    return;
+  }
+  const first = new maps.LatLng(
+    places[0].coordinates.lat,
+    places[0].coordinates.lng,
+  );
+  const bounds = new maps.LatLngBounds(first, first);
+  for (const place of places.slice(1)) {
+    bounds.extend(
+      new maps.LatLng(place.coordinates.lat, place.coordinates.lng),
+    );
+  }
+  map.fitBounds(bounds, { top: 48, right: 48, bottom: 56, left: 48 });
+}
+
+function markerHtml({
+  name,
+  routeIndex,
+  isActive,
+  hasRecord,
+  isDim,
+  showLabel,
+}: {
+  name: string;
+  routeIndex: number;
+  isActive: boolean;
+  hasRecord: boolean;
+  isDim: boolean;
+  showLabel: boolean;
+}): string {
+  const inRoute = routeIndex !== -1;
+  const classes = [
+    'nm-pin',
+    inRoute ? 'is-route' : '',
+    hasRecord ? 'is-recorded' : '',
+    isActive ? 'is-active' : '',
+    isDim ? 'is-dim' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  const labelText = inRoute ? `${routeIndex + 1}. ${name}` : name;
+  const dotBody = inRoute
+    ? `<span>${routeIndex + 1}</span>`
+    : '<span class="nm-dot-core"></span>';
+  const labelHtml = showLabel
+    ? `<span class="nm-label">${escapeHtml(labelText)}</span>`
+    : '';
+  return `<div class="${classes}" title="${escapeHtml(name)}"><span class="nm-dot">${dotBody}</span>${labelHtml}</div>`;
+}
+
+function NaverMapCanvas({
+  clientId,
+  compact,
+  mapPlaces,
+  routePlaces,
+  routeIds,
+  visibleIds,
+  activeId,
+  records,
+  onSelect,
+  onStatusChange,
+  onFallback,
+}: {
+  clientId: string;
+  compact: boolean;
+  mapPlaces: Place[];
+  routePlaces: Place[];
+  routeIds: string[];
+  visibleIds: Set<string>;
+  activeId: string | null;
+  records?: Record<string, { rating: number; note: string }>;
+  onSelect: (placeId: string) => void;
+  onStatusChange: (status: 'loading' | 'ready') => void;
+  onFallback: (reason: string) => void;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapsRef = useRef<NaverMaps | null>(null);
+  const mapRef = useRef<NaverMap | null>(null);
+  const markersRef = useRef<NaverMarker[]>([]);
+  const listenersRef = useRef<NaverMapEventListener[]>([]);
+  const polylinesRef = useRef<NaverPolyline[]>([]);
+  const lastBoundsKeyRef = useRef<string>('');
+  const lastActiveIdRef = useRef<string | null>(null);
+  const mapPlacesRef = useRef<Place[]>(mapPlaces);
+  const onSelectRef = useRef(onSelect);
+  const onStatusRef = useRef(onStatusChange);
+  const onFallbackRef = useRef(onFallback);
+  const [ready, setReady] = useState(false);
+
+  mapPlacesRef.current = mapPlaces;
+  onSelectRef.current = onSelect;
+  onStatusRef.current = onStatusChange;
+  onFallbackRef.current = onFallback;
+
+  const clearOverlays = useCallback(() => {
+    const maps = mapsRef.current;
+    for (const listener of listenersRef.current) {
+      maps?.Event.removeListener(listener);
+    }
+    listenersRef.current = [];
+    for (const marker of markersRef.current) {
+      marker.setMap(null);
+    }
+    markersRef.current = [];
+    for (const polyline of polylinesRef.current) {
+      polyline.setMap(null);
+    }
+    polylinesRef.current = [];
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    let observer: ResizeObserver | null = null;
+    let hadSize = false;
+
+    setReady(false);
+    onStatusRef.current('loading');
+
+    const fail = (reason: string) => {
+      if (cancelled) return;
+      clearOverlays();
+      mapRef.current?.destroy();
+      mapRef.current = null;
+      mapsRef.current = null;
+      setReady(false);
+      onFallbackRef.current(reason);
+    };
+
+    const unsubscribeAuth = onNaverMapAuthFailure(() => {
+      fail(
+        '네이버 지도 인증에 실패해 개략 위치도로 전환했습니다. API 키와 Web 서비스 URL 설정을 확인해 주세요.',
+      );
+    });
+
+    loadNaverMaps(clientId)
+      .then((maps) => {
+        if (cancelled || !containerRef.current) return;
+        const element = containerRef.current;
+        const initialPlaces = mapPlacesRef.current;
+        const first = initialPlaces[0]?.coordinates ?? DEFAULT_CENTER;
+        const map = new maps.Map(element, {
+          center: new maps.LatLng(first.lat, first.lng),
+          zoom: 12,
+          minZoom: 9,
+          maxZoom: 18,
+          zoomControl: true,
+          zoomControlOptions: maps.Position?.TOP_RIGHT
+            ? { position: maps.Position.TOP_RIGHT }
+            : undefined,
+          mapDataControl: true,
+          scaleControl: true,
+        });
+
+        mapsRef.current = maps;
+        mapRef.current = map;
+        lastBoundsKeyRef.current = '';
+        lastActiveIdRef.current = null;
+        hadSize = element.clientWidth > 0 && element.clientHeight > 0;
+
+        if (typeof ResizeObserver !== 'undefined') {
+          observer = new ResizeObserver((entries) => {
+            const rect = entries[0]?.contentRect;
+            if (!rect || rect.width === 0 || rect.height === 0) return;
+            maps.Event.trigger(map, 'resize');
+            if (!hadSize) {
+              hadSize = true;
+              fitMapToPlaces(maps, map, mapPlacesRef.current);
+            }
+          });
+          observer.observe(element);
+        }
+
+        setReady(true);
+        onStatusRef.current('ready');
+      })
+      .catch(() => {
+        fail(
+          '네이버 지도를 불러오지 못해 개략 위치도로 전환했습니다. 네트워크와 API 키 설정을 확인해 주세요.',
+        );
+      });
+
+    return () => {
+      cancelled = true;
+      unsubscribeAuth();
+      observer?.disconnect();
+      clearOverlays();
+      mapRef.current?.destroy();
+      mapRef.current = null;
+      mapsRef.current = null;
+      lastBoundsKeyRef.current = '';
+      lastActiveIdRef.current = null;
+    };
+  }, [clientId, clearOverlays]);
+
+  useEffect(() => {
+    if (!ready) return;
+    const maps = mapsRef.current;
+    const map = mapRef.current;
+    if (!maps || !map) return;
+
+    clearOverlays();
+
+    if (routePlaces.length > 1) {
+      const path = routePlaces.map(
+        (place) =>
+          new maps.LatLng(place.coordinates.lat, place.coordinates.lng),
+      );
+      polylinesRef.current = [
+        new maps.Polyline({
+          map,
+          path,
+          strokeColor: '#ffffff',
+          strokeOpacity: 0.9,
+          strokeWeight: 7,
+          strokeLineCap: 'round',
+          strokeLineJoin: 'round',
+          zIndex: 20,
+        }),
+        new maps.Polyline({
+          map,
+          path,
+          strokeColor: '#1258a5',
+          strokeOpacity: 0.95,
+          strokeWeight: 3.5,
+          strokeStyle: 'shortdash',
+          strokeLineCap: 'round',
+          strokeLineJoin: 'round',
+          zIndex: 30,
+        }),
+      ];
+    }
+
+    const nextMarkers: NaverMarker[] = [];
+    const nextListeners: NaverMapEventListener[] = [];
+
+    for (const place of mapPlaces) {
+      const routeIndex = routeIds.indexOf(place.id);
+      const inRoute = routeIndex !== -1;
+      const isActive = activeId === place.id;
+      const isVisible = visibleIds.has(place.id);
+      const hasRecord = Boolean(records && records[place.id]);
+      const showLabel =
+        isActive ||
+        inRoute ||
+        mapPlaces.length <= 8 ||
+        FEATURED_LABEL_IDS.has(place.id);
+
+      const marker = new maps.Marker({
+        map,
+        position: new maps.LatLng(place.coordinates.lat, place.coordinates.lng),
+        title: place.name,
+        zIndex: isActive ? 300 : inRoute ? 200 : 100,
+        icon: {
+          content: markerHtml({
+            name: place.name,
+            routeIndex,
+            isActive,
+            hasRecord,
+            isDim: !compact && !isVisible && !inRoute,
+            showLabel,
+          }),
+          anchor: new maps.Point(16, 16),
+        },
+      });
+      const listener = maps.Event.addListener(marker, 'click', () => {
+        onSelectRef.current(place.id);
+      });
+      nextMarkers.push(marker);
+      nextListeners.push(listener);
+    }
+
+    markersRef.current = nextMarkers;
+    listenersRef.current = nextListeners;
+
+    const boundsKey = mapPlaces.map((place) => place.id).join('|');
+    if (boundsKey !== lastBoundsKeyRef.current) {
+      lastBoundsKeyRef.current = boundsKey;
+      lastActiveIdRef.current = activeId;
+      fitMapToPlaces(maps, map, mapPlaces);
+    } else if (activeId && activeId !== lastActiveIdRef.current) {
+      lastActiveIdRef.current = activeId;
+      const target = mapPlaces.find((place) => place.id === activeId);
+      if (target) {
+        map.panTo(
+          new maps.LatLng(target.coordinates.lat, target.coordinates.lng),
+        );
+      }
+    }
+  }, [
+    ready,
+    compact,
+    mapPlaces,
+    routePlaces,
+    routeIds,
+    visibleIds,
+    activeId,
+    records,
+    clearOverlays,
+  ]);
+
+  const handleFitAll = () => {
+    const maps = mapsRef.current;
+    const map = mapRef.current;
+    if (!maps || !map) return;
+    fitMapToPlaces(maps, map, mapPlaces);
+  };
+
+  return (
+    <div
+      className={compact ? 'naver-map-stage compact' : 'naver-map-stage'}
+      data-map-provider="naver"
+    >
+      <div
+        ref={containerRef}
+        className="naver-map-canvas"
+        role="application"
+        aria-label="네이버 지도 — 경기도(시흥권) 관광지 위치와 여행 동선"
+      />
+      {!ready && (
+        <div className="naver-map-loading" role="status" aria-live="polite">
+          네이버 지도를 불러오는 중입니다…
+        </div>
+      )}
+      {ready && mapPlaces.length > 0 && (
+        <button
+          type="button"
+          className="naver-map-fit-btn"
+          onClick={handleFitAll}
+        >
+          전체 보기
+        </button>
+      )}
+    </div>
+  );
+}
+
+const SIHEUNG_CITY_ID = '41390';
+
+/** 시흥 외 시·군이 포함되면 경기도 경계와 GPS 투영 좌표를 사용한다. */
+function isProvinceView(places: Place[]): boolean {
+  return places.some((place) => place.cityId !== SIHEUNG_CITY_ID);
+}
+
+function SiheungFallbackSvg({
+  mapId,
+  compact,
+  mapPlaces,
+  routePlaces,
+  routeIds,
+  visibleIds,
+  activePlace,
+  records,
+  onSelect,
+}: {
+  mapId: string;
+  compact: boolean;
+  mapPlaces: Place[];
+  routePlaces: Place[];
+  routeIds: string[];
+  visibleIds: Set<string>;
+  activePlace: Place | null;
+  records?: Record<string, { rating: number; note: string }>;
+  onSelect: (placeId: string) => void;
+}) {
+  const seaGradient = `${mapId}-sea`;
+  const landGradient = `${mapId}-land`;
+  const provinceView = isProvinceView(mapPlaces);
+  const pointFor = (place: Place) =>
+    provinceView
+      ? projectRoute(place.coordinates.lat, place.coordinates.lng)
+      : place.coordinates;
+  const polylinePoints = routePlaces
+    .map((p) => `${pointFor(p).x},${pointFor(p).y}`)
+    .join(' ');
+
+  return (
+    <svg
+      className="siheung-map-svg"
+      viewBox="0 0 800 520"
+      role="img"
+      aria-label={`${provinceView ? '경기도' : '경기도(시흥권)'} 관광지 위치와 여행 동선 개략 지도`}
+    >
+      <defs>
+        <linearGradient id={seaGradient} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#dff0fa" />
+          <stop offset="100%" stopColor="#eaf4fa" />
+        </linearGradient>
+        <linearGradient id={landGradient} x1="0" y1="0" x2="0.9" y2="1">
+          <stop offset="0%" stopColor="#f8fbf9" />
+          <stop offset="100%" stopColor="#eef6f2" />
+        </linearGradient>
+      </defs>
+
+      {provinceView ? (
+        <>
+          <rect
+            width="800"
+            height="520"
+            fill={`url(#${seaGradient})`}
+            rx="12"
+          />
+          <g
+            transform="translate(133.333333 20) scale(0.666666667)"
+            aria-hidden="true"
+          >
+            <path
+              d={gyeonggiMap.context.path}
+              fill="#e7e9ed"
+              stroke="#b9c5cf"
+              fillRule="evenodd"
+            />
+            {gyeonggiMap.cities.map((city) => (
+              <path
+                key={city.id}
+                d={city.path}
+                fill={`url(#${landGradient})`}
+                stroke="#b9d5cb"
+                strokeWidth="1.5"
+                fillRule="evenodd"
+              />
+            ))}
+          </g>
+        </>
+      ) : (
+        <>
+          {/* 서해 배경 */}
+          <rect
+            x="0"
+            y="0"
+            width="800"
+            height="520"
+            fill={`url(#${seaGradient})`}
+            rx="12"
+          />
+
+          {/* 서해 물결 장식 */}
+          <g stroke="#b8d9ed" strokeWidth="1.5" fill="none" opacity="0.7">
+            <path d="M 28 120 Q 48 112 68 120 T 108 120" />
+            <path d="M 45 220 Q 65 212 85 220 T 125 220" />
+            <path d="M 24 490 Q 44 482 64 490 T 104 490" />
+          </g>
+          <text x="36" y="160" className="map-sea-label">
+            서해 (황해)
+          </text>
+          <text x="235" y="488" className="map-sea-label">
+            시화호
+          </text>
+
+          {/* 시흥 내륙 지형 폴리곤 */}
+          <path
+            d="M 380 18 L 620 18 L 765 95 L 778 330 L 665 435 L 435 430 L 315 398 L 220 385 L 135 415 L 102 385 L 128 340 L 210 325 L 245 268 L 318 182 L 352 105 Z"
+            fill={`url(#${landGradient})`}
+            stroke="#b9d5cb"
+            strokeWidth="2.5"
+            strokeLinejoin="round"
+          />
+
+          {/* 거북섬 (인공섬) 지형 */}
+          <path
+            d="M 96 426 Q 138 412 184 440 Q 186 476 142 482 Q 98 478 96 426 Z"
+            fill="#f4faf7"
+            stroke="#b9d5cb"
+            strokeWidth="2.2"
+          />
+
+          {/* 시화방조제 연결선 (오이도 ~ 거북섬/대부도 방향) */}
+          <path
+            d="M 148 408 L 132 428"
+            stroke="#9abcc9"
+            strokeWidth="3"
+            strokeDasharray="4 3"
+          />
+
+          {/* 갯골 생태 수로 & 호조벌 물길 */}
+          <path
+            d="M 332 196 Q 395 215 455 235 T 575 215"
+            fill="none"
+            stroke="#a5d1e8"
+            strokeWidth="7"
+            strokeLinecap="round"
+            opacity="0.75"
+          />
+          <path
+            d="M 455 235 Q 485 268 535 280"
+            fill="none"
+            stroke="#a5d1e8"
+            strokeWidth="4.5"
+            strokeLinecap="round"
+            opacity="0.65"
+          />
+
+          {/* 은계호수 · 물왕호수 수면 표현 */}
+          <ellipse
+            cx="525"
+            cy="116"
+            rx="22"
+            ry="11"
+            fill="#bde0f2"
+            stroke="#8ec2de"
+            strokeWidth="1.2"
+          />
+          <ellipse
+            cx="685"
+            cy="276"
+            rx="30"
+            ry="15"
+            fill="#bde0f2"
+            stroke="#8ec2de"
+            strokeWidth="1.2"
+          />
+
+          {/* 소래산 능선 표현 */}
+          <path
+            d="M 442 82 L 478 44 L 514 82 Z"
+            fill="#dfeee6"
+            stroke="#9ec4b3"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+
+          {/* 권역 라벨 */}
+          {REGION_ANCHORS.map((r) => (
+            <text
+              key={r.name}
+              x={r.x}
+              y={r.y}
+              className="map-region-text"
+              textAnchor="middle"
+            >
+              {r.name}
+            </text>
+          ))}
+        </>
+      )}
+
+      {/* 여행 패스 동선 연결선 */}
+      {routePlaces.length > 1 && (
+        <g aria-hidden="true">
+          <polyline
+            points={polylinePoints}
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.9"
+          />
+          <polyline
+            points={polylinePoints}
+            fill="none"
+            stroke="#1258a5"
+            strokeWidth="3.5"
+            strokeDasharray="8 5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      )}
+
+      {/* 관광지 마커 */}
+      {mapPlaces.map((p) => {
+        const routeIndex = routeIds.indexOf(p.id);
+        const inRoute = routeIndex !== -1;
+        const isActive = activePlace?.id === p.id;
+        const isVisible = visibleIds.has(p.id);
+        const hasRecord = Boolean(records && records[p.id]);
+        const showLabel =
+          isActive ||
+          inRoute ||
+          mapPlaces.length <= 8 ||
+          FEATURED_LABEL_IDS.has(p.id);
+
+        const radius = isActive ? 16 : inRoute ? 14 : 10;
+        const fill = hasRecord
+          ? '#176b63'
+          : inRoute
+            ? '#1258a5'
+            : isActive
+              ? '#176b63'
+              : '#ffffff';
+        const stroke = isActive
+          ? '#e79323'
+          : inRoute || hasRecord
+            ? '#ffffff'
+            : '#176b63';
+        const opacity = !compact && !isVisible && !inRoute ? 0.4 : 1;
+
+        return (
+          <g
+            key={p.id}
+            className={isActive ? 'map-marker active' : 'map-marker'}
+            transform={`translate(${pointFor(p).x}, ${pointFor(p).y})`}
+            role="button"
+            tabIndex={0}
+            aria-label={`${p.name} (${p.region})${inRoute ? ` · 코스 ${routeIndex + 1}번째` : ''}${hasRecord ? ' · 방문 기록 완료' : ''}`}
+            aria-pressed={isActive}
+            style={{ opacity }}
+            onClick={() => onSelect(p.id)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelect(p.id);
+              }
+            }}
+          >
+            {isActive && (
+              <circle
+                r={radius + 5}
+                fill="none"
+                stroke="#e79323"
+                strokeWidth="2.5"
+                opacity="0.85"
+              />
+            )}
+            <circle
+              r={radius}
+              fill={fill}
+              stroke={stroke}
+              strokeWidth={isActive ? 3 : 2.2}
+            />
+            {inRoute ? (
+              <text
+                y="4"
+                textAnchor="middle"
+                fill="#ffffff"
+                fontSize="11"
+                fontWeight="800"
+              >
+                {routeIndex + 1}
+              </text>
+            ) : (
+              <circle r="4" fill={isActive ? '#ffffff' : '#176b63'} />
+            )}
+            {showLabel && (
+              <g transform={`translate(0, ${radius + 14})`}>
+                <rect
+                  x={-Math.max(p.name.length * 5.8 + 10, 44)}
+                  y="-11"
+                  width={Math.max(p.name.length * 11.6 + 20, 88)}
+                  height="20"
+                  rx="6"
+                  fill={isActive ? '#183343' : '#ffffffeb'}
+                  stroke={isActive ? '#183343' : '#cbe0ec'}
+                  strokeWidth="1"
+                />
+                <text
+                  y="3"
+                  textAnchor="middle"
+                  fill={isActive ? '#ffffff' : '#183343'}
+                  fontSize="11"
+                  fontWeight="700"
+                >
+                  {inRoute ? `${routeIndex + 1}. ${p.name}` : p.name}
+                </text>
+              </g>
+            )}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 type PlaceMapProps = {
   places: Place[];
   visiblePlaces: Place[];
@@ -29,6 +731,7 @@ type PlaceMapProps = {
   records?: Record<string, { rating: number; note: string }>;
   onRecord?: (place: Place) => void;
   compact?: boolean;
+  naverMapClientId?: string;
 };
 
 export function PlaceMap({
@@ -40,13 +743,23 @@ export function PlaceMap({
   records,
   onRecord,
   compact = false,
+  naverMapClientId = '',
 }: PlaceMapProps) {
   const mapId = useId();
-  const seaGradient = `${mapId}-sea`;
-  const landGradient = `${mapId}-land`;
+  const pickerId = `${mapId}-picker`;
+  const clientId = normalizeNaverMapClientId(naverMapClientId);
+  const [naverStatus, setNaverStatus] = useState<'loading' | 'ready'>(
+    'loading',
+  );
+  const [fallbackReason, setFallbackReason] = useState('');
   const [activeId, setActiveId] = useState<string | null>(
     routeIds[0] ?? visiblePlaces[0]?.id ?? null,
   );
+
+  useEffect(() => {
+    setFallbackReason('');
+    setNaverStatus('loading');
+  }, [clientId]);
 
   useEffect(() => {
     if (
@@ -74,14 +787,16 @@ export function PlaceMap({
     visiblePlaces[0] ??
     null;
 
-  const provinceView = mapPlaces.some((place) => place.cityId !== '41390');
-  const pointFor = (place: Place) =>
-    provinceView
-      ? projectRoute(place.coordinates.lat, place.coordinates.lng)
-      : place.coordinates;
-  const polylinePoints = routePlaces
-    .map((p) => `${pointFor(p).x},${pointFor(p).y}`)
-    .join(' ');
+  const useNaverMap = Boolean(clientId) && !fallbackReason;
+  const areaLabel = isProvinceView(mapPlaces) ? '경기도' : '경기도(시흥권)';
+
+  const captionText = useNaverMap
+    ? naverStatus === 'ready'
+      ? `네이버 지도 · ${areaLabel} 관광지 위치 및 직선 동선 (검토 전 시연 자료 · 실제 도로 경로 아님)`
+      : '네이버 지도를 불러오는 중입니다 (검토 전 시연 자료 · 실제 도로 경로 아님)'
+    : fallbackReason
+      ? '개략 위치도 폴백 (검토 전 시연 자료 · 실제 도로 경로 아님)'
+      : `${areaLabel} ${areaLabel === '경기도' ? '관광지 위치도' : '권역·개략 위치도'} (네이버 지도 키 미설정 · 검토 전 시연 자료 · 실제 도로 경로 아님)`;
 
   return (
     <div className={compact ? 'place-map-wrap compact' : 'place-map-wrap'}>
@@ -106,310 +821,74 @@ export function PlaceMap({
             </span>
           )}
         </div>
-        <span className="map-caption">
-          {provinceView
-            ? '경기도 관광지 위치도'
-            : '경기도(시흥권) 권역·개략 위치도'}{' '}
-          (검토 전 자료 · 실제 도로 경로 아님)
-        </span>
+        <span className="map-caption">{captionText}</span>
       </div>
+
+      {fallbackReason && (
+        <p className="naver-map-notice" role="status">
+          {fallbackReason}
+        </p>
+      )}
 
       <div
         className="map-canvas-shell"
         role="region"
-        aria-label="경기 관광지 인터랙티브 지도"
+        aria-label={
+          useNaverMap
+            ? '경기 관광지 네이버 지도'
+            : '경기 관광지 인터랙티브 개략 지도'
+        }
       >
-        <svg
-          className="siheung-map-svg"
-          viewBox="0 0 800 520"
-          role="img"
-          aria-label={`${provinceView ? '경기도' : '경기도(시흥권)'} 관광지 위치와 여행 동선 지도`}
-        >
-          <defs>
-            <linearGradient id={seaGradient} x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#dff0fa" />
-              <stop offset="100%" stopColor="#eaf4fa" />
-            </linearGradient>
-            <linearGradient id={landGradient} x1="0" y1="0" x2="0.9" y2="1">
-              <stop offset="0%" stopColor="#f8fbf9" />
-              <stop offset="100%" stopColor="#eef6f2" />
-            </linearGradient>
-          </defs>
-
-          {provinceView ? (
-            <>
-              <rect
-                width="800"
-                height="520"
-                fill={`url(#${seaGradient})`}
-                rx="12"
-              />
-              <g
-                transform="translate(133.333333 20) scale(0.666666667)"
-                aria-hidden="true"
-              >
-                <path
-                  d={gyeonggiMap.context.path}
-                  fill="#e7e9ed"
-                  stroke="#b9c5cf"
-                  fillRule="evenodd"
-                />
-                {gyeonggiMap.cities.map((city) => (
-                  <path
-                    key={city.id}
-                    d={city.path}
-                    fill={`url(#${landGradient})`}
-                    stroke="#b9d5cb"
-                    strokeWidth="1.5"
-                    fillRule="evenodd"
-                  />
-                ))}
-              </g>
-            </>
-          ) : (
-            <>
-              {/* 서해 배경 */}
-              <rect
-                x="0"
-                y="0"
-                width="800"
-                height="520"
-                fill={`url(#${seaGradient})`}
-                rx="12"
-              />
-
-              {/* 서해 물결 장식 */}
-              <g stroke="#b8d9ed" strokeWidth="1.5" fill="none" opacity="0.7">
-                <path d="M 28 120 Q 48 112 68 120 T 108 120" />
-                <path d="M 45 220 Q 65 212 85 220 T 125 220" />
-                <path d="M 24 490 Q 44 482 64 490 T 104 490" />
-              </g>
-              <text x="36" y="160" className="map-sea-label">
-                서해 (황해)
-              </text>
-              <text x="235" y="488" className="map-sea-label">
-                시화호
-              </text>
-
-              {/* 시흥 내륙 지형 폴리곤 */}
-              <path
-                d="M 380 18 L 620 18 L 765 95 L 778 330 L 665 435 L 435 430 L 315 398 L 220 385 L 135 415 L 102 385 L 128 340 L 210 325 L 245 268 L 318 182 L 352 105 Z"
-                fill={`url(#${landGradient})`}
-                stroke="#b9d5cb"
-                strokeWidth="2.5"
-                strokeLinejoin="round"
-              />
-
-              {/* 거북섬 (인공섬) 지형 */}
-              <path
-                d="M 96 426 Q 138 412 184 440 Q 186 476 142 482 Q 98 478 96 426 Z"
-                fill="#f4faf7"
-                stroke="#b9d5cb"
-                strokeWidth="2.2"
-              />
-
-              {/* 시화방조제 연결선 (오이도 ~ 거북섬/대부도 방향) */}
-              <path
-                d="M 148 408 L 132 428"
-                stroke="#9abcc9"
-                strokeWidth="3"
-                strokeDasharray="4 3"
-              />
-
-              {/* 갯골 생태 수로 & 호조벌 물길 */}
-              <path
-                d="M 332 196 Q 395 215 455 235 T 575 215"
-                fill="none"
-                stroke="#a5d1e8"
-                strokeWidth="7"
-                strokeLinecap="round"
-                opacity="0.75"
-              />
-              <path
-                d="M 455 235 Q 485 268 535 280"
-                fill="none"
-                stroke="#a5d1e8"
-                strokeWidth="4.5"
-                strokeLinecap="round"
-                opacity="0.65"
-              />
-
-              {/* 은계호수 · 물왕호수 수면 표현 */}
-              <ellipse
-                cx="525"
-                cy="116"
-                rx="22"
-                ry="11"
-                fill="#bde0f2"
-                stroke="#8ec2de"
-                strokeWidth="1.2"
-              />
-              <ellipse
-                cx="685"
-                cy="276"
-                rx="30"
-                ry="15"
-                fill="#bde0f2"
-                stroke="#8ec2de"
-                strokeWidth="1.2"
-              />
-
-              {/* 소래산 능선 표현 */}
-              <path
-                d="M 442 82 L 478 44 L 514 82 Z"
-                fill="#dfeee6"
-                stroke="#9ec4b3"
-                strokeWidth="1.5"
-                strokeLinejoin="round"
-              />
-
-              {/* 권역 라벨 */}
-              {REGION_ANCHORS.map((r) => (
-                <text
-                  key={r.name}
-                  x={r.x}
-                  y={r.y}
-                  className="map-region-text"
-                  textAnchor="middle"
-                >
-                  {r.name}
-                </text>
-              ))}
-            </>
-          )}
-
-          {/* 여행 패스 동선 연결선 */}
-          {routePlaces.length > 1 && (
-            <g aria-hidden="true">
-              <polyline
-                points={polylinePoints}
-                fill="none"
-                stroke="#ffffff"
-                strokeWidth="7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.9"
-              />
-              <polyline
-                points={polylinePoints}
-                fill="none"
-                stroke="#1258a5"
-                strokeWidth="3.5"
-                strokeDasharray="8 5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </g>
-          )}
-
-          {/* 관광지 마커 */}
-          {mapPlaces.map((p) => {
-            const routeIndex = routeIds.indexOf(p.id);
-            const inRoute = routeIndex !== -1;
-            const isActive = activePlace?.id === p.id;
-            const isVisible = visibleIds.has(p.id);
-            const hasRecord = Boolean(records && records[p.id]);
-            const showLabel =
-              isActive ||
-              inRoute ||
-              mapPlaces.length <= 8 ||
-              [
-                'PLACE_REAL_001',
-                'PLACE_REAL_008',
-                'PLACE_REAL_009',
-                'PLACE_REAL_011',
-                'PLACE_REAL_012',
-              ].includes(p.id);
-
-            const radius = isActive ? 16 : inRoute ? 14 : 10;
-            const fill = hasRecord
-              ? '#176b63'
-              : inRoute
-                ? '#1258a5'
-                : isActive
-                  ? '#176b63'
-                  : '#ffffff';
-            const stroke = isActive
-              ? '#e79323'
-              : inRoute || hasRecord
-                ? '#ffffff'
-                : '#176b63';
-            const opacity = !compact && !isVisible && !inRoute ? 0.4 : 1;
-
-            return (
-              <g
-                key={p.id}
-                className={isActive ? 'map-marker active' : 'map-marker'}
-                transform={`translate(${pointFor(p).x}, ${pointFor(p).y})`}
-                role="button"
-                tabIndex={0}
-                aria-label={`${p.name} (${p.region})${inRoute ? ` · 코스 ${routeIndex + 1}번째` : ''}${hasRecord ? ' · 방문 기록 완료' : ''}`}
-                aria-pressed={isActive}
-                style={{ opacity }}
-                onClick={() => setActiveId(p.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    setActiveId(p.id);
-                  }
-                }}
-              >
-                {isActive && (
-                  <circle
-                    r={radius + 5}
-                    fill="none"
-                    stroke="#e79323"
-                    strokeWidth="2.5"
-                    opacity="0.85"
-                  />
-                )}
-                <circle
-                  r={radius}
-                  fill={fill}
-                  stroke={stroke}
-                  strokeWidth={isActive ? 3 : 2.2}
-                />
-                {inRoute ? (
-                  <text
-                    y="4"
-                    textAnchor="middle"
-                    fill="#ffffff"
-                    fontSize="11"
-                    fontWeight="800"
-                  >
-                    {routeIndex + 1}
-                  </text>
-                ) : (
-                  <circle r="4" fill={isActive ? '#ffffff' : '#176b63'} />
-                )}
-                {showLabel && (
-                  <g transform={`translate(0, ${radius + 14})`}>
-                    <rect
-                      x={-Math.max(p.name.length * 5.8 + 10, 44)}
-                      y="-11"
-                      width={Math.max(p.name.length * 11.6 + 20, 88)}
-                      height="20"
-                      rx="6"
-                      fill={isActive ? '#183343' : '#ffffffeb'}
-                      stroke={isActive ? '#183343' : '#cbe0ec'}
-                      strokeWidth="1"
-                    />
-                    <text
-                      y="3"
-                      textAnchor="middle"
-                      fill={isActive ? '#ffffff' : '#183343'}
-                      fontSize="11"
-                      fontWeight="700"
-                    >
-                      {inRoute ? `${routeIndex + 1}. ${p.name}` : p.name}
-                    </text>
-                  </g>
-                )}
-              </g>
-            );
-          })}
-        </svg>
+        {useNaverMap ? (
+          <NaverMapCanvas
+            clientId={clientId}
+            compact={compact}
+            mapPlaces={mapPlaces}
+            routePlaces={routePlaces}
+            routeIds={routeIds}
+            visibleIds={visibleIds}
+            activeId={activePlace?.id ?? null}
+            records={records}
+            onSelect={setActiveId}
+            onStatusChange={setNaverStatus}
+            onFallback={setFallbackReason}
+          />
+        ) : (
+          <SiheungFallbackSvg
+            mapId={mapId}
+            compact={compact}
+            mapPlaces={mapPlaces}
+            routePlaces={routePlaces}
+            routeIds={routeIds}
+            visibleIds={visibleIds}
+            activePlace={activePlace}
+            records={records}
+            onSelect={setActiveId}
+          />
+        )}
       </div>
+
+      {useNaverMap && mapPlaces.length > 1 && (
+        <div className="map-place-picker">
+          <label htmlFor={pickerId}>지도 장소 선택</label>
+          <select
+            id={pickerId}
+            value={activePlace?.id ?? ''}
+            onChange={(event) => setActiveId(event.target.value || null)}
+          >
+            {mapPlaces.map((place) => {
+              const routeIndex = routeIds.indexOf(place.id);
+              const prefix = routeIndex !== -1 ? `${routeIndex + 1}. ` : '';
+              return (
+                <option key={place.id} value={place.id}>
+                  {prefix}
+                  {place.name} ({place.region})
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      )}
 
       {/* 동선 요약 바 */}
       {routePlaces.length > 0 && (
@@ -498,13 +977,23 @@ export function PlaceMap({
               </p>
             )}
             <div className="map-card-actions">
-              <button
-                type="button"
-                className="detail-link"
-                onClick={() => onDetail(activePlace)}
-              >
-                장소 상세
-              </button>
+              <div className="map-card-links">
+                <button
+                  type="button"
+                  className="detail-link"
+                  onClick={() => onDetail(activePlace)}
+                >
+                  장소 상세
+                </button>
+                <a
+                  className="map-external-link"
+                  href={naverMapSearchUrl(activePlace)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  네이버 지도 ↗
+                </a>
+              </div>
               {onToggle && (
                 <button
                   type="button"
