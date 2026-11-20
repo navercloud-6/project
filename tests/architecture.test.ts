@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
-import { resolve, dirname, relative } from 'node:path';
+import { resolve, dirname, relative, sep } from 'node:path';
 import { createJourneys } from '../lib/application/journeys';
 import { createOperations } from '../lib/application/operations';
 import { createSession } from '../lib/application/session';
@@ -40,10 +40,11 @@ test('안쪽 계층은 프레임워크·어댑터·I/O에 의존하지 않고 �
           : resolve(dirname(file), name);
         const allowed =
           name === 'zod' ||
-          target.startsWith(resolve(root, 'lib/domain') + '/') ||
+          target.startsWith(resolve(root, 'lib/domain') + sep) ||
           (layer === 'application' &&
-            target.startsWith(resolve(root, 'lib/application') + '/')) ||
-          target === resolve(root, 'data/places.json');
+            target.startsWith(resolve(root, 'lib/application') + sep)) ||
+          target === resolve(root, 'data/places.json') ||
+          target === resolve(root, 'data/gyeonggi-map.json');
         assert.ok(allowed, `${relative(root, file)} -> ${name}`);
       }
       assert.doesNotMatch(
