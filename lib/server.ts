@@ -15,6 +15,7 @@ import { createOperations } from './application/operations';
 import { createWeather } from './application/weather';
 import { createAuth } from './application/auth';
 import { naverLogin } from './adapters/naver-login';
+import { naverMapClientId } from './adapters/naver-map';
 
 export const journeyService = createJourneys(journeyRepository, identity);
 export const {
@@ -42,3 +43,4 @@ export const fetchSiheungWeather = createWeather({
   current: liveWeather,
 });
 export const capabilities = naver.capabilities;
+export { naverMapClientId };

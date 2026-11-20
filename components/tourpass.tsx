@@ -33,9 +33,11 @@ const today = () =>
 export default function Tourpass({
   places,
   capabilities,
+  naverMapClientId = '',
 }: {
   places: Place[];
   capabilities: Capabilities;
+  naverMapClientId?: string;
 }) {
   const [tab, setTab] = useState<Tab>('explore');
   const [exploreTask, setExploreTask] = useState<
@@ -393,6 +395,7 @@ export default function Tourpass({
                 region={region}
                 viewMode={viewMode}
                 hidden={exploreTask !== 'browse'}
+                naverMapClientId={naverMapClientId}
                 onQuery={setQuery}
                 onRegion={setRegion}
                 onViewMode={setViewMode}
@@ -540,6 +543,7 @@ export default function Tourpass({
             auth={auth}
             places={places}
             capabilities={capabilities}
+            naverMapClientId={naverMapClientId}
             onRetrySession={() => void loadSession()}
             onExplore={() => {
               setTab('explore');
