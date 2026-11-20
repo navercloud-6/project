@@ -52,7 +52,7 @@ export function MyProfile({
         className="profile-summary"
         aria-labelledby="profile-summary-title"
       >
-        <h2 id="profile-summary-title">나의 시흥 여행</h2>
+        <h2 id="profile-summary-title">나의 경기 여행</h2>
         {ready ? (
           <>
             <dl className="profile-counts">
