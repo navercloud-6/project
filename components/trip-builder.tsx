@@ -6,12 +6,16 @@ export function TripBuilder({
   name,
   date,
   ready,
+  loading,
   busy,
   hidden,
   onBrowse,
   onRecommend,
+  onRetrySession,
   onDetail,
   onMoveUp,
+  onMoveDown,
+  onClear,
   onToggle,
   onName,
   onDate,
@@ -21,12 +25,16 @@ export function TripBuilder({
   name: string;
   date: string;
   ready: boolean;
+  loading?: boolean;
   busy: boolean;
   hidden: boolean;
   onBrowse: () => void;
   onRecommend?: () => void;
+  onRetrySession?: () => void;
   onDetail?: (place: Place) => void;
   onMoveUp: (index: number) => void;
+  onMoveDown?: (index: number) => void;
+  onClear?: () => void;
   onToggle: (id: string) => void;
   onName: (name: string) => void;
   onDate: (date: string) => void;
@@ -39,8 +47,8 @@ export function TripBuilder({
       aria-labelledby="builder-title"
     >
       <div className="ticket-top">
-        <span>나의 하루를 잇는</span>
-        <h2 id="builder-title">나의 여행 코스</h2>
+        <span>나만의 하루 코스</span>
+        <h2 id="builder-title">담은 여행</h2>
         <div className="ticket-wave" aria-hidden="true">
           ∿ ∿ ∿
         </div>
@@ -48,13 +56,20 @@ export function TripBuilder({
       <div className="ticket-body">
         <div className="section-heading">
           <strong>담은 장소</strong>
-          <span>{selected.length} / 8곳</span>
+          <div className="builder-meta">
+            <span>{selected.length} / 8곳</span>
+            {selected.length > 0 && onClear && (
+              <button type="button" className="detail-link" onClick={onClear}>
+                모두 비우기
+              </button>
+            )}
+          </div>
         </div>
         {!selected.length ? (
           <div className="empty">
             <h3>아직 담은 장소가 없어요.</h3>
             <p>
-              직접 장소를 고르거나 취향에 맞는 추천을 받아 코스를 만들어 보세요.
+              직접 장소를 찾거나 취향에 맞는 추천을 받아 코스를 만들어 보세요.
             </p>
             <div className="empty-actions">
               <button
@@ -101,21 +116,36 @@ export function TripBuilder({
                   )}
                   <small>{p.region}</small>
                 </div>
-                <button
-                  className="icon-button"
-                  disabled={i === 0}
-                  aria-label={`${p.name} 위로 이동`}
-                  onClick={() => onMoveUp(i)}
-                >
-                  ↑
-                </button>
-                <button
-                  className="icon-button"
-                  aria-label={`${p.name} 제외`}
-                  onClick={() => onToggle(p.id)}
-                >
-                  ×
-                </button>
+                <div className="stop-controls">
+                  <button
+                    type="button"
+                    className="icon-button"
+                    disabled={i === 0}
+                    aria-label={`${p.name} 위로 이동`}
+                    onClick={() => onMoveUp(i)}
+                  >
+                    ↑
+                  </button>
+                  {onMoveDown && (
+                    <button
+                      type="button"
+                      className="icon-button"
+                      disabled={i === selected.length - 1}
+                      aria-label={`${p.name} 아래로 이동`}
+                      onClick={() => onMoveDown(i)}
+                    >
+                      ↓
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label={`${p.name} 제외`}
+                    onClick={() => onToggle(p.id)}
+                  >
+                    ×
+                  </button>
+                </div>
               </li>
             ))}
           </ol>
@@ -127,7 +157,10 @@ export function TripBuilder({
               onSave();
             }}
           >
-            <label htmlFor="journey-name">여행 이름</label>
+            <div className="label-row">
+              <label htmlFor="journey-name">여행 이름</label>
+              <span className="char-count">{name.length} / 60</span>
+            </div>
             <input
               id="journey-name"
               value={name}
@@ -143,6 +176,24 @@ export function TripBuilder({
               value={date}
               onChange={(e) => onDate(e.target.value)}
             />
+            {!ready && (
+              <div className="inline-status" role="status">
+                <span>
+                  {loading
+                    ? '여행 보관함을 연결하고 있어요…'
+                    : '여행 보관함에 연결해야 저장할 수 있어요.'}
+                </span>
+                {!loading && onRetrySession && (
+                  <button
+                    type="button"
+                    className="secondary compact"
+                    onClick={onRetrySession}
+                  >
+                    다시 시도
+                  </button>
+                )}
+              </div>
+            )}
             <button
               className="primary"
               disabled={!selected.length || !ready || busy}
@@ -152,12 +203,17 @@ export function TripBuilder({
           </form>
         )}
         {selected.length > 0 && (
-          <button className="secondary add-more" onClick={onBrowse}>
-            장소 더 담기
+          <button
+            type="button"
+            className="secondary add-more"
+            onClick={onBrowse}
+          >
+            장소 더 찾기
           </button>
         )}
         <p className="fine">
-          여행 계획용 시연 서비스입니다. 실제 할인·입장·결제 기능은 없습니다.
+          여행 계획용 시연 서비스입니다. 실제 할인·입장·결제 기능은 제공하지
+          않습니다.
         </p>
       </div>
     </aside>

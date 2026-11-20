@@ -16,21 +16,7 @@ import {
 import { gyeonggiMap } from '@/lib/domain/gyeonggi';
 import { projectRoute } from '@/lib/domain/coordinates';
 
-const REGION_ANCHORS: [string, number, number][] = [
-  ['대야·소래산', 478, 38],
-  ['은계', 565, 92],
-  ['월곶', 310, 170],
-  ['장곡·갯골', 445, 205],
-  ['하중·호조벌', 625, 155],
-  ['물왕', 695, 240],
-  ['배곧', 235, 252],
-  ['정왕·옥구', 375, 330],
-  ['오이도', 115, 325],
-  ['거북섬', 72, 452],
-];
-
-const DEFAULT_CENTER = { lat: 37.38, lng: 126.74 };
-const SIHEUNG_CITY_ID = '41390';
+const DEFAULT_CENTER = { lat: 37.275, lng: 127.009 };
 const FEATURED_LABEL_IDS = new Set([
   'PLACE_REAL_001',
   'PLACE_REAL_008',
@@ -48,9 +34,6 @@ const escapeHtml = (value: string) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
-
-const isProvinceView = (places: Place[]) =>
-  places.some((p) => p.cityId !== SIHEUNG_CITY_ID);
 
 const toLatLng = (maps: NaverMaps, p: { lat: number; lng: number }) =>
   new maps.LatLng(p.lat, p.lng);
@@ -263,7 +246,7 @@ function NaverMapCanvas({
         }),
         new maps.Polyline({
           ...base,
-          strokeColor: '#1258a5',
+          strokeColor: '#02823a',
           strokeOpacity: 0.95,
           strokeWeight: 3.5,
           strokeStyle: 'shortdash',
@@ -333,7 +316,7 @@ function NaverMapCanvas({
         ref={containerRef}
         className="naver-map-canvas"
         role="application"
-        aria-label="네이버 지도 — 경기도(시흥권) 관광지 위치와 여행 동선"
+        aria-label="네이버 지도 — 경기도 관광지 위치와 여행 동선"
       />
       {!ready && (
         <div className="naver-map-loading" role="status" aria-live="polite">
@@ -378,13 +361,10 @@ function FallbackSvg({
   records?: Records;
   onSelect: (placeId: string) => void;
 }) {
-  const seaGradient = `${mapId}-sea`;
+  const bgGradient = `${mapId}-bg`;
   const landGradient = `${mapId}-land`;
-  const provinceView = isProvinceView(mapPlaces);
   const pointFor = (p: Place) =>
-    provinceView
-      ? projectRoute(p.coordinates.lat, p.coordinates.lng)
-      : p.coordinates;
+    projectRoute(p.coordinates.lat, p.coordinates.lng);
   const polylinePoints = routePlaces
     .map((p) => {
       const pt = pointFor(p);
@@ -394,131 +374,39 @@ function FallbackSvg({
 
   return (
     <svg
-      className="siheung-map-svg"
+      className="place-map-svg"
       viewBox="0 0 800 520"
       role="img"
-      aria-label={`${provinceView ? '경기도' : '경기도(시흥권)'} 관광지 위치와 여행 동선 개략 지도`}
+      aria-label="경기도 관광지 위치와 여행 동선 개략 지도"
     >
       <defs>
-        <linearGradient id={seaGradient} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#dff0fa" />
-          <stop offset="100%" stopColor="#eaf4fa" />
+        <linearGradient id={bgGradient} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#e8f5ed" />
+          <stop offset="100%" stopColor="#f3faf6" />
         </linearGradient>
         <linearGradient id={landGradient} x1="0" y1="0" x2="0.9" y2="1">
-          <stop offset="0%" stopColor="#f8fbf9" />
-          <stop offset="100%" stopColor="#eef6f2" />
+          <stop offset="0%" stopColor="#fafdfb" />
+          <stop offset="100%" stopColor="#e7f4ec" />
         </linearGradient>
       </defs>
 
-      <rect width="800" height="520" fill={`url(#${seaGradient})`} rx="12" />
-      {provinceView ? (
-        <g
-          transform="translate(133.333333 20) scale(0.666666667)"
-          aria-hidden="true"
-        >
-          <path
-            d={gyeonggiMap.context.path}
-            fill="#e7e9ed"
-            stroke="#b9c5cf"
-            fillRule="evenodd"
-          />
+      <rect width="800" height="520" fill={`url(#${bgGradient})`} rx="12" />
+      <g
+        transform="translate(133.333333 20) scale(0.666666667)"
+        aria-hidden="true"
+      >
+        <path
+          d={gyeonggiMap.context.path}
+          fill="#e6ece8"
+          stroke="#c3d1c9"
+          fillRule="evenodd"
+        />
+        <g fill={`url(#${landGradient})`} stroke="#b3d8c2" strokeWidth="1.5">
           {gyeonggiMap.cities.map((city) => (
-            <path
-              key={city.id}
-              d={city.path}
-              fill={`url(#${landGradient})`}
-              stroke="#b9d5cb"
-              strokeWidth="1.5"
-              fillRule="evenodd"
-            />
+            <path key={city.id} d={city.path} fillRule="evenodd" />
           ))}
         </g>
-      ) : (
-        <>
-          <g stroke="#b8d9ed" strokeWidth="1.5" fill="none" opacity="0.7">
-            <path d="M 28 120 Q 48 112 68 120 T 108 120" />
-            <path d="M 45 220 Q 65 212 85 220 T 125 220" />
-            <path d="M 24 490 Q 44 482 64 490 T 104 490" />
-          </g>
-          <text x="36" y="160" className="map-sea-label">
-            서해 (황해)
-          </text>
-          <text x="235" y="488" className="map-sea-label">
-            시화호
-          </text>
-          <path
-            d="M 380 18 L 620 18 L 765 95 L 778 330 L 665 435 L 435 430 L 315 398 L 220 385 L 135 415 L 102 385 L 128 340 L 210 325 L 245 268 L 318 182 L 352 105 Z"
-            fill={`url(#${landGradient})`}
-            stroke="#b9d5cb"
-            strokeWidth="2.5"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M 96 426 Q 138 412 184 440 Q 186 476 142 482 Q 98 478 96 426 Z"
-            fill="#f4faf7"
-            stroke="#b9d5cb"
-            strokeWidth="2.2"
-          />
-          <path
-            d="M 148 408 L 132 428"
-            stroke="#9abcc9"
-            strokeWidth="3"
-            strokeDasharray="4 3"
-          />
-          <path
-            d="M 332 196 Q 395 215 455 235 T 575 215"
-            fill="none"
-            stroke="#a5d1e8"
-            strokeWidth="7"
-            strokeLinecap="round"
-            opacity="0.75"
-          />
-          <path
-            d="M 455 235 Q 485 268 535 280"
-            fill="none"
-            stroke="#a5d1e8"
-            strokeWidth="4.5"
-            strokeLinecap="round"
-            opacity="0.65"
-          />
-          <ellipse
-            cx="525"
-            cy="116"
-            rx="22"
-            ry="11"
-            fill="#bde0f2"
-            stroke="#8ec2de"
-            strokeWidth="1.2"
-          />
-          <ellipse
-            cx="685"
-            cy="276"
-            rx="30"
-            ry="15"
-            fill="#bde0f2"
-            stroke="#8ec2de"
-            strokeWidth="1.2"
-          />
-          <path
-            d="M 442 82 L 478 44 L 514 82 Z"
-            fill="#dfeee6"
-            stroke="#9ec4b3"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-          />
-          {REGION_ANCHORS.map(([name, x, y]) => (
-            <text
-              key={name}
-              x={x}
-              y={y}
-              className="map-region-text"
-              textAnchor="middle"
-            >
-              {name}
-            </text>
-          ))}
-        </>
-      )}
+      </g>
 
       {routePlaces.length > 1 && (
         <g
@@ -535,7 +423,7 @@ function FallbackSvg({
           />
           <polyline
             points={polylinePoints}
-            stroke="#1258a5"
+            stroke="#02823a"
             strokeWidth="3.5"
             strokeDasharray="8 5"
           />
@@ -556,15 +444,15 @@ function FallbackSvg({
         const radius = s.isActive ? 16 : s.inRoute ? 14 : 10;
         const fill =
           s.hasRecord || (s.isActive && !s.inRoute)
-            ? '#176b63'
+            ? '#065f2d'
             : s.inRoute
-              ? '#1258a5'
+              ? '#02823a'
               : '#ffffff';
         const stroke = s.isActive
           ? '#e79323'
           : s.inRoute || s.hasRecord
             ? '#ffffff'
-            : '#176b63';
+            : '#02823a';
         const boxHalf = Math.max(p.name.length * 5.8 + 10, 44);
 
         return (
@@ -611,7 +499,7 @@ function FallbackSvg({
                 {s.routeIndex + 1}
               </text>
             ) : (
-              <circle r="4" fill={s.isActive ? '#ffffff' : '#176b63'} />
+              <circle r="4" fill={s.isActive ? '#ffffff' : '#02823a'} />
             )}
             {s.showLabel && (
               <g transform={`translate(0, ${radius + 14})`}>
@@ -621,14 +509,14 @@ function FallbackSvg({
                   width={boxHalf * 2}
                   height="20"
                   rx="6"
-                  fill={s.isActive ? '#183343' : '#ffffffeb'}
-                  stroke={s.isActive ? '#183343' : '#cbe0ec'}
+                  fill={s.isActive ? '#162a20' : '#ffffffeb'}
+                  stroke={s.isActive ? '#162a20' : '#bfe5cd'}
                   strokeWidth="1"
                 />
                 <text
                   y="3"
                   textAnchor="middle"
-                  fill={s.isActive ? '#ffffff' : '#183343'}
+                  fill={s.isActive ? '#ffffff' : '#162a20'}
                   fontSize="11"
                   fontWeight="700"
                 >
@@ -704,15 +592,14 @@ export function PlaceMap({
     null;
 
   const useNaverMap = Boolean(clientId) && !fallbackReason;
-  const areaLabel = isProvinceView(mapPlaces) ? '경기도' : '경기도(시흥권)';
   const disclaimer = '검토 전 시연 자료 · 실제 도로 경로 아님';
   const captionText = useNaverMap
     ? naverStatus === 'ready'
-      ? `네이버 지도 · ${areaLabel} 관광지 위치 및 직선 동선 (${disclaimer})`
+      ? `네이버 지도 · 경기도 관광지 위치 및 직선 동선 (${disclaimer})`
       : `네이버 지도를 불러오는 중입니다 (${disclaimer})`
     : fallbackReason
       ? `개략 위치도 폴백 (${disclaimer})`
-      : `${areaLabel} ${areaLabel === '경기도' ? '관광지 위치도' : '권역·개략 위치도'} (네이버 지도 키 미설정 · ${disclaimer})`;
+      : `경기도 관광지 위치도 (네이버 지도 키 미설정 · ${disclaimer})`;
   const activeRouteIdx = activePlace ? routeIds.indexOf(activePlace.id) : -1;
   const activeRecord = activePlace ? records?.[activePlace.id] : undefined;
 

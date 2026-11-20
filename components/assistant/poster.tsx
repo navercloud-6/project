@@ -1,30 +1,51 @@
 'use client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
-import { ErrorText, type Capabilities } from './shared';
+import { ErrorText, groupPlacesByRegion, type Capabilities } from './shared';
 import { request, api } from '@/lib/adapters/client-api';
 export function Poster({
   places,
   capabilities,
   onSaved,
+  onBrowse,
 }: {
   places: Place[];
   capabilities: Capabilities;
   onSaved: (j: Journey) => void;
+  onBrowse?: () => void;
 }) {
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState('');
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [location, setLocation] = useState('');
+  const [placeFilter, setPlaceFilter] = useState('');
   const [placeId, setPlace] = useState('');
-  const [busy, setBusy] = useState(false);
+  const [busyKind, setBusyKind] = useState<'extract' | 'save' | null>(null);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+
+  const filteredPlaces = useMemo(() => {
+    const q = placeFilter.trim();
+    if (!q) return places;
+    return places.filter(
+      (p) =>
+        p.id === placeId ||
+        p.name.includes(q) ||
+        p.region.includes(q) ||
+        Boolean(p.address?.includes(q)),
+    );
+  }, [places, placeFilter, placeId]);
+
+  const groupedPlaces = useMemo(
+    () => groupPlacesByRegion(filteredPlaces),
+    [filteredPlaces],
+  );
+
   async function extract() {
     if (!file) return;
-    setBusy(true);
+    setBusyKind('extract');
     setError('');
     setText('');
     setTitle('');
@@ -46,11 +67,11 @@ export function Poster({
     } catch (e) {
       setError((e as Error).message);
     } finally {
-      setBusy(false);
+      setBusyKind(null);
     }
   }
   async function save() {
-    setBusy(true);
+    setBusyKind('save');
     setError('');
     try {
       const d = await api<{ journey: Journey }>('/api/journeys', 'POST', {
@@ -60,27 +81,33 @@ export function Poster({
         event: { location, origin: 'poster' },
       });
       onSaved(d.journey);
-      setMessage('행사 여행을 저장했습니다. 내 여행에서 확인하세요.');
+      setMessage('행사 여행을 저장했어요. 내 여행에서 확인해 보세요.');
       setTitle('');
       setDate('');
       setLocation('');
       setPlace('');
+      setPlaceFilter('');
     } catch (e) {
       setError((e as Error).message);
     } finally {
-      setBusy(false);
+      setBusyKind(null);
     }
   }
+  const busy = busyKind !== null;
   return (
     <section className="tool-section">
       <span className="pill">포스터에서 여행으로</span>
-      <h2>행사 일정을 놓치지 마세요</h2>
-      <div className="poster-ocr-box">
+      <h2>행사 일정을 여행으로 저장해 보세요</h2>
+      <div
+        className={
+          capabilities.ocr ? 'poster-ocr-box' : 'poster-ocr-box is-disabled'
+        }
+      >
         <label htmlFor="poster-file">포스터 자동 입력 (선택)</label>
         <p className="fine">
           {capabilities.ocr
             ? 'JPEG·PNG·WebP, 2MB 이하. 포스터 읽기를 누르면 NAVER Cloud로 이미지가 전송되며 원본은 보관하지 않습니다.'
-            : '현재 OCR 미설정 상태입니다. 아래 양식에 행사 정보를 직접 입력해 여행으로 저장할 수 있어요.'}
+            : '현재 OCR 키가 설정되지 않아 자동 인식은 준비 중입니다. 아래 양식에 행사 정보를 직접 입력해 저장할 수 있어요.'}
         </p>
         <div className="tool-actions">
           <input
@@ -99,7 +126,7 @@ export function Poster({
             disabled={busy || !file || !capabilities.ocr}
             onClick={extract}
           >
-            {busy ? '포스터 읽는 중…' : '포스터 읽기'}
+            {busyKind === 'extract' ? '포스터 읽는 중…' : '포스터 읽기'}
           </button>
         </div>
         {text && (
@@ -121,7 +148,10 @@ export function Poster({
           void save();
         }}
       >
-        <label htmlFor="event-title">확인한 행사명</label>
+        <div className="label-row">
+          <label htmlFor="event-title">확인한 행사명</label>
+          <span className="char-count">{title.length} / 60</span>
+        </div>
         <input
           id="event-title"
           required
@@ -147,6 +177,14 @@ export function Poster({
           value={location}
           onChange={(e) => setLocation(e.target.value)}
         />
+        <label htmlFor="event-place-filter">관광지 빠르게 찾기</label>
+        <input
+          id="event-place-filter"
+          type="search"
+          placeholder="도시명이나 장소명으로 아래 목록 좁히기 (예: 수원, 갯골)"
+          value={placeFilter}
+          onChange={(e) => setPlaceFilter(e.target.value)}
+        />
         <label htmlFor="event-place">연결할 관광지 (직접 확인)</label>
         <select
           id="event-place"
@@ -154,20 +192,37 @@ export function Poster({
           value={placeId}
           onChange={(e) => setPlace(e.target.value)}
         >
-          <option value="">관광지를 선택하세요</option>
-          {places.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
+          <option value="">
+            {filteredPlaces.length
+              ? `관광지를 선택하세요 (${filteredPlaces.length}곳)`
+              : '검색 결과와 일치하는 관광지가 없어요'}
+          </option>
+          {groupedPlaces.map(([regionName, items]) => (
+            <optgroup key={regionName} label={regionName}>
+              {items.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
         <p className="fine">
-          연결할 장소가 목록에 없다면 저장하지 마세요. 행사 기간·장소가 실제로
-          일치하는지 원본 안내에서 확인하세요.
+          목록에 없는 장소는 연결할 수 없어요. 행사 기간·장소가 실제와 같은지
+          원본 안내에서 확인해 주세요.
         </p>
-        <button className="primary" disabled={busy}>
-          {busy ? '행사 여행 저장 중…' : '확인한 일정으로 여행 저장'}
-        </button>
+        <div className="tool-actions">
+          <button className="primary compact" disabled={busy}>
+            {busyKind === 'save'
+              ? '여행 저장 중…'
+              : '확인한 일정으로 여행 저장'}
+          </button>
+          {onBrowse && (
+            <button type="button" className="secondary" onClick={onBrowse}>
+              장소 찾기
+            </button>
+          )}
+        </div>
       </form>
     </section>
   );

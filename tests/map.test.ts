@@ -82,10 +82,12 @@ test('PlaceMap은 네이버 지도 키 유무에 따라 네이버 지도 영역�
       onDetail() {},
     }),
   );
-  assert.match(fallbackMarkup, /class="siheung-map-svg"/);
+  assert.match(fallbackMarkup, /class="place-map-svg"/);
+  assert.match(fallbackMarkup, /경기도 관광지 위치도/);
   assert.match(fallbackMarkup, /네이버 지도 키 미설정/);
   assert.match(fallbackMarkup, /https:\/\/map\.naver\.com\/p\/search\//);
   assert.doesNotMatch(fallbackMarkup, /data-map-provider="naver"/);
+  assert.doesNotMatch(fallbackMarkup, /시화호|서해 \(황해\)|대야·소래산/);
 
   const naverMarkup = renderToStaticMarkup(
     createElement(PlaceMap, {
@@ -100,7 +102,29 @@ test('PlaceMap은 네이버 지도 키 유무에 따라 네이버 지도 영역�
   assert.match(naverMarkup, /네이버 지도를 불러오는 중입니다/);
   assert.match(naverMarkup, /지도 장소 선택/);
   assert.match(naverMarkup, /https:\/\/map\.naver\.com\/p\/search\//);
-  assert.doesNotMatch(naverMarkup, /class="siheung-map-svg"/);
+  assert.doesNotMatch(naverMarkup, /class="place-map-svg"/);
+});
+
+test('시흥 지역만으로 구성된 코스 지도도 별도 그래픽 없이 경기도 지도로 표시한다', () => {
+  const siheungOnly = places
+    .filter((place) => place.cityId === '41390')
+    .slice(0, 2);
+  const markup = renderToStaticMarkup(
+    createElement(PlaceMap, {
+      places,
+      visiblePlaces: siheungOnly,
+      routeIds: siheungOnly.map((place) => place.id),
+      compact: true,
+      onDetail() {},
+    }),
+  );
+  assert.match(markup, /경기도 관광지 위치도/);
+  assert.doesNotMatch(markup, /시흥권|시화호|서해 \(황해\)|대야·소래산/);
+  assert.ok(
+    markup.includes(
+      `translate(${siheungOnly[0].coordinates.x}, ${siheungOnly[0].coordinates.y})`,
+    ),
+  );
 });
 
 test('loadNaverMaps는 스크립트 중복 로드를 막고 인증 실패 콜백을 전파한다', async () => {

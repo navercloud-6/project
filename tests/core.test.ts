@@ -4,7 +4,9 @@ import { journeyInput, recommendationOutput } from '../lib/domain/contracts';
 import { openApiDocument } from '../lib/adapters/openapi';
 import { GET as getScalarDocs } from '../app/api/docs/route';
 import { GET as getWeatherRoute } from '../app/api/weather/route';
-import { fetchSiheungWeather } from '../lib/server';
+import { fetchWeather } from '../lib/server';
+import { WEATHER_REGIONS } from '../lib/domain/weather';
+import { gyeonggiCities } from '../lib/domain/gyeonggi';
 import { places, placeIds } from '../lib/domain/catalog';
 import { journeys, saveJourney, saveRecord } from '../lib/server';
 import { recommend } from '../lib/server';
@@ -272,20 +274,37 @@ test('경기 날씨 API는 실시간 Open-Meteo 파싱, 오프라인 데모 폴�
         },
       });
     };
-    const live = await fetchSiheungWeather('오이도');
+    const live = await fetchWeather('수원시');
     assert.equal(live.mode, 'live');
-    assert.equal(live.region, '오이도');
+    assert.equal(live.region, '수원시');
     assert.equal(live.current.condition, '맑음');
     assert.equal(live.daily.length, 5);
     assert.ok(live.recommendedPlaceIds.every((id) => placeIds.has(id)));
+    assert.ok(
+      live.recommendedPlaceIds.every(
+        (id) => places.find((p) => p.id === id)?.cityId === '41110',
+      ),
+    );
 
     globalThis.fetch = async () => {
       throw new Error('network down');
     };
-    const fallback = await fetchSiheungWeather('배곧');
+    const fallback = await fetchWeather('가평군');
     assert.equal(fallback.mode, 'demo');
-    assert.equal(fallback.region, '배곧');
+    assert.equal(fallback.region, '가평군');
     assert.ok(fallback.recommendedPlaceIds.length >= 1);
+    assert.ok(
+      fallback.recommendedPlaceIds.every(
+        (id) => places.find((p) => p.id === id)?.cityId === '41820',
+      ),
+    );
+
+    const all = await fetchWeather('전체');
+    assert.equal(all.region, '전체');
+    assert.match(all.areaNote, /경기도청·수원/);
+    assert.doesNotMatch(all.areaNote, /시흥/);
+    for (const city of gyeonggiCities)
+      assert.ok(city.name in WEATHER_REGIONS, `${city.name} 날씨 지역 누락`);
 
     const badRes = await getWeatherRoute(
       new Request('http://127.0.0.1:3100/api/weather?region=없는지역'),

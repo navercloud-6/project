@@ -86,7 +86,7 @@ export function MyJourneys({
         <div>
           <span className="pill">저장한 여행</span>
           <h1>내 여행</h1>
-          <p>계획한 곳을 다시 보고, 다녀온 순간을 기록하세요.</p>
+          <p>계획한 코스를 다시 보고 다녀온 순간을 기록해 보세요.</p>
         </div>
         <button type="button" className="primary compact" onClick={onExplore}>
           새 여행 만들기
@@ -98,23 +98,29 @@ export function MyJourneys({
             ? '네이버 계정에 연결된 보관함입니다. 같은 계정으로 다른 기기에서도 여행과 방문 기록을 확인할 수 있어요.'
             : '이 브라우저 전용 보관함입니다. 쿠키를 지우거나 세션이 30일 후 만료되면 저장된 여행에 접근할 수 없습니다.'}
         </span>
-        {onProfile && !auth?.authenticated && (
+        {onProfile && (
           <button type="button" className="detail-link" onClick={onProfile}>
-            네이버 계정·보관 안내
+            {auth?.authenticated ? '계정·보관 관리' : '네이버 계정·보관 안내'}
           </button>
         )}
       </div>
       {!ready ? (
         <div className="empty">
-          <p>위에서 여행 보관함의 연결 상태를 확인해 주세요.</p>
+          <p>
+            {loading
+              ? '여행 보관함을 연결하고 있어요…'
+              : '여행 보관함에 연결하지 못했어요. 위에서 연결 상태를 확인하거나 다시 시도해 주세요.'}
+          </p>
           {!loading && onRetrySession && (
-            <button
-              type="button"
-              className="secondary"
-              onClick={onRetrySession}
-            >
-              다시 시도
-            </button>
+            <div className="empty-actions">
+              <button
+                type="button"
+                className="secondary"
+                onClick={onRetrySession}
+              >
+                다시 시도
+              </button>
+            </div>
           )}
         </div>
       ) : !saved.length ? (
@@ -132,11 +138,11 @@ export function MyJourneys({
               className="primary compact"
               onClick={onExplore}
             >
-              장소 둘러보기
+              장소 찾기
             </button>
             {onRecommend && (
               <button type="button" className="secondary" onClick={onRecommend}>
-                여행 추천받기
+                추천받기
               </button>
             )}
           </div>
@@ -145,6 +151,7 @@ export function MyJourneys({
         <div className="journey-grid">
           {saved.map((j) => {
             const cover = places.find((p) => p.id === j.placeIds[0]);
+            const recordedCount = Object.keys(j.records).length;
             return (
               <article className="saved-journey" key={j.id}>
                 {cover?.image && (
@@ -170,14 +177,17 @@ export function MyJourneys({
                   </figure>
                 )}
                 <div className="saved-top">
-                  <span>경기 하루이음 · 시연용</span>
+                  <div className="saved-top-meta">
+                    <span className="pill">
+                      {j.event ? '포스터 등록 일정' : '저장한 여행'}
+                    </span>
+                    <span className="saved-progress">
+                      방문 기록 {recordedCount} / {j.placeIds.length}곳
+                    </span>
+                  </div>
                   <h2>{j.name}</h2>
                   <p>
-                    {j.date}{' '}
-                    <span>
-                      · {j.placeIds.length}곳 · 기록{' '}
-                      {Object.keys(j.records).length}곳
-                    </span>
+                    {j.date} <span>· 장소 {j.placeIds.length}곳</span>
                   </p>
                 </div>
                 <ol>

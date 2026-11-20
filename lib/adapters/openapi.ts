@@ -70,7 +70,7 @@ export const openApiDocument = {
     {
       name: 'Weather',
       description:
-        '경기(시흥권) 권역별 실시간·데모 기상 예보 및 맞춤 관광지 조회',
+        '경기도 전체 및 31개 시·군별 실시간·데모 기상 예보 및 맞춤 관광지 조회',
     },
     { name: 'Docs', description: 'OpenAPI 3.1 명세 및 Scalar API 레퍼런스' },
   ],
@@ -409,22 +409,22 @@ export const openApiDocument = {
     '/api/weather': {
       get: {
         tags: ['Weather'],
-        summary: '경기(시흥권) 권역별 현재 기상·5일 예보 및 맞춤 관광지 조회',
+        summary: '경기도 시·군별 현재 기상·5일 예보 및 맞춤 관광지 조회',
         parameters: [
           {
             name: 'region',
             in: 'query',
             required: false,
-            description: '경기(시흥권) 권역명 (미지정 시 전체)',
+            description: '경기도 시·군명 (미지정 시 전체)',
             schema: { type: 'string', default: '전체' },
           },
         ],
         responses: {
           '200': json(
             ref('WeatherResponse'),
-            '권역별 기상 정보 및 추천 관광지 ID 목록',
+            '시·군별 기상 정보 및 추천 관광지 ID 목록',
           ),
-          '400': err('지원하지 않는 권역 파라미터'),
+          '400': err('지원하지 않는 지역 파라미터'),
         },
       },
     },

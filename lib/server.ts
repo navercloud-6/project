@@ -37,7 +37,7 @@ export const auth = createAuth(
 export const { guide, proposeEdit } = createAssistant(naver);
 export const recommend = createRecommendation(naver);
 export const operations = createOperations(journeyService, naver, limits);
-export const fetchSiheungWeather = createWeather({
+export const fetchWeather = createWeather({
   now: identity.now,
   demo: () => process.env.WEATHER_MODE === 'demo',
   current: liveWeather,
