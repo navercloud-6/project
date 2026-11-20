@@ -5,9 +5,12 @@ export function createSession(
   repository: SessionRepository,
   identity: IdentityPort,
 ) {
-  return (token: string | undefined, create = false) => {
+  return async (token: string | undefined, create = false) => {
     if (token && /^[a-f0-9]{64}$/.test(token)) {
-      const owner = repository.owner(identity.digest(token), identity.now());
+      const owner = await repository.owner(
+        identity.digest(token),
+        identity.now(),
+      );
       if (owner) return { owner };
     }
     if (!create)
@@ -17,7 +20,7 @@ export function createSession(
       );
     const next = identity.token();
     const owner = identity.digest(next);
-    repository.insert(owner, identity.now() + 30 * 86400000);
+    await repository.insert(owner, identity.now() + 30 * 86400000);
     return { owner, token: next };
   };
 }

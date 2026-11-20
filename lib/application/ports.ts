@@ -16,17 +16,26 @@ export type RecordInput = z.infer<typeof recordInput>;
 export type Photo = { id: string; image: Uint8Array };
 
 export interface JourneyRepository {
-  list(owner: string): Journey[];
-  find(owner: string, id: string): Journey | undefined;
-  insert(owner: string, journey: Journey): void;
-  update(owner: string, journey: Journey): void;
-  photo(owner: string, journey: string, place: string): Photo | undefined;
-  photoPlaces(owner: string, journey: string): string[];
-  putPhoto(owner: string, journey: string, place: string, photo: Photo): void;
-  transaction<T>(operation: () => T): T;
+  list(owner: string): Promise<Journey[]>;
+  find(owner: string, id: string): Promise<Journey | undefined>;
+  insert(owner: string, journey: Journey): Promise<void>;
+  update(owner: string, journey: Journey): Promise<void>;
+  photo(
+    owner: string,
+    journey: string,
+    place: string,
+  ): Promise<Photo | undefined>;
+  photoPlaces(owner: string, journey: string): Promise<string[]>;
+  putPhoto(
+    owner: string,
+    journey: string,
+    place: string,
+    photo: Photo,
+  ): Promise<void>;
+  transaction<T>(operation: () => Promise<T>): Promise<T>;
 }
 export interface LimitPort {
-  consume(key: string, maximum: number): boolean;
+  consume(key: string, maximum: number): Promise<boolean>;
 }
 export interface IdentityPort {
   id(): string;
@@ -35,8 +44,8 @@ export interface IdentityPort {
   digest(token: string): string;
 }
 export interface SessionRepository {
-  owner(hash: string, now: number): string | undefined;
-  insert(owner: string, expires: number): void;
+  owner(hash: string, now: number): Promise<string | undefined>;
+  insert(owner: string, expires: number): Promise<void>;
 }
 export interface LoginPort {
   enabled(): boolean;
@@ -44,10 +53,15 @@ export interface LoginPort {
   identify(code: string, state: string): Promise<string>;
 }
 export interface AuthRepository {
-  attempt(state: string, session: string, expires: number): void;
-  consume(state: string, session: string, now: number): boolean;
-  login(previous: string, next: string, owner: string, now: number): void;
-  revoke(hash: string): void;
+  attempt(state: string, session: string, expires: number): Promise<void>;
+  consume(state: string, session: string, now: number): Promise<boolean>;
+  login(
+    previous: string,
+    next: string,
+    owner: string,
+    now: number,
+  ): Promise<void>;
+  revoke(hash: string): Promise<void>;
 }
 export type AuthStatus = { enabled: boolean; authenticated: boolean };
 export type Capabilities = {

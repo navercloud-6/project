@@ -12,19 +12,20 @@
 
 ## 기술 스택
 
-Next.js 16 App Router · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · Node.js 24 내장 SQLite · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR). 버전은 [package.json](package.json)과 [잠금 파일](package-lock.json)에서 관리한다.
+Next.js 16 App Router · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · PostgreSQL(`pg`) · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR·Cloud DB for PostgreSQL). 버전은 [package.json](package.json)과 [잠금 파일](package-lock.json)에서 관리한다.
 
 ## 시작하기
 
-Node.js 24 이상에서 실행한다(`node:sqlite` 실험적 API 경고는 정상이다).
+Node.js 24 이상과 PostgreSQL 16 이상이 필요하다.
 
 ```sh
 npm ci
 cp .env.example .env.local
+# .env.local의 DATABASE_URL을 실행 중인 PostgreSQL에 맞게 설정한다.
 npm run dev
 ```
 
-[로컬 서버](http://localhost:3000)에 접속한다. 다른 주소·포트를 쓰면 `APP_ORIGIN`도 맞춘다. DB는 첫 API 요청 시 `.runtime/tourpass.sqlite`에 생성된다. 키 설정과 운영 배포는 [배포 가이드](docs/05-ops/01-deploy.md)를 따른다.
+[로컬 서버](http://localhost:3000)에 접속한다. 다른 주소·포트를 쓰면 `APP_ORIGIN`도 맞춘다. 필요한 테이블과 인덱스는 첫 DB 요청 시 자동 생성된다. 키 설정과 운영 배포는 [배포 가이드](docs/05-ops/01-deploy.md)를 따른다.
 
 ## 사용 방법
 
@@ -51,16 +52,16 @@ npm run typecheck
 npm run build
 ```
 
-서식 수정은 `npm run format`, 로컬 프로덕션 실행은 빌드 후 `npm start`를 사용한다. HTTP 검사는 별도 DB와 AI 키 없는 서버에서 실행한다.
+서식 수정은 `npm run format`, 로컬 프로덕션 실행은 빌드 후 `npm start`를 사용한다. 단위·저장소 검사는 `DATABASE_URL`(또는 `TEST_DATABASE_URL`)에 지정한 테스트용 PostgreSQL에서 임시 스키마를 생성·정리하며 실행한다. HTTP 검사는 별도 테스트 DB와 AI 키 없는 서버에서 실행한다.
 
 ```sh
-APP_ORIGIN=http://127.0.0.1:3100 DATABASE_PATH=.runtime/smoke.sqlite CLOVA_STUDIO_API_KEY= npm run start -- --port 3100
+APP_ORIGIN=http://127.0.0.1:3100 DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/tourpass_test CLOVA_STUDIO_API_KEY= npm run start -- --port 3100
 # 별도 터미널에서 실행
 node tests/http.mjs
 TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs
 ```
 
-로그인 HTTP 검사는 별도 DB 서버에 `NAVER_LOGIN_CLIENT_ID`·`NAVER_LOGIN_CLIENT_SECRET`을 더미 값으로 설정한 뒤 `node tests/auth-http.mjs`로 실행한다. 실제 네이버 요청 없이 리다이렉트·취소·state·로그아웃을 확인한다.
+로그인 HTTP 검사는 별도 테스트 DB 서버에 `NAVER_LOGIN_CLIENT_ID`·`NAVER_LOGIN_CLIENT_SECRET`을 더미 값으로 설정한 뒤 `node tests/auth-http.mjs`로 실행한다. 실제 네이버 요청 없이 리다이렉트·취소·state·로그아웃을 확인한다.
 
 문서 링크·분류 검사는 `python3 .github/scripts/check_docs.py`로 실행한다.
 

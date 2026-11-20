@@ -1,49 +1,59 @@
-import test from 'node:test';
+import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { db, transaction } from '../lib/adapters/sqlite';
+import { db, transaction } from '../lib/adapters/postgres';
 import { jsonBody, readBody } from '../lib/adapters/http';
 import { ApplicationError } from '../lib/domain/errors';
 import { api, request } from '../lib/adapters/client-api';
+import { setupTestSchema } from './helpers/pg';
 
-process.env.DATABASE_PATH = join(
-  mkdtempSync(join(tmpdir(), 'tourpass-refactor-')),
-  'test.sqlite',
-);
+let dbCtx: Awaited<ReturnType<typeof setupTestSchema>> | undefined;
+before(async () => {
+  dbCtx = await setupTestSchema('refactor');
+});
+after(async () => {
+  await dbCtx?.teardown();
+});
 
-test('트랜잭션은 성공 시 저장하고 실패 시 롤백하며 다음 쓰기를 허용한다', () => {
-  const connection = db();
-  const insert = () => connection.prepare('INSERT INTO limits VALUES (?, ?)');
+test('트랜잭션은 성공 시 저장하고 실패 시 롤백하며 다음 쓰기를 허용한다', async () => {
+  const pool = await db();
   assert.equal(
-    transaction(() => {
-      insert().run('committed', 1);
+    await transaction(async (client) => {
+      await client.query('INSERT INTO limits (key, count) VALUES ($1, $2)', [
+        'committed',
+        1,
+      ]);
       return 'saved';
     }),
     'saved',
   );
-  assert.throws(
-    () =>
-      transaction(() => {
-        insert().run('rolled-back', 1);
-        throw new Error('write failed');
-      }),
+  await assert.rejects(
+    transaction(async (client) => {
+      await client.query('INSERT INTO limits (key, count) VALUES ($1, $2)', [
+        'rolled-back',
+        1,
+      ]);
+      throw new Error('write failed');
+    }),
     /write failed/,
   );
-  transaction(() => insert().run('after-rollback', 1));
-  const keys = connection
-    .prepare('SELECT key FROM limits ORDER BY key')
-    .all()
-    .map((row) => row.key);
-  assert.deepEqual(keys, ['after-rollback', 'committed']);
-  assert.ok(
-    connection
-      .prepare(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='photos'",
-      )
-      .get(),
+  await transaction(async (client) => {
+    await client.query('INSERT INTO limits (key, count) VALUES ($1, $2)', [
+      'after-rollback',
+      1,
+    ]);
+  });
+  const { rows } = await pool.query<{ key: string }>(
+    'SELECT key FROM limits ORDER BY key',
   );
+  assert.deepEqual(
+    rows.map((row) => row.key),
+    ['after-rollback', 'committed'],
+  );
+  const { rows: tables } = await pool.query<{ table_name: string }>(
+    `SELECT table_name FROM information_schema.tables
+     WHERE table_schema = current_schema() AND table_name = 'photos'`,
+  );
+  assert.equal(tables.length, 1);
 });
 
 test('본문 제한은 청크를 합산한 바이트 크기를 검사하고 초과 시 스트림을 취소한다', async () => {
