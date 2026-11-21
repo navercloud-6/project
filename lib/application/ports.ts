@@ -7,6 +7,8 @@ import type {
 import type { Place } from '@/lib/domain/catalog';
 import type { History, editOutput, posterOutput } from '@/lib/domain/assistant';
 import type { WeatherResponse } from '@/lib/domain/weather';
+import type { BriefingHeadFacts } from '@/lib/domain/briefing';
+import type { LocalPlace } from '@/lib/domain/restaurants';
 import type {
   CityWeatherLocation,
   CityWeatherObservation,
@@ -116,7 +118,11 @@ export interface AIPort {
   diary(placeName: string, image: Uint8Array): Promise<{ draft: string }>;
   poster(text: string): Promise<z.infer<typeof posterOutput>>;
   translate(text: string, target: string): Promise<string>;
-  voice(text: string): Promise<Uint8Array>;
+  voice(text: string, speaker?: string): Promise<Uint8Array>;
+  briefing(facts: BriefingHeadFacts): Promise<string>;
+  restaurantMenus(
+    items: { name: string; reviews: string[] }[],
+  ): Promise<Record<string, string[]>>;
   ocr(image: Uint8Array): Promise<string>;
 }
 export interface WeatherPort {
@@ -128,4 +134,10 @@ export interface CityWeatherPort {
   now(): number;
   demo(): boolean;
   current(city: CityWeatherLocation): Promise<CityWeatherObservation>;
+}
+export interface RestaurantSearchPort {
+  now(): number;
+  configured(): boolean;
+  local(query: string): Promise<LocalPlace[]>;
+  blog(query: string): Promise<string[]>;
 }

@@ -3,6 +3,22 @@ import { places } from '@/lib/domain/catalog';
 import { assistantInput } from '@/lib/domain/assistant';
 import { ApplicationError } from '@/lib/domain/errors';
 import { revisionOf } from '@/lib/domain/journey';
+import {
+  BRIEFING_EN_LIMIT,
+  briefingFacts,
+  briefingOutput,
+  composeScript,
+  headFacts,
+  unknownNumbers,
+  foreignItems,
+  ruleScript,
+  shorten,
+  tidyHead,
+  toBase64,
+  type BriefingLanguage,
+} from '@/lib/domain/briefing';
+import type { WeatherResponse } from '@/lib/domain/weather';
+import type { RestaurantsResponse } from '@/lib/domain/restaurants';
 import type { JourneyService } from './journeys';
 import type { AIPort, LimitPort, JourneyDraft } from './ports';
 import { createAssistant } from './assistant';
@@ -12,6 +28,13 @@ export function createOperations(
   journeys: JourneyService,
   ai: AIPort,
   limits: LimitPort,
+  weather: (region: string) => Promise<WeatherResponse> = async () => {
+    throw new ApplicationError(
+      'UNAVAILABLE',
+      '날씨 연결이 설정되지 않았습니다.',
+    );
+  },
+  restaurants?: (region: string) => Promise<RestaurantsResponse>,
 ) {
   const { getJourney, applyEdit, photoFor } = journeys;
   const { guide, proposeEdit } = createAssistant(ai);
@@ -94,6 +117,7 @@ export function createOperations(
       };
     }
     if (data.action === 'voice') return await ai.voice(placeText(data.placeId));
+    if (data.action === 'briefing') return briefing(data.region, data.lang);
     const photo = await photoFor(owner, data.journeyId, data.placeId);
     if (!photo)
       throw new ApplicationError(
@@ -102,6 +126,64 @@ export function createOperations(
       );
     const name = places.find((p) => p.id === data.placeId)!.name;
     return ai.diary(name, photo.image);
+  }
+  // 날씨·옷차림·추천 명소를 한 원고로 묶고, 필요하면 번역한 뒤 음성으로 만든다.
+  async function briefing(region: string, lang: BriefingLanguage) {
+    const caps = ai.capabilities();
+    if (lang === 'en' && !caps.translate)
+      throw new ApplicationError(
+        'UNAVAILABLE',
+        'Papago API 키 설정이 필요합니다.',
+      );
+    const current = await weather(region);
+    // 맛집은 부가 정보: 검색 키가 없거나 실패해도 안내는 계속한다.
+    const nearby = restaurants
+      ? await restaurants(region)
+          .then((r) => r.items)
+          .catch(() => [])
+      : [];
+    const facts = briefingFacts(current, places, nearby);
+    let script = '';
+    let mode: 'clova' | 'rule' = caps.clova ? 'clova' : 'rule';
+    if (caps.clova) {
+      // HCX는 인사·날씨·옷차림·준비물만 쓰고, 명소·맛집은 코드가 자료 그대로 붙인다.
+      // 자료에 없는 숫자나 오늘 옷차림에 없는 옷·준비물을 쓴 앞부분은 1번 다시 요청하고,
+      // 그래도 틀리면 규칙 원고를 쓴다.
+      const head = headFacts(facts);
+      for (let attempt = 0; attempt < 2 && !script; attempt++) {
+        const draft = tidyHead(await ai.briefing(head));
+        if (
+          draft &&
+          unknownNumbers(draft, head).length === 0 &&
+          foreignItems(draft, head).length === 0
+        )
+          script = composeScript(draft, facts);
+      }
+      if (!script) {
+        script = ruleScript(facts);
+        mode = 'rule';
+      }
+    } else script = ruleScript(facts);
+    if (!script)
+      throw new ApplicationError(
+        'UPSTREAM_INVALID',
+        'AI가 유효한 안내 원고를 반환하지 않았습니다. 다시 시도해 주세요.',
+      );
+    const text =
+      lang === 'en'
+        ? shorten(await ai.translate(script, 'en'), BRIEFING_EN_LIMIT)
+        : script;
+    const audio = caps.voice
+      ? toBase64(await ai.voice(text, lang === 'en' ? 'clara' : 'nara'))
+      : null;
+    return briefingOutput.parse({
+      region: current.region,
+      lang,
+      mode,
+      weatherMode: current.mode,
+      script: text,
+      audio,
+    });
   }
   function placeText(id: string) {
     const p = places.find((p) => p.id === id)!;

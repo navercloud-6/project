@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { places } from './catalog';
 import { journeyInput, placeIdSchema, type Journey } from './contracts';
 import { ApplicationError } from './errors';
+import { weatherQuerySchema } from './weather';
+import { briefingLanguage } from './briefing';
 export const historySchema = z
   .array(
     z.object({
@@ -84,6 +86,11 @@ export const assistantInput = z.discriminatedUnion('action', [
     })
     .refine((v) => Boolean(v.placeId) !== Boolean(v.journeyId)),
   z.object({ action: z.literal('voice'), placeId: placeIdSchema }),
+  z.object({
+    action: z.literal('briefing'),
+    region: weatherQuerySchema.shape.region,
+    lang: briefingLanguage,
+  }),
   z.object({
     action: z.literal('diary'),
     journeyId: z.string().uuid(),

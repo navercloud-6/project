@@ -11,6 +11,8 @@ import {
   posterOutput,
 } from '@/lib/domain/assistant';
 import { weatherResponseSchema } from '@/lib/domain/weather';
+import { briefingOutput } from '@/lib/domain/briefing';
+import { restaurantsResponseSchema } from '@/lib/domain/restaurants';
 import {
   cityWeatherResponseSchema,
   cityWeatherLocations,
@@ -143,6 +145,8 @@ export const openApiDocument = {
       EditOutput: toSchema(editOutput),
       PosterOutput: toSchema(posterOutput),
       WeatherResponse: toSchema(weatherResponseSchema),
+      BriefingOutput: toSchema(briefingOutput),
+      RestaurantsResponse: toSchema(restaurantsResponseSchema),
       CityWeatherResponse: toSchema(cityWeatherResponseSchema),
       AssistantRequest: {
         oneOf: [
@@ -193,6 +197,22 @@ export const openApiDocument = {
             },
             ['action', 'placeId'],
             { title: 'voice (장소 음성 안내 MP3)' },
+          ),
+          obj(
+            {
+              action: { type: 'string', const: 'briefing' },
+              region: {
+                type: 'string',
+                description:
+                  '`전체` 또는 경기도 31개 시·군 이름(날씨 API와 동일)',
+              },
+              lang: { type: 'string', enum: ['ko', 'en'] },
+            },
+            ['action', 'region', 'lang'],
+            {
+              title:
+                'briefing (시·군 날씨·옷차림·추천 명소 통합 안내 원고·MP3)',
+            },
           ),
           obj(
             {
@@ -336,7 +356,7 @@ export const openApiDocument = {
     '/api/assistant': {
       post: {
         tags: ['Assistant'],
-        summary: '관광 안내·편집 제안/적용·번역·음성·일기 초안',
+        summary: '관광 안내·편집 제안/적용·번역·음성·통합 안내·일기 초안',
         security: auth,
         requestBody: { required: true, ...json(ref('AssistantRequest')) },
         responses: {
@@ -346,7 +366,8 @@ export const openApiDocument = {
               'application/json': {
                 schema: {
                   type: 'object',
-                  description: 'guide/edit/apply/translate/diary 결과 객체',
+                  description:
+                    'guide/edit/apply/translate/diary 결과 객체, briefing은 BriefingOutput(audio는 base64 MP3 또는 null)',
                 },
               },
               'audio/mpeg': { schema: binary },
@@ -423,6 +444,36 @@ export const openApiDocument = {
           ),
           '429': err('시간당 포스터 인식 한도 초과'),
           '503': err('CLOVA OCR 설정 누락'),
+        },
+      },
+    },
+    '/api/restaurants': {
+      get: {
+        tags: ['Weather'],
+        summary: '경기도 시·군 맛집과 후기 기반 인기 메뉴 조회',
+        description:
+          'NAVER 지역 검색(리뷰 많은 순)에서 술집과 다른 시·도·시·군 주소를 제외하고 최대 5곳을 반환합니다. 메뉴는 블로그 후기 한 건에 실제로 적힌 이름만 표시하며 결과는 지역별 10분간 공유합니다. 검색 키 미설정 시 mode=unavailable과 안내 문구를 반환합니다.',
+        parameters: [
+          {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description: '`전체` 또는 경기도 31개 시·군 이름(날씨 API와 동일)',
+            schema: { type: 'string', default: '전체' },
+          },
+        ],
+        responses: {
+          '200': {
+            description: '지역·모드·출처·조회/만료 시각·맛집 목록',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/RestaurantsResponse' },
+              },
+            },
+          },
+          '400': err('지원하지 않는 지역'),
+          '502': err('NAVER 검색 응답 오류'),
+          '504': err('NAVER 검색 시간 초과'),
         },
       },
     },

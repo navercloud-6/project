@@ -21,6 +21,12 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 | [deploy/](../../deploy/) · [.github/workflows/](../../.github/workflows/) | 배포·모니터링·CI/CD를 구성한다. |
 | [tests/](../../tests/) | 경계·단위·모의 연동·HTTP 검사를 제공한다. |
 
+통합 안내는 [briefing.ts](../../lib/domain/briefing.ts)가 원고 재료·규칙 원고·음성용 문장 정리(영하·단위·끝인사)를 소유하고, [operations.ts](../../lib/application/operations.ts)의 도우미 `briefing` action이 주입된 날씨·맛집 유스케이스 → 원고 앞부분(HCX, 숫자 검증) + 명소·맛집 뒷부분(코드) → Papago → Voice 순서로 처리해 원고와 base64 MP3를 함께 반환한다.
+
+맛집은 [restaurants.ts](../../lib/domain/restaurants.ts)가 술집·지역 제외와 후기 한 건 기준 메뉴 검증을 소유하고, [application/restaurants.ts](../../lib/application/restaurants.ts)가 `RestaurantSearchPort`([naver-search.ts](../../lib/adapters/naver-search.ts), NAVER API HUB 지역·블로그 검색)로 지역별 10분 캐시·동시 요청 병합을 적용한다. 메뉴 후보는 CLOVA 키가 있을 때만 HCX가 후기에서 뽑고 같은 검증을 다시 거친다.
+
+날씨 옷차림은 [outfit.ts](../../lib/domain/outfit.ts)의 순수 함수가 구간표·준비물 기준을 소유하고, [weather.ts](../../lib/domain/weather.ts)의 `buildWeatherOutfit`이 실시간·데모 응답에 같은 규칙으로 `outfit`을 붙인다.
+
 탭 전환 뒤 유지할 상태는 [Tourpass](../../components/tourpass.tsx)가 소유하고, 탐색·날씨는 같은 장소 카드를 재사용한다. AI 검색 목록도 같은 장소 상세 상태를 사용하며 브라우저 취향은 [preferences.ts](../../lib/adapters/preferences.ts)가 검증·저장한다.
 
 ## 경기도 지역 선택 지도
@@ -64,7 +70,7 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 
 | 항목 | 대기 이유 | 재개 조건·작업 |
 | --- | --- | --- |
-| NAVER 실키 검증 | CLOVA 추천·Reranker의 기본 질의만 실키로 확인했다. | Maps·로그인·Voice·Papago·OCR·이미지 기능과 반복 요청의 품질·지연·과금을 검증한다. |
+| NAVER 실키 검증 | CLOVA 추천·Reranker와 통합 안내의 Voice·Papago·맛집 검색을 기본 질의로 확인했다. | Maps·로그인·OCR·이미지 기능과 반복 요청의 품질·지연·과금을 검증한다. |
 | HTTPS | 도메인 없이 HTTP 공개 접속만 확인했다. | 도메인 확보 후 [배포 가이드](../05-ops/01-deploy.md)에 따라 HTTPS를 적용한다. |
 | 관광 자료·사진 | 검토 전(`DRAFT`) 스냅샷이다. | 외부 배포 전 운영 정보와 사진 라이선스를 재검토한다. |
 | 상용·수평 확장 | 사진은 DB `BYTEA`에 저장하고 단일 서버로 운영한다. | 전환 시 Object Storage·계정 삭제·다중 인스턴스 로드밸런싱을 도입한다. |

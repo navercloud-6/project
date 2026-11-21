@@ -9,6 +9,7 @@ import {
   WEATHER_REGIONS,
   describeWeatherCode,
   buildAdvisory,
+  buildWeatherOutfit,
   pickRecommendedPlaces,
   weatherResponseSchema,
   type WeatherResponse,
@@ -181,6 +182,7 @@ export async function liveWeather(region: string): Promise<WeatherResponse> {
     current,
     advisory,
     daily,
+    outfit: buildWeatherOutfit(region, meta, current, daily[0]),
     recommendedPlaceIds: pickRecommendedPlaces(region, advisory.suitability),
   });
 }
