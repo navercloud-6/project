@@ -7,10 +7,17 @@ import {
   verifiedMenus,
   type LocalPlace,
 } from '../lib/domain/restaurants';
-import { briefingFacts, ruleScript } from '../lib/domain/briefing';
+import {
+  briefingFacts,
+  ruleScript,
+  spokenKorean,
+} from '../lib/domain/briefing';
 import { buildDemoWeather } from '../lib/domain/weather';
 import { places } from '../lib/domain/catalog';
-import { createRestaurants } from '../lib/application/restaurants';
+import {
+  createPlaceReviews,
+  createRestaurants,
+} from '../lib/application/restaurants';
 import { naverSearch } from '../lib/adapters/naver-search';
 import type { AIPort, RestaurantSearchPort } from '../lib/application/ports';
 
@@ -220,6 +227,59 @@ test('통합 안내 원고는 맛집과 검증된 메뉴를 명소 다음에 말
     { name: '갈비집 본점', category: '육류,고기요리', menus: ['왕갈비 정식'] },
   ]);
   const script = ruleScript(facts);
-  assert.ok(script.indexOf('추천 명소') < script.indexOf('맛집은 갈비집 본점'));
+  assert.ok(
+    script.indexOf('추천 명소') <
+      script.indexOf('근처 맛집이에요. 갈비집 본점'),
+  );
   assert.match(script, /후기에 자주 나온 메뉴는 왕갈비 정식입니다/);
+  // 음성은 화면 카드와 같은 순서로 명소를 말한다(번호 없이).
+  const positions = facts.places.map((p) =>
+    script.indexOf(`${spokenKorean(p.name)}, `),
+  );
+  assert.ok(positions.every((n) => n > 0));
+  assert.deepEqual(
+    positions,
+    [...positions].sort((a, b) => a - b),
+  );
+  assert.doesNotMatch(script, /첫 번째|두 번째/);
+});
+
+test('명소 블로그 후기는 그 장소 글만 3개까지 모으고 10분 캐시하며 키가 없으면 빈 목록이다', async () => {
+  const calls: string[] = [];
+  let now = 0;
+  const port: RestaurantSearchPort = {
+    now: () => now,
+    configured: () => true,
+    local: async () => [],
+    blog: async (query) => {
+      calls.push(query);
+      return [
+        '화성행궁 다녀왔어요 - 야경이 예뻐요',
+        '다른 궁 이야기 - 경복궁',
+        '화성행궁 후기 - 해설이 좋아요',
+        '화성행궁 산책 - 넓어요',
+        '화성행궁 또 - 네 번째',
+      ];
+    },
+  };
+  const reviews = createPlaceReviews(port);
+  assert.deepEqual(await reviews('화성행궁', '수원시'), [
+    '화성행궁 다녀왔어요 - 야경이 예뻐요',
+    '화성행궁 후기 - 해설이 좋아요',
+    '화성행궁 산책 - 넓어요',
+  ]);
+  await reviews('화성행궁', '수원시');
+  assert.deepEqual(calls, ['화성행궁 경기도 수원시']);
+  now += 11 * 60 * 1000;
+  await reviews('화성행궁', '수원시');
+  assert.equal(calls.length, 2);
+  const off = createPlaceReviews({ ...port, configured: () => false });
+  assert.deepEqual(await off('화성행궁', '수원시'), []);
+  const broken = createPlaceReviews({
+    ...port,
+    blog: async () => {
+      throw new Error('down');
+    },
+  });
+  assert.deepEqual(await broken('화성행궁', '수원시'), []);
 });
