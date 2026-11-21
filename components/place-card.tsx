@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import type { Place } from '@/lib/domain/catalog';
+import { placeLabelBadges } from '@/lib/domain/place-labels';
 
 export function PlaceCard({
   place: p,
@@ -35,7 +36,7 @@ export function PlaceCard({
       </button>
       <div className="place-body">
         <div className="tags">
-          {p.tags.slice(0, 2).join(' · ') || '경기 여행'}
+          {placeLabelBadges(p).join(' · ') || '경기 여행'}
         </div>
         <h3>
           <button

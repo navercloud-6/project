@@ -15,6 +15,7 @@ export function PlaceCatalog({
   region,
   viewMode,
   hidden,
+  hideFilters = false,
   naverMapClientId = '',
   onQuery,
   onRegion,
@@ -30,6 +31,7 @@ export function PlaceCatalog({
   region: string;
   viewMode: 'grid' | 'map';
   hidden: boolean;
+  hideFilters?: boolean;
   naverMapClientId?: string;
   onQuery: (query: string) => void;
   onRegion: (region: string) => void;
@@ -56,34 +58,42 @@ export function PlaceCatalog({
     >
       <div className="catalog-heading">
         <div>
-          <span className="city-explorer-eyebrow">전체 관광지 검색</span>
-          <h2 id="catalog-title">키워드와 지역으로 찾기</h2>
+          <span className="city-explorer-eyebrow">전체 관광지 목록</span>
+          <h2 id="catalog-title">
+            {query.trim()
+              ? `"${query.trim()}" 검색 결과`
+              : '경기도 전체 관광지'}
+          </h2>
           <p>
-            장소 이름·지역·태그로 검색하거나 카드와 지도를 전환해 살펴보세요.
+            {hideFilters
+              ? '상단 AI 여행 검색창에서 테마·지역을 바꾸거나 카드와 지도를 전환해 살펴보세요.'
+              : '장소 이름·지역·태그로 검색하거나 카드와 지도를 전환해 살펴보세요.'}
           </p>
         </div>
       </div>
       <div className="catalog-toolbar">
-        <div className="filters">
-          <label className="search">
-            <span className="sr-only">장소 검색</span>
-            <input
-              type="search"
-              placeholder="장소 이름·지역·취향 검색"
-              value={query}
-              onChange={(e) => onQuery(e.target.value)}
-            />
-            <span aria-hidden="true">⌕</span>
-          </label>
-          <label>
-            <span className="sr-only">지역 선택 (AI 추천에도 적용)</span>
-            <select value={region} onChange={(e) => onRegion(e.target.value)}>
-              {regions.map((r) => (
-                <option key={r}>{r}</option>
-              ))}
-            </select>
-          </label>
-        </div>
+        {!hideFilters && (
+          <div className="filters">
+            <label className="search">
+              <span className="sr-only">장소 검색</span>
+              <input
+                type="search"
+                placeholder="장소 이름·지역·취향 검색"
+                value={query}
+                onChange={(e) => onQuery(e.target.value)}
+              />
+              <span aria-hidden="true">⌕</span>
+            </label>
+            <label>
+              <span className="sr-only">지역 선택 (AI 추천에도 적용)</span>
+              <select value={region} onChange={(e) => onRegion(e.target.value)}>
+                {regions.map((r) => (
+                  <option key={r}>{r}</option>
+                ))}
+              </select>
+            </label>
+          </div>
+        )}
         <div className="catalog-header-actions">
           <span className="total">
             {region === '전체' ? '전체' : region} {filtered.length}곳

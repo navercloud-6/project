@@ -26,8 +26,12 @@ export function PlaceDetail({
 }) {
   return (
     <Modal title={detail.name} onClose={onClose}>
-      {detail.image && (
-        <div className="detail-image">
+      <div
+        className={
+          detail.image ? 'detail-image' : 'detail-image detail-image-empty'
+        }
+      >
+        {detail.image ? (
           <Image
             src={detail.image.path}
             alt={detail.image.alt}
@@ -35,8 +39,24 @@ export function PlaceDetail({
             sizes="(max-width: 760px) calc(100vw - 84px), 620px"
             loading="eager"
           />
-        </div>
-      )}
+        ) : (
+          <div className="detail-photo-placeholder">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="3" />
+              <circle cx="8" cy="8" r="1.5" />
+              <path d="m3 17 5-5 4 4 3-3 6 6" />
+            </svg>
+            <strong>등록된 사진이 없어요</strong>
+            <span>장소 정보는 아래에서 확인해 주세요.</span>
+          </div>
+        )}
+      </div>
       <span className="pill">{detail.region} · 검토 전 자료</span>
       <p>{detail.description}</p>
       <dl>

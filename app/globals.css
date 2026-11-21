@@ -992,6 +992,32 @@ dialog::backdrop {
 .detail-image img {
   object-fit: cover;
 }
+.detail-image-empty {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: var(--brand-gradient-soft);
+}
+.detail-photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  color: var(--brand-deep);
+  text-align: center;
+}
+.detail-photo-placeholder svg {
+  width: 40px;
+  height: 40px;
+}
+.detail-photo-placeholder strong {
+  font-size: 16px;
+}
+.detail-photo-placeholder span {
+  color: var(--muted);
+  font-size: 13px;
+}
 dl {
   font-size: 13px;
 }
@@ -3600,5 +3626,276 @@ form > .label-row:first-child {
 @media (prefers-reduced-motion: reduce) {
   .gyeonggi-city-shape {
     transition: none;
+  }
+}
+
+/* AI 통합 여행 검색·추천 */
+.ai-search-section {
+  margin-bottom: 24px;
+}
+.ai-search-panel {
+  padding: 16px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-surface);
+}
+.ai-search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.ai-search-header .planner-heading {
+  gap: 8px;
+  margin-bottom: 0;
+}
+.ai-search-service-icon {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+.ai-search-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.ai-search-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(130px, 180px) auto;
+  gap: 10px;
+  align-items: stretch;
+}
+.ai-search-input-wrap,
+.ai-search-region-wrap {
+  display: block;
+  margin: 0;
+}
+.ai-search-input-wrap input,
+.ai-search-region-wrap select {
+  width: 100%;
+  height: 44px;
+  min-height: 44px;
+  padding-block: 10px;
+  margin: 0;
+}
+.ai-search-input-wrap input {
+  padding-right: 46px;
+}
+.ai-search-input-icon {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  object-fit: contain;
+  pointer-events: none;
+}
+.ai-search-submit {
+  width: auto;
+  min-height: 44px;
+  padding: 0 22px;
+  margin: 0;
+  white-space: nowrap;
+}
+.ai-search-chips {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+.ai-search-chips button {
+  min-height: 32px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+.ai-search-chips button.active {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand);
+  font-weight: 700;
+}
+.ai-instant-preview {
+  margin-top: 14px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-surface);
+}
+.ai-instant-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.ai-instant-header strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+.ai-instant-header span {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+}
+.ai-place-list {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 0;
+}
+.ai-place-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.ai-place-item:first-child {
+  border-top: 0;
+}
+.ai-place-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 4px;
+  border-radius: var(--radius-control);
+  color: var(--ink);
+  text-align: left;
+}
+.ai-place-link:hover strong {
+  color: var(--brand-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.ai-place-order {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+.ai-place-copy {
+  flex: 1;
+  min-width: 0;
+}
+.ai-place-copy strong {
+  display: block;
+  font-size: 16px;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+.ai-place-meta {
+  display: block;
+  margin-top: 4px;
+  color: var(--brand-deep);
+  font-size: 12px;
+}
+.ai-place-reason {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.ai-place-detail {
+  flex-shrink: 0;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.ai-place-item > .add {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.ai-search-result {
+  max-width: none;
+  margin: 16px 0 0;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+  box-shadow: var(--shadow-surface);
+}
+.ai-search-result .section-heading {
+  align-items: flex-start;
+}
+.ai-search-result .section-heading > div {
+  flex: 1;
+  min-width: 0;
+}
+.ai-search-result .section-heading > .detail-link {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.ai-search-result .section-heading h2 {
+  font-size: clamp(22px, 2.3vw, 28px);
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .ai-search-result,
+  .ai-instant-preview {
+    padding: 16px;
+  }
+  .ai-search-panel {
+    padding: 14px;
+  }
+  .ai-search-header {
+    gap: 8px;
+  }
+  .ai-search-meta {
+    gap: 8px;
+    font-size: 12px;
+  }
+  .ai-search-controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+  .ai-search-input-wrap {
+    grid-column: 1 / -1;
+  }
+  .ai-search-submit {
+    width: 100%;
+    padding-inline: 10px;
+  }
+  .ai-search-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+  .ai-search-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .ai-search-chips button {
+    flex-shrink: 0;
+  }
+  .ai-place-item {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+  .ai-place-link {
+    gap: 10px;
+  }
+  .ai-place-detail {
+    font-size: 20px;
+  }
+  .ai-place-detail > span {
+    display: none;
+  }
+  .ai-place-item > .add {
+    justify-self: end;
+    min-height: 44px;
+    font-size: 13px;
   }
 }
