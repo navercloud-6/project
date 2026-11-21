@@ -66,17 +66,15 @@ export function createCache<T>({ now, ttlMs, maxEntries }: CacheOptions) {
     if (cached !== undefined) return Promise.resolve(cached);
     const running = pending.get(key);
     if (running) return running;
-    const request = Promise.resolve()
-      .then(load)
-      .then((value) => {
-        if (!options?.shouldCache || options.shouldCache(value)) {
-          set(key, value);
-        }
-        return value;
-      })
-      .finally(() => {
-        pending.delete(key);
-      });
+    const request = (async () => {
+      const value = await load();
+      if (!options?.shouldCache || options.shouldCache(value)) {
+        set(key, value);
+      }
+      return value;
+    })().finally(() => {
+      pending.delete(key);
+    });
     pending.set(key, request);
     return request;
   }

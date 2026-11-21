@@ -59,4 +59,5 @@ export const places = data.map((p) => {
   };
 });
 export type Place = (typeof places)[number];
-export const placeIds = new Set(places.map((p) => p.id));
+export const placeById = new Map(places.map((p) => [p.id, p]));
+export const placeIds = new Set(placeById.keys());

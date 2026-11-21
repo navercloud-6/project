@@ -4,6 +4,7 @@ import {
   checkOrigin,
   cookieOptions,
   failure,
+  noStoreJson,
   oauthStateCookie,
   sessionCookie,
 } from '@/lib/adapters/http';
@@ -18,10 +19,7 @@ export async function POST(request: Request) {
       cookieOptions(),
     );
     jar.set(oauthStateCookie, '', cookieOptions(0));
-    return Response.json(
-      { ok: true },
-      { headers: { 'Cache-Control': 'no-store' } },
-    );
+    return noStoreJson({ ok: true });
   } catch (error) {
     return failure(error);
   }

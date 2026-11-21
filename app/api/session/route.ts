@@ -2,6 +2,7 @@ import {
   session,
   checkOrigin,
   failure,
+  noStoreJson,
   sessionCookie,
 } from '@/lib/adapters/http';
 import { cookies } from 'next/headers';
@@ -11,10 +12,7 @@ export async function POST(request: Request) {
   try {
     checkOrigin(request);
     await session(true);
-    return Response.json(
-      { ok: true },
-      { headers: { 'Cache-Control': 'no-store' } },
-    );
+    return noStoreJson({ ok: true });
   } catch (e) {
     return failure(e);
   }
@@ -22,9 +20,7 @@ export async function POST(request: Request) {
 export async function GET() {
   try {
     const jar = await cookies();
-    return Response.json(await auth.status(jar.get(sessionCookie)?.value), {
-      headers: { 'Cache-Control': 'no-store' },
-    });
+    return noStoreJson(await auth.status(jar.get(sessionCookie)?.value));
   } catch (e) {
     return failure(e);
   }

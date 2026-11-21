@@ -2,46 +2,41 @@
 
 ## 소개
 
-경기도 31개 시·군의 관광지를 탐색하고 AI 여행 추천·패스 구성·방문 기록을 제공하는 Next.js MVP다. 범위와 정책은 [요구사항](docs/01-func/01-requirements.md), 후속 과제는 [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)을 따른다.
+경기도 31개 시·군 관광지 탐색, AI 추천, 패스 구성, 방문 기록을 제공하는 Next.js MVP다([요구사항](docs/01-func/01-requirements.md)).
 
 ### 주요 화면
 
-[데스크톱 탐색](docs/screenshots/desktop.jpg) · [모바일 여행 확인](docs/screenshots/mobile.jpg) · [데스크톱 도우미](docs/screenshots/assistant-desktop.jpg) · [모바일 도우미](docs/screenshots/assistant-mobile.jpg) · [사진 일기](docs/screenshots/photo-record.jpg).
+[데스크톱 탐색](docs/screenshots/desktop.jpg) · [모바일 여행](docs/screenshots/mobile.jpg) · [데스크톱 도우미](docs/screenshots/assistant-desktop.jpg) · [모바일 도우미](docs/screenshots/assistant-mobile.jpg) · [사진 일기](docs/screenshots/photo-record.jpg).
 
 ## 기술 스택
 
-Next.js 16 App Router · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · PostgreSQL(`pg`) · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR·Maps·Cloud DB for PostgreSQL). 버전은 [package.json](package.json)에서 관리한다.
+Next.js 16 · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · PostgreSQL(`pg`) · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR·Maps·Cloud DB). 버전은 [package.json](package.json)에서 관리한다.
 
 ## 시작하기
 
-Node.js 24 이상과 PostgreSQL 16 이상이 필요하다.
+Node.js 24+와 PostgreSQL 16+가 필요하다.
 
 ```sh
-npm ci
-cp .env.example .env.local
-# .env.local의 DATABASE_URL을 실행 중인 PostgreSQL에 맞게 설정한다.
+npm ci && cp .env.example .env.local
+# .env.local에 DATABASE_URL을 설정한다.
 npm run dev
 ```
 
-[http://localhost:3000](http://localhost:3000)에 접속한다(주소 변경 시 `APP_ORIGIN` 동기화). 테이블은 첫 DB 요청 시 자동 생성되며 키 설정·운영 배포는 [배포 가이드](docs/05-ops/01-deploy.md)를 따른다.
+[http://localhost:3000](http://localhost:3000)으로 접속한다(주소 변경 시 `APP_ORIGIN` 동기화). 테이블은 첫 DB 요청 시 자동 생성되며 키 설정·배포는 [배포 가이드](docs/05-ops/01-deploy.md)를 따른다.
 
-### 관광 데이터 갱신
-
-`.env.local`에 한국관광공사 `TOUR_API_KEY`를 설정한 뒤 `npm run data:tourapi`를 실행하면 경기도 관광지·문화시설을 갱신한다. 수집 기준은 [요구사항](docs/01-func/01-requirements.md#시군별-관광-데이터-확장)을 따르며 이후 일반 실행에는 키가 필요하지 않다.
-
-관광지 라벨(`data/place-labels.json`)은 `npm run data:label`로 CLOVA Studio 배치 라벨링을 실행해 갱신한다(`--bootstrap`은 규칙 기반 초기 라벨 생성, `--limit=20`은 소규모 시험 실행).
+- **데이터 갱신**: `TOUR_API_KEY` 설정 후 `npm run data:tourapi`로 관광지를 수집하고([기준](docs/01-func/01-requirements.md#시군별-관광-데이터-확장)), `npm run data:label`로 라벨을 갱신한다(`--bootstrap`, `--limit=20` 지원).
 
 ## 사용 방법
 
-| 하단 탭 | 사용 흐름 |
+| 탭 | 주요 기능 |
 | --- | --- |
-| 경기 둘러보기 | 최상단 AI 통합 검색·추천(호수·실내 등 테마 검색 및 Reranker 맞춤 코스), 시·군 지도·목록으로 장소를 담아 순서·이름·날짜를 저장한다. |
-| 경기 날씨 | 경기도 전체·31개 시·군 현재 날씨·5일 예보를 확인하고 추천 장소를 담는다. |
-| 여행 도우미 | 관광 안내를 질문하거나 포스터 인식·직접 입력으로 행사 일정을 저장한다. |
+| 경기 둘러보기 | AI 검색·추천과 시·군 지도로 장소를 담아 여행을 저장한다. |
+| 경기 날씨 | 경기도 전체·31개 시·군의 현재 날씨·옷차림·5일 예보와 추천 장소를 확인한다. |
+| 여행 도우미 | 선택 시·군의 안전 안내·통합 안내 원고·음성·옷차림·추천 명소·맛집을 확인한다. |
 | 내 여행 | 코스 지도, 방문 기록·사진·일기, 대화형 여행 수정·번역을 이용한다. |
 | 프로필 | 네이버 로그인·로그아웃, 여행 요약, 브라우저 여행 취향을 관리한다. |
 
-API 문서는 `/api/docs`(또는 `/scalar`), OpenAPI JSON은 `/api/openapi`에서 제공한다([기술 구조](docs/03-tech/01-architecture.md#http-api-계약)). 운영 상태는 [모니터링 가이드](docs/05-ops/01-deploy.md#운영-모니터링)에서 확인한다.
+API 문서는 `/api/docs`(OpenAPI JSON: `/api/openapi`, [계약](docs/03-tech/01-architecture.md#http-api-계약)), 운영 상태는 [모니터링 가이드](docs/05-ops/01-deploy.md#운영-모니터링)에서 확인한다.
 
 ## 테스트
 
@@ -52,16 +47,12 @@ npm run format:check && npm test && npm run typecheck && npm run build
 python3 .github/scripts/check_docs.py
 ```
 
-서식 수정은 `npm run format`을 사용한다. 단위 검사는 `DATABASE_URL`(또는 `TEST_DATABASE_URL`)의 임시 스키마에서 실행한다. 프로덕션 HTTP 검사는 테스트 DB·AI 키 없는 서버(`PORT=3100`)에서 `node tests/http.mjs`, `TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs`를 실행하고, 로그인 HTTP 검사는 더미 `NAVER_LOGIN_CLIENT_ID`·`NAVER_LOGIN_CLIENT_SECRET` 서버에서 `node tests/auth-http.mjs`를 실행한다.
-
-날씨 전용 HTTP 검사는 DB를 사용하지 않는다. 실행 서버 주소를 `TEST_BASE_URL`로 지정해 `node tests/city-weather-http.mjs`를 실행하고, 실제 Open-Meteo 응답을 확인할 때는 `EXPECT_LIVE_WEATHER=true`를 설정한다.
+- 서식 수정은 `npm run format`, 단위 검사는 `DATABASE_URL`(또는 `TEST_DATABASE_URL`)의 임시 스키마를 사용한다.
+- HTTP 검사는 AI 키 없는 서버(`PORT=3100`)에서 `tests/http.mjs`·`tests/extensions-http.mjs`, 더미 로그인 키 서버에서 `tests/auth-http.mjs`, DB 없이 `TEST_BASE_URL` 지정 후 `tests/city-weather-http.mjs`(`EXPECT_LIVE_WEATHER=true`는 실시간)를 실행한다.
 
 ## 관련 문서
 
-- [작업 지침](AGENTS.md)은 작업 순서와 문서 관리 규칙을 정의한다.
-- [관광 데이터](data/places.json)는 장소·출처·사진 카탈로그를 담는다.
-- [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)은 지도 확장 현황과 대기 항목을 관리한다.
-- [프로젝트 평가 항목 안내](docs/evaluation.md)는 평가 영역·배점과 근거 문서를 정리한다.
+- [작업 지침](AGENTS.md) · [관광 데이터](data/places.json) · [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md) · [평가 항목 안내](docs/evaluation.md)
 
 ### 문서 분류 기준
 

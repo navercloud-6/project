@@ -1,25 +1,15 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { api } from '@/lib/adapters/client-api';
+import { useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
-import {
-  WEATHER_REGIONS,
-  weatherResponseSchema,
-  type WeatherResponse,
-} from '@/lib/domain/weather';
+import { regionForCity, weatherResponseSchema } from '@/lib/domain/weather';
 import type { BriefingOutput } from '@/lib/domain/briefing';
-import type { Capabilities } from './assistant/shared';
+import { useRegionQuery, type Capabilities } from './assistant/shared';
 import { GyeonggiMapPanel } from './gyeonggi-map';
 import { OutfitCard } from './outfit-card';
 import { PlaceCard } from './place-card';
 import { WeatherBriefing } from './weather-briefing';
 import { WeatherRestaurants } from './weather-restaurants';
 import { SafetyAlerts } from './safety-alerts';
-
-const regionForCity = (cityId: string | null) =>
-  Object.keys(WEATHER_REGIONS).find(
-    (name) => WEATHER_REGIONS[name].cityId === cityId,
-  ) ?? '전체';
 
 /**
  * 여행 도우미 — 오늘의 안내.
@@ -43,40 +33,14 @@ export function TodayGuide({
   capabilities?: Capabilities;
 }) {
   const region = regionForCity(selectedCityId);
-  const place = region === '전체' ? '경기도' : region;
-  const [state, setState] = useState<{
-    region: string;
-    data?: WeatherResponse;
-    error?: string;
-  }>({ region });
+  const { data: weather } = useRegionQuery(
+    '/api/weather',
+    region,
+    weatherResponseSchema,
+  );
   // 안내 원고가 말한 명소·맛집(순서·추천 이유를 화면 카드에 그대로 쓴다)
   const [briefing, setBriefing] = useState<BriefingOutput | null>(null);
 
-  useEffect(() => {
-    let active = true;
-    const controller = new AbortController();
-    setState({ region });
-    api(
-      `/api/weather?region=${encodeURIComponent(region)}`,
-      'GET',
-      undefined,
-      controller.signal,
-    )
-      .then((r) => {
-        const data = weatherResponseSchema.parse(r);
-        if (active && data.region === region) setState({ region, data });
-      })
-      .catch((e) => {
-        if (!active || (e instanceof Error && e.name === 'AbortError')) return;
-        setState({ region, error: (e as Error).message });
-      });
-    return () => {
-      active = false;
-      controller.abort();
-    };
-  }, [region]);
-
-  const weather = state.region === region ? state.data : undefined;
   const spoken = briefing?.region === region ? briefing : null;
   // 원고가 오면 원고가 말한 순서·이유로, 오기 전에는 날씨 추천 순서(최대 3곳)로 보여 준다.
   const spots = (

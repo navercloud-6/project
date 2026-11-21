@@ -96,19 +96,16 @@ function isZodError(error: unknown): boolean {
       Array.isArray((error as { issues?: unknown }).issues))
   );
 }
+export const noStoreJson = (body: unknown, status = 200) =>
+  Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
+
 export function failure(error: unknown) {
   if (error instanceof ApplicationError)
-    return Response.json(
-      { error: error.message },
-      { status: statuses[error.code] },
-    );
+    return noStoreJson({ error: error.message }, statuses[error.code]);
   if (isZodError(error))
-    return Response.json(
-      { error: '입력 항목과 길이를 확인해 주세요.' },
-      { status: 400 },
-    );
-  return Response.json(
+    return noStoreJson({ error: '입력 항목과 길이를 확인해 주세요.' }, 400);
+  return noStoreJson(
     { error: '요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.' },
-    { status: 500 },
+    500,
   );
 }

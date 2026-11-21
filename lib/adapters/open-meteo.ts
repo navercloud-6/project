@@ -34,25 +34,39 @@ const currentCityUpstreamSchema = z.object({
   }),
 });
 
+const round1 = (value: number) => Number(value.toFixed(1));
+const clampPercent = (value: number) =>
+  Math.round(Math.min(100, Math.max(0, value)));
+
+function fetchForecast(
+  lat: number,
+  lng: number,
+  params: Record<string, string>,
+) {
+  const url = new URL('https://api.open-meteo.com/v1/forecast');
+  url.search = new URLSearchParams({
+    latitude: String(lat),
+    longitude: String(lng),
+    wind_speed_unit: 'ms',
+    timezone: 'Asia/Seoul',
+    ...params,
+  }).toString();
+  return fetch(url.href, {
+    headers: { Accept: 'application/json' },
+    cache: 'no-store',
+    redirect: 'error',
+    signal: AbortSignal.timeout(8000),
+  });
+}
+
 export async function liveCityWeather(
   city: CityWeatherLocation,
 ): Promise<CityWeatherObservation> {
-  const url = new URL('https://api.open-meteo.com/v1/forecast');
-  url.search = new URLSearchParams({
-    latitude: String(city.coordinates.lat),
-    longitude: String(city.coordinates.lng),
-    current: 'temperature_2m,weather_code,wind_speed_10m',
-    wind_speed_unit: 'ms',
-    timezone: 'Asia/Seoul',
-    forecast_days: '1',
-  }).toString();
   let response: Response;
   try {
-    response = await fetch(url, {
-      headers: { Accept: 'application/json' },
-      cache: 'no-store',
-      redirect: 'error',
-      signal: AbortSignal.timeout(8000),
+    response = await fetchForecast(city.coordinates.lat, city.coordinates.lng, {
+      current: 'temperature_2m,weather_code,wind_speed_10m',
+      forecast_days: '1',
     });
   } catch (error) {
     throw new ApplicationError(
@@ -82,7 +96,7 @@ export async function liveCityWeather(
   return cityWeatherObservationSchema.parse({
     observedAt: `${time}+09:00`,
     current: {
-      temperature: Number(raw.temperature_2m.toFixed(1)),
+      temperature: round1(raw.temperature_2m),
       weatherCode: raw.weather_code,
       condition: description.condition,
       icon: description.icon,
@@ -110,42 +124,25 @@ const openMeteoUpstreamSchema = z.object({
 
 export async function liveWeather(region: string): Promise<WeatherResponse> {
   const meta = WEATHER_REGIONS[region] ?? WEATHER_REGIONS['전체'];
-  const url = new URL('https://api.open-meteo.com/v1/forecast');
-  url.searchParams.set('latitude', String(meta.lat));
-  url.searchParams.set('longitude', String(meta.lng));
-  url.searchParams.set(
-    'current',
-    'temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m',
-  );
-  url.searchParams.set(
-    'daily',
-    'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max',
-  );
-  url.searchParams.set('wind_speed_unit', 'ms');
-  url.searchParams.set('timezone', 'Asia/Seoul');
-  url.searchParams.set('forecast_days', '5');
-
-  const response = await fetch(url.toString(), {
-    method: 'GET',
-    headers: { Accept: 'application/json' },
-    cache: 'no-store',
-    redirect: 'error',
-    signal: AbortSignal.timeout(8000),
+  const response = await fetchForecast(meta.lat, meta.lng, {
+    current:
+      'temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m',
+    daily:
+      'weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max',
+    forecast_days: '5',
   });
   if (!response.ok) {
     throw new Error('Weather upstream failed');
   }
   const raw = openMeteoUpstreamSchema.parse(await response.json());
-  const windSpeed = Number(raw.current.wind_speed_10m.toFixed(1));
+  const windSpeed = round1(raw.current.wind_speed_10m);
   const desc = describeWeatherCode(raw.current.weather_code, windSpeed);
   const current = {
-    temperature: Number(raw.current.temperature_2m.toFixed(1)),
-    apparentTemperature: Number(raw.current.apparent_temperature.toFixed(1)),
-    humidity: Math.round(
-      Math.min(100, Math.max(0, raw.current.relative_humidity_2m)),
-    ),
+    temperature: round1(raw.current.temperature_2m),
+    apparentTemperature: round1(raw.current.apparent_temperature),
+    humidity: clampPercent(raw.current.relative_humidity_2m),
     windSpeed,
-    precipitation: Number(Math.max(0, raw.current.precipitation).toFixed(1)),
+    precipitation: round1(Math.max(0, raw.current.precipitation)),
     weatherCode: Math.round(raw.current.weather_code),
     condition: desc.condition,
     icon: desc.icon,
@@ -161,15 +158,9 @@ export async function liveWeather(region: string): Promise<WeatherResponse> {
       weatherCode: code,
       condition: d.condition,
       icon: d.icon,
-      tempMax: Number(
-        (raw.daily.temperature_2m_max[i] ?? current.temperature).toFixed(1),
-      ),
-      tempMin: Number(
-        (raw.daily.temperature_2m_min[i] ?? current.temperature).toFixed(1),
-      ),
-      precipitationProbability: Math.round(
-        Math.min(100, Math.max(0, prob ?? 0)),
-      ),
+      tempMax: round1(raw.daily.temperature_2m_max[i] ?? current.temperature),
+      tempMin: round1(raw.daily.temperature_2m_min[i] ?? current.temperature),
+      precipitationProbability: clampPercent(prob ?? 0),
     };
   });
 

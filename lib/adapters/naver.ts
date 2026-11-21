@@ -60,6 +60,28 @@ const chatResponse = z.object({
   }),
 });
 
+const clovaHeaders = () => ({
+  'Content-Type': 'application/json',
+  Accept: 'application/json',
+  Authorization: `Bearer ${process.env.CLOVA_STUDIO_API_KEY}`,
+  'X-NCP-CLOVASTUDIO-REQUEST-ID': crypto.randomUUID(),
+});
+
+function toolArgs(
+  toolCalls: unknown,
+  name: string,
+  missingMessage: string,
+): string {
+  if (
+    !Array.isArray(toolCalls) ||
+    toolCalls.length !== 1 ||
+    toolCalls[0]?.function?.name !== name
+  )
+    throw new ApplicationError('UPSTREAM_INVALID', missingMessage);
+  const args = toolCalls[0].function.arguments;
+  return typeof args === 'string' ? args : JSON.stringify(args);
+}
+
 export async function chat(
   messages: unknown[],
   extra: Record<string, unknown> = {},
@@ -70,12 +92,7 @@ export async function chat(
     `https://clovastudio.stream.ntruss.com/v3/chat-completions/${encodeURIComponent(model)}`,
     {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${process.env.CLOVA_STUDIO_API_KEY}`,
-        'X-NCP-CLOVASTUDIO-REQUEST-ID': crypto.randomUUID(),
-      },
+      headers: clovaHeaders(),
       body: JSON.stringify({
         messages,
         maxTokens: 1600,
@@ -275,12 +292,7 @@ export async function rerank(
     'https://clovastudio.stream.ntruss.com/v1/api-tools/reranker',
     {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${process.env.CLOVA_STUDIO_API_KEY}`,
-        'X-NCP-CLOVASTUDIO-REQUEST-ID': crypto.randomUUID(),
-      },
+      headers: clovaHeaders(),
       body: JSON.stringify({
         query,
         documents,
@@ -332,17 +344,13 @@ export const naver: AIPort = {
       },
     );
     try {
-      const calls = message.toolCalls;
-      if (
-        !Array.isArray(calls) ||
-        calls.length !== 1 ||
-        calls[0]?.function?.name !== 'recommend_itinerary'
-      )
-        throw new Error('Invalid recommendation tool call');
-      const args = calls[0].function.arguments;
       return parseAI(
         recommendationOutput,
-        typeof args === 'string' ? args : JSON.stringify(args),
+        toolArgs(
+          message.toolCalls,
+          'recommend_itinerary',
+          'AI가 유효한 여행 제안을 반환하지 않았습니다. 다시 시도해 주세요.',
+        ),
       );
     } catch {
       throw new ApplicationError(
@@ -381,20 +389,13 @@ export const naver: AIPort = {
       editTools,
       process.env.CLOVA_FUNCTION_MODEL || 'HCX-DASH-002',
     );
-    const calls = message.toolCalls;
-    if (
-      !Array.isArray(calls) ||
-      calls.length !== 1 ||
-      calls[0]?.function?.name !== 'propose_itinerary'
-    )
-      throw new ApplicationError(
-        'UPSTREAM_INVALID',
-        '유효한 여행 변경 도구 호출이 없습니다.',
-      );
-    const args = calls[0].function.arguments;
     return parseAI(
       editOutput,
-      typeof args === 'string' ? args : JSON.stringify(args),
+      toolArgs(
+        message.toolCalls,
+        'propose_itinerary',
+        '유효한 여행 변경 도구 호출이 없습니다.',
+      ),
     );
   },
   async diary(name, image) {

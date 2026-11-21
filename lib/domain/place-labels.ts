@@ -196,86 +196,49 @@ export function inferHeuristicLabels(place: LabelablePlace): PlaceLabel {
   else if (indoorText && outdoorText) setting = '실내·야외';
   else if (indoorText) setting = '실내';
 
-  const themes: ThemeLabel[] = [];
-  for (const [theme, re] of THEME_RULES) {
-    if (re.test(text)) themes.push(theme);
-  }
+  const themes = THEME_RULES.filter(([, re]) => re.test(text)).map(
+    ([theme]) => theme,
+  );
   if (!themes.length) {
     themes.push(setting === '실내' ? '박물관·전시' : '공원·숲');
   }
+  const hasTheme = (...list: ThemeLabel[]) =>
+    list.some((theme) => themes.includes(theme));
 
   const companions: CompanionLabel[] = [];
   if (
-    themes.some((t) => ['체험·테마', '박물관·전시', '공원·숲'].includes(t)) ||
+    hasTheme('체험·테마', '박물관·전시', '공원·숲') ||
     /아이|어린이|키즈|체험|가족|동물/.test(text)
-  ) {
+  )
     companions.push('아이동반', '가족');
-  }
   if (
-    themes.some((t) =>
-      [
-        '호수',
-        '바다',
-        '전망·야경',
-        '예술·공연',
-        '시장·거리',
-        '공원·숲',
-      ].includes(t),
-    )
-  ) {
+    hasTheme('호수', '바다', '전망·야경', '예술·공연', '시장·거리', '공원·숲')
+  )
     companions.push('연인·데이트');
-  }
-  if (
-    themes.some((t) =>
-      ['역사·유적', '사찰·전통', '공원·숲', '산·계곡', '호수'].includes(t),
-    )
-  ) {
+  if (hasTheme('역사·유적', '사찰·전통', '공원·숲', '산·계곡', '호수'))
     companions.push('부모님');
-  }
   if (
-    themes.some((t) =>
-      ['박물관·전시', '사찰·전통', '공원·숲', '호수', '예술·공연'].includes(t),
-    ) ||
+    hasTheme('박물관·전시', '사찰·전통', '공원·숲', '호수', '예술·공연') ||
     /산책|조용|사색|휴식|도서관/.test(text)
-  ) {
+  )
     companions.push('혼자·힐링');
-  }
   if (!companions.length) companions.push('가족', '연인·데이트');
 
   const styles: StyleLabel[] = [];
   if (setting === '실내' || setting === '실내·야외') styles.push('비오는날');
   if (
-    themes.some((t) =>
-      ['공원·숲', '호수', '바다', '역사·유적', '시장·거리'].includes(t),
-    ) ||
+    hasTheme('공원·숲', '호수', '바다', '역사·유적', '시장·거리') ||
     /산책|걷기|둘레길/.test(text)
-  ) {
+  )
     styles.push('산책');
-  }
-  if (
-    themes.some((t) => ['박물관·전시', '역사·유적', '사찰·전통'].includes(t))
-  ) {
+  if (hasTheme('박물관·전시', '역사·유적', '사찰·전통'))
     styles.push('교육·학습');
-  }
-  if (
-    themes.some((t) =>
-      ['호수', '바다', '전망·야경', '공원·숲', '예술·공연'].includes(t),
-    )
-  ) {
+  if (hasTheme('호수', '바다', '전망·야경', '공원·숲', '예술·공연'))
     styles.push('사진명소');
-  }
-  if (themes.some((t) => ['체험·테마', '캠핑·레저', '산·계곡'].includes(t))) {
-    styles.push('액티비티');
-  }
-  if (themes.some((t) => ['호수', '바다', '산·계곡'].includes(t))) {
-    styles.push('드라이브');
-  }
-  if (
-    themes.some((t) => ['공원·숲', '사찰·전통', '호수'].includes(t)) ||
-    /휴식|치유|힐링/.test(text)
-  ) {
+  if (hasTheme('체험·테마', '캠핑·레저', '산·계곡')) styles.push('액티비티');
+  if (hasTheme('호수', '바다', '산·계곡')) styles.push('드라이브');
+  if (hasTheme('공원·숲', '사찰·전통', '호수') || /휴식|치유|힐링/.test(text))
     styles.push('휴식');
-  }
   if (!styles.length) styles.push('산책', '휴식');
 
   const keywords = KEYWORD_CANDIDATES.filter((kw) => text.includes(kw));
@@ -528,38 +491,20 @@ export function scorePlaceMatch(
   }
 
   for (const token of tokens) {
-    if (token.length >= 2 && nameLower.includes(token)) score += 32;
-    if (token.length >= 2 && regionLower.includes(token)) score += 12;
-    if (
-      token.length >= 2 &&
-      place.tags.some((t) => t.toLowerCase().includes(token))
-    )
-      score += 8;
+    if (token.length < 2) continue;
+    const has = (list: readonly string[]) =>
+      list.some((item) => item.toLowerCase().includes(token));
+    if (nameLower.includes(token)) score += 32;
+    if (regionLower.includes(token)) score += 12;
+    if (has(place.tags)) score += 8;
     if (labels) {
-      if (token.length >= 2 && labels.setting.toLowerCase().includes(token))
-        score += 14;
-      if (
-        token.length >= 2 &&
-        labels.themes.some((t) => t.toLowerCase().includes(token))
-      )
-        score += 14;
-      if (
-        token.length >= 2 &&
-        labels.companions.some((c) => c.toLowerCase().includes(token))
-      )
-        score += 10;
-      if (
-        token.length >= 2 &&
-        labels.styles.some((s) => s.toLowerCase().includes(token))
-      )
-        score += 10;
-      if (
-        token.length >= 2 &&
-        labels.keywords.some((k) => k.toLowerCase().includes(token))
-      )
-        score += 10;
+      if (labels.setting.toLowerCase().includes(token)) score += 14;
+      if (has(labels.themes)) score += 14;
+      if (has(labels.companions)) score += 10;
+      if (has(labels.styles)) score += 10;
+      if (has(labels.keywords)) score += 10;
     }
-    if (token.length >= 2 && descLower.includes(token)) score += 4;
+    if (descLower.includes(token)) score += 4;
   }
 
   return score;

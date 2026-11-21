@@ -6,77 +6,61 @@
 
 ![시스템 아키텍처](system-architecture.svg)
 
-Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영속 데이터는 외부 PostgreSQL(운영은 NCP Cloud DB for PostgreSQL)에 저장한다. [기술 스택](../../README.md#기술-스택)과 [요구사항](../01-func/01-requirements.md)을 따른다.
+Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고 영속 데이터는 외부 PostgreSQL(운영: NCP Cloud DB)에 저장한다([기술 스택](../../README.md#기술-스택), [요구사항](../01-func/01-requirements.md)).
 
-헥사고날 아키텍처를 적용한다. 도메인이 모델·검증·편집 규칙을 소유하고 애플리케이션이 포트로 저장소·AI·날씨를 호출한다. 안쪽 계층은 Next.js·PostgreSQL·환경 변수·네트워크에 의존하지 않으며, 브라우저는 내부 `/api/*`만 호출하고 비밀 키는 서버에만 둔다.
+헥사고날 아키텍처로 도메인이 모델·규칙을 소유하고 애플리케이션이 포트로 저장소·외부 API를 호출한다. 안쪽 계층은 프레임워크·DB·환경 변수·네트워크에 비의존하며 브라우저는 `/api/*`만 호출하고 비밀 키는 서버에만 둔다.
 
 ## 소스 구조
 
 | 경로 | 책임 |
 | --- | --- |
-| [app/](../../app/) · [components/](../../components/) | 화면과 HTTP Route Handler를 제공한다. |
-| [lib/domain/](../../lib/domain/) | 카탈로그·Zod 계약·업무 규칙을 제공한다. |
-| [lib/application/](../../lib/application/) | 유스케이스와 외부 포트를 정의한다. |
-| [lib/adapters/](../../lib/adapters/) | PostgreSQL·NAVER·Open-Meteo·이미지·HTTP·브라우저 어댑터를 구현한다. |
-| [lib/server.ts](../../lib/server.ts) | 어댑터를 유스케이스에 주입하는 조립 지점이다. |
-| [data/](../../data/) · [public/places/](../../public/places/) | 정적 관광·지도 데이터와 사진을 보관한다. |
+| [app/](../../app/) · [components/](../../components/) | 화면, Route Handler, 탭 공유 상태(`Tourpass`)를 제공한다. |
+| [lib/domain/](../../lib/domain/) | 카탈로그·Zod 계약·검색/날씨/옷차림/원고/맛집/특보 규칙을 소유한다. |
+| [lib/application/](../../lib/application/) | 유스케이스, 외부 포트, 공용 TTL·LRU·병합 캐시([cache.ts](../../lib/application/cache.ts))를 제공한다. |
+| [lib/adapters/](../../lib/adapters/) | PostgreSQL·NAVER·Open-Meteo·기상청·이미지·HTTP·브라우저 어댑터를 구현한다. |
+| [lib/server.ts](../../lib/server.ts) | 어댑터 주입과 `globalThis` 싱글톤 고정으로 청크·HMR 간 캐시를 공유한다. |
+| [data/](../../data/) · [public/places/](../../public/places/) | 정적 관광·지도·라벨 데이터와 사진을 보관한다. |
 | [deploy/](../../deploy/) · [.github/workflows/](../../.github/workflows/) | 배포·모니터링·CI/CD를 구성한다. |
 | [tests/](../../tests/) | 경계·단위·모의 연동·HTTP 검사를 제공한다. |
 
-통합 안내는 [briefing.ts](../../lib/domain/briefing.ts)가 원고 재료·규칙 원고·음성용 문장 정리(영하·단위·끝인사)를 소유하고, [operations.ts](../../lib/application/operations.ts)의 도우미 `briefing` action이 주입된 날씨·맛집 유스케이스 → 원고 앞부분(HCX, 숫자 검증) + 명소·맛집 뒷부분(코드) → Papago → Voice 순서로 처리해 원고와 base64 MP3를 함께 반환한다.
-
-맛집은 [restaurants.ts](../../lib/domain/restaurants.ts)가 술집·지역 제외와 후기 한 건 기준 메뉴 검증을 소유하고, [application/restaurants.ts](../../lib/application/restaurants.ts)가 `RestaurantSearchPort`([naver-search.ts](../../lib/adapters/naver-search.ts), NAVER API HUB 지역·블로그 검색)로 맛집·명소 블로그 후기 모두 10분 TTL·LRU 캐시와 동시 요청 병합을 적용한다. 메뉴 후보는 CLOVA 키가 있을 때만 HCX가 후기에서 뽑고 같은 검증을 다시 거친다.
-
-안전 안내는 [alerts.ts](../../lib/domain/alerts.ts)가 특보 구역 판정·지진 선별·안내 문장을 소유하고, [application/alerts.ts](../../lib/application/alerts.ts)가 `AlertPort`([kma-alerts.ts](../../lib/adapters/kma-alerts.ts), 공공데이터포털 기상청 `getPwnStatus`·`getEqkMsg`)의 전국 자료를 10분간 공유하며 동시 요청을 합친다. 통합 안내는 [application/briefing.ts](../../lib/application/briefing.ts)가 원고·음성을 시·군·언어별 10분 TTL·LRU 캐시와 동시 요청 병합으로 만들고, 원고 직후 음성을 미리 만든다. [WeatherBriefing](../../components/weather-briefing.tsx)은 시·군·언어 전환 시 350ms 디바운스와 `AbortController`로 불필요한 연속 호출을 줄인다.
-
-공용 인메모리 캐시(TTL·최대 개수 LRU·동시 요청 병합)는 [cache.ts](../../lib/application/cache.ts)가 제공하며, [server.ts](../../lib/server.ts)는 조립된 서비스 싱글톤을 `globalThis`에 고정해 라우트 청크·HMR 간 캐시를 공유한다. [operations.ts](../../lib/application/operations.ts)는 정적 카탈로그 기반 장소 번역(24시간·최대 500건)·음성(24시간·최대 100건)을, [recommendation.ts](../../lib/application/recommendation.ts)는 과거 만족도가 없는 동일 조건 CLOVA 추천(10분·최대 200건)을 캐시·병합하고 캐시 히트 시 사용 한도를 차감하지 않는다.
-
-날씨 옷차림은 [outfit.ts](../../lib/domain/outfit.ts)의 순수 함수가 구간표·준비물 기준을 소유하고, [weather.ts](../../lib/domain/weather.ts)의 `buildWeatherOutfit`이 실시간·데모 응답에 같은 규칙으로 `outfit`을 붙인다.
-
-탭 전환 뒤 유지할 상태는 [Tourpass](../../components/tourpass.tsx)가 소유하고, 탐색·날씨는 같은 장소 카드를 재사용한다. AI 검색 목록도 같은 장소 상세 상태를 사용하며 브라우저 취향은 [preferences.ts](../../lib/adapters/preferences.ts)가 검증·저장한다.
-
 ## 경기도 지역 선택 지도
 
-[GyeonggiCityExplorer](../../components/gyeonggi-city-explorer.tsx)는 [지도 요구사항](../01-func/01-requirements.md#경기도-지역-선택-지도)을 구현하는 정적 SVG 탐색 컴포넌트다.
+[build_gyeonggi_map.py](../../scripts/build_gyeonggi_map.py)가 SGIS 기반 [vuski/admdongkor(2026-10-01)](https://github.com/vuski/admdongkor/tree/3bc00489b76696db864bdbea4b19985cdfa8b403/ver20261001) SHA-256을 검증해 [gyeonggi-map.json](../../data/gyeonggi-map.json)과 [라이선스](../../data/gyeonggi-map.LICENSE.txt)를 생성한다. `Tourpass`의 `selectedCityId`를 지도·날씨·도우미가 공유하며 시흥 권역 필터(`region`)와 분리한다([요구사항](../01-func/01-requirements.md#경기도-지역-선택-지도)).
 
-- [build_gyeonggi_map.py](../../scripts/build_gyeonggi_map.py)가 SGIS 기반 [vuski/admdongkor(2026-10-01)](https://github.com/vuski/admdongkor/tree/3bc00489b76696db864bdbea4b19985cdfa8b403/ver20261001) 원본의 SHA-256을 검증하고 경기도 31개 시·군 병합·단순화를 거쳐 [gyeonggi-map.json](../../data/gyeonggi-map.json)과 [라이선스](../../data/gyeonggi-map.LICENSE.txt)를 생성한다.
-- 선택 상태는 `Tourpass`의 `selectedCityId`가 소유하며 날씨 탭과 공유하고 기존 시흥 권역 필터(`region`)와 분리한다. 오른쪽 목록은 카탈로그의 `cityId`로 필터링하고, 지도 상단의 [CityWeatherBadge](../../components/city-weather-badge.tsx)는 날씨 탭과 [WeatherSymbol](../../components/weather-symbol.tsx)을 공유한다.
+## 외부 연동과 캐시
 
-## 날씨 연동
+캐시 히트 시 요청 한도를 차감하지 않는다.
 
-[weather.ts](../../lib/domain/weather.ts)의 `WEATHER_REGIONS`가 두 화면의 기상 조회 좌표를 관리한다. 날씨 탭과 통합 안내는 `/api/weather?region=...`([application/weather.ts](../../lib/application/weather.ts))의 현재 기상·5일 예보를, 지도는 `/api/weather/current?cityId=...`([application/city-weather.ts](../../lib/application/city-weather.ts)·[city-weather-client.ts](../../lib/adapters/city-weather-client.ts))의 현재 날씨를 사용한다. 두 유스케이스 모두 실시간 성공 응답을 도시별 10분간 캐시하고 동시 요청을 합친다. 두 화면은 도시 변경 후 도착한 이전 응답을 무시하며 실패·시연 정책은 [요구사항](../01-func/01-requirements.md#탐색추천날씨)을 따른다.
-
-## 네이버 지도와 관광 데이터
-
-- [PlaceMap](../../components/place-map.tsx)은 [naver-map.ts](../../lib/adapters/naver-map.ts)로 Web Dynamic Map v3 SDK를 1회 로드하고 `navermap_authFailure`를 감지한다. `NAVER_MAP_CLIENT_ID`는 `force-dynamic` 홈에서 런타임 주입하며, 미설정·실패 시 경기도 투영 SVG로 폴백한다.
-- [import-tourapi.ts](../../scripts/import-tourapi.ts)는 한국관광공사 `KorService2`를 수집해 시흥 20곳을 유지하고 타 시·군 관광지를 갱신한다. 공공누리 제1유형·`tong.visitkorea.or.kr` 사진만 허용하며 공개 사진은 Next.js Image로 WebP 최적화·지연 로딩한다.
-- [label-places.ts](../../scripts/label-places.ts)는 609곳 관광지에 CLOVA Studio(및 `--bootstrap` 초기 규칙 추론)로 실내·야외·테마·동행·여행 방식·키워드 라벨을 생성해 [place-labels.json](../../data/place-labels.json)에 저장하고, [place-label-overrides.json](../../data/place-label-overrides.json)의 수동 보정(`source: 'manual'`)을 항상 우선 유지한다([catalog.ts](../../lib/domain/catalog.ts)에서도 동일 병합). [recommendation.ts](../../lib/application/recommendation.ts)는 라벨·동의어·만족도로 1차 후보(최대 20곳)를 추출한 뒤 [naver.ts](../../lib/adapters/naver.ts)의 CLOVA Studio Reranker(`/v1/api-tools/reranker`)로 연관 관광지를 선별하고 `HCX-005`로 맞춤 코스를 생성한다.
-- 추천은 공통 추천 스키마에서 도출한 `recommend_itinerary` Function calling을 지정하고 반환 인수를 검증한다. 일반 설명문을 JSON으로 해석하지 않으며 도구명·장소 ID·중복·개수·지역 검증은 유지한다.
-- [place-labels.ts](../../lib/domain/place-labels.ts)는 시·군명과 동행·장소 구분·테마·활동을 검색 조건으로 해석한다. 브라우저 검색과 추천 유스케이스는 같은 조건 필터를 통과한 장소만 순위화하며, 점수나 만족도로 지역·조건 제약을 우회하지 않는다. 화면은 검색 조건 변경으로 무효가 된 요청의 응답을 버린다.
+| 영역 | 핵심 동작과 캐시 |
+| --- | --- |
+| 날씨·옷차림 | `WEATHER_REGIONS` 좌표를 공유해 `/api/weather`·`/api/weather/current` 성공 응답을 도시별 10분 캐시·병합한다(데모 미캐시, [정책](../01-func/01-requirements.md#탐색추천날씨)). |
+| 네이버 지도 | `NAVER_MAP_CLIENT_ID`를 런타임 주입해 v3 SDK를 1회 로드하고 미설정·인증 실패 시 경기도 SVG로 폴백한다. |
+| 관광 데이터·라벨 | `scripts/import-tourapi.ts`(공공누리 1유형 사진만 허용)와 `scripts/label-places.ts`(CLOVA 배치)로 갱신하며 `data/place-label-overrides.json` 수동 보정을 우선 병합한다. |
+| AI 검색·추천 | 클라이언트·서버가 같은 조건 필터를 쓴다. 1차 후보(20곳) → Reranker → `HCX-005` Function calling(`recommend_itinerary`) 검증 후, 만족도 없는 동일 조건을 10분·200건 캐시·병합한다. |
+| 통합 안내·번역·음성 | 날씨·맛집 → 원고 앞부분(HCX·검증) + 명소·맛집 뒷부분(코드) → Papago → Voice 순으로 처리한다. 통합 안내(10분), 정적 장소 번역(24시간·500건)·음성(24시간·100건)을 캐시·병합하고 UI는 350ms 디바운스·`AbortController`를 적용한다. |
+| 맛집·안전 안내 | NAVER 지역·블로그 검색(술집·타 지역 제외, 후기 검증)과 기상청 `getPwnStatus`·`getEqkMsg` 전국 자료를 각 10분 캐시·병합한다. |
 
 ## HTTP API 계약
 
-상세 경로·스키마는 [OpenAPI 원본](../../lib/adapters/openapi.ts), [contracts.ts](../../lib/domain/contracts.ts), [assistant.ts](../../lib/domain/assistant.ts)에서 관리하며 실행 서버 `/api/docs`로 조회한다.
+상세 경로·스키마는 [openapi.ts](../../lib/adapters/openapi.ts), [contracts.ts](../../lib/domain/contracts.ts), [assistant.ts](../../lib/domain/assistant.ts)가 원본이며 `/api/docs`로 조회한다.
 
-- [http.ts](../../lib/adapters/http.ts)는 세션, 변경 요청의 `Origin` 일치, JSON 본문 상한과 `{error}` 응답을 처리하고 도메인 오류 코드를 HTTP 상태로 변환한다.
-- [images.ts](../../lib/adapters/images.ts)는 2MB·픽셀 수·형식을 검증해 JPEG로 재인코딩한다. [naver.ts](../../lib/adapters/naver.ts)는 HTTPS·30초 제한·리다이렉트 차단·응답 스키마 검사를 적용하며 OCR은 `https://*.apigw.ntruss.com`만 허용한다.
-- [naver-login.ts](../../lib/adapters/naver-login.ts)는 Authorization Code 흐름으로 동일인 식별자만 조회한다(CLOVA Voice 키와 분리, 고정 `APP_ORIGIN` 콜백). 개인정보 정책은 [요구사항](../01-func/01-requirements.md#세션개인정보사용-제한), 앱 등록은 [배포 가이드](../05-ops/01-deploy.md#네이버-로그인)를 따른다.
+- `http.ts`가 세션·`Origin` 검사·JSON 본문 상한·도메인 오류 상태 변환을 처리한다.
+- `images.ts`는 2MB·픽셀·형식을 검증해 JPEG 재인코딩하고, `naver.ts`는 HTTPS·30초 제한·리다이렉트 차단·응답 검증·OCR 도메인(`*.apigw.ntruss.com`) 제한을 적용한다.
+- `naver-login.ts`는 Authorization Code 흐름으로 동일인 식별자만 조회한다([개인정보](../01-func/01-requirements.md#세션개인정보사용-제한), [앱 등록](../05-ops/01-deploy.md#네이버-로그인)).
 
 ## 데이터 저장과 동시성
 
-[postgres.ts](../../lib/adapters/postgres.ts)는 `pg` 풀(`DATABASE_URL`)을 사용하고 첫 요청 시 `pg_advisory_xact_lock` 안에서 6개 테이블(`sessions`, `journeys`, `limits`, `photos`, `account_sessions`, `oauth_states`)을 멱등 초기화한다.
-
-기록·편집·사진·로그인 이전은 `AsyncLocalStorage` 트랜잭션과 `FOR UPDATE` 행 잠금으로 소유권·리비전·보호 정책을 검사하고 새 UUID 리비전을 발급한다. 사진은 `(journey, place)` 고유 제약을 두고, 요청 한도는 `INSERT ... ON CONFLICT DO UPDATE RETURNING`으로 원자 증가하며 시간 버킷이 바뀔 때 만료된 이전 버킷 행을 비동기 정리한다.
+[postgres.ts](../../lib/adapters/postgres.ts)가 `pg` 풀(`DATABASE_URL`) 첫 요청 시 `pg_advisory_xact_lock`으로 6개 테이블(`sessions`, `journeys`, `limits`, `photos`, `account_sessions`, `oauth_states`)을 멱등 초기화한다. 기록·편집·사진·로그인 이전은 `AsyncLocalStorage` 트랜잭션과 `FOR UPDATE` 잠금으로 검증·새 UUID 리비전을 발급하며, 한도는 `INSERT ... ON CONFLICT DO UPDATE RETURNING`으로 원자 증가하고 만료 버킷을 비동기 정리한다.
 
 ## 운영 모니터링
 
-별도 Docker 컨테이너(Prometheus·Grafana·Node Exporter·Blackbox Exporter)가 호스트 자원과 로컬 앱·Apache HTTP 응답을 수집하며 모든 포트는 루프백에만 바인딩한다. 설정·접속은 [배포 가이드](../05-ops/01-deploy.md#운영-모니터링)를 따른다.
+Prometheus·Grafana·Node Exporter·Blackbox Exporter 컨테이너가 호스트·앱·Apache 응답을 수집하며 루프백에만 바인딩한다([모니터링 가이드](../05-ops/01-deploy.md#운영-모니터링)).
 
 ## 남은 작업과 리스크
 
 | 항목 | 대기 이유 | 재개 조건·작업 |
 | --- | --- | --- |
-| NAVER 실키 검증 | CLOVA 추천·Reranker와 통합 안내의 Voice·Papago·맛집 검색을 기본 질의로 확인했다. | Maps·로그인·OCR·이미지 기능과 반복 요청의 품질·지연·과금을 검증한다. |
-| HTTPS | 도메인 없이 HTTP 공개 접속만 확인했다. | 도메인 확보 후 [배포 가이드](../05-ops/01-deploy.md)에 따라 HTTPS를 적용한다. |
+| NAVER 실키 검증 | 추천·Reranker·통합 안내(Voice·Papago·맛집)만 기본 질의로 확인했다. | Maps·로그인·OCR·이미지 및 반복 요청 품질·지연·과금을 검증한다. |
+| HTTPS | 도메인 없이 HTTP만 확인했다. | 도메인 확보 후 [배포 가이드](../05-ops/01-deploy.md)대로 HTTPS를 적용한다. |
 | 관광 자료·사진 | 검토 전(`DRAFT`) 스냅샷이다. | 외부 배포 전 운영 정보와 사진 라이선스를 재검토한다. |
-| 상용·수평 확장 | 사진은 DB `BYTEA`에 저장하고 단일 서버로 운영한다. | 전환 시 Object Storage·계정 삭제·다중 인스턴스 로드밸런싱을 도입한다. |
+| 상용·수평 확장 | DB `BYTEA` 사진 저장·단일 서버 구성이다. | 전환 시 Object Storage·계정 삭제·다중 인스턴스를 도입한다. |

@@ -1,39 +1,11 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { api } from '@/lib/adapters/client-api';
-import { alertsResponseSchema, type AlertsResponse } from '@/lib/domain/alerts';
+import { alertsResponseSchema } from '@/lib/domain/alerts';
+import { useRegionQuery } from './assistant/shared';
 
 /** 선택 지역의 기상특보·예비특보·최근 지진 안내(있을 때만 눈에 띄게 보여 준다). */
 export function SafetyAlerts({ region }: { region: string }) {
-  const [state, setState] = useState<{
-    region: string;
-    data?: AlertsResponse;
-  }>({ region });
-
-  useEffect(() => {
-    let active = true;
-    const controller = new AbortController();
-    setState({ region });
-    api(
-      `/api/alerts?region=${encodeURIComponent(region)}`,
-      'GET',
-      undefined,
-      controller.signal,
-    )
-      .then((r) => {
-        const data = alertsResponseSchema.parse(r);
-        if (active && data.region === region) setState({ region, data });
-      })
-      .catch(() => {
-        // 특보 조회 실패는 화면을 막지 않는다(안내 원고에도 넣지 않음).
-      });
-    return () => {
-      active = false;
-      controller.abort();
-    };
-  }, [region]);
-
-  const data = state.region === region ? state.data : undefined;
+  // 특보 조회 실패는 화면을 막지 않는다(안내 원고에도 넣지 않음).
+  const { data } = useRegionQuery('/api/alerts', region, alertsResponseSchema);
   if (!data || data.mode !== 'live') return null;
   if (data.alerts.length === 0)
     return (

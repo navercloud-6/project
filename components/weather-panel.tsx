@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PlaceCard } from './place-card';
 import { OutfitCard } from './outfit-card';
 import { WeatherSymbol } from './weather-symbol';
-import { api } from '@/lib/adapters/client-api';
+import { useRegionQuery } from './assistant/shared';
 import type { Place } from '@/lib/domain/catalog';
 import {
+  regionForCity,
   WEATHER_REGIONS,
   weatherResponseSchema,
   type WeatherResponse,
@@ -62,45 +63,20 @@ export type WeatherPanelState =
   | { region: string; status: 'error'; error: string }
   | { region: string; status: 'ready'; data: WeatherResponse };
 
-function regionForCity(cityId: string | null) {
-  return (
-    REGION_LIST.find((name) => WEATHER_REGIONS[name].cityId === cityId) ??
-    '전체'
-  );
-}
-
 export function WeatherPanel(props: WeatherPanelProps) {
   const selectedRegion = regionForCity(props.selectedCityId);
-  const [state, setState] = useState<WeatherPanelState>({
-    region: selectedRegion,
-    status: 'loading',
-  });
   const [retryKey, setRetryKey] = useState(0);
-
-  useEffect(() => {
-    let active = true;
-    setState({ region: selectedRegion, status: 'loading' });
-    api<WeatherResponse>(
-      `/api/weather?region=${encodeURIComponent(selectedRegion)}`,
-    )
-      .then((response) => {
-        const data = weatherResponseSchema.parse(response);
-        if (data.region !== selectedRegion)
-          throw new Error('선택한 도시의 날씨를 확인하지 못했어요.');
-        if (active) setState({ region: selectedRegion, status: 'ready', data });
-      })
-      .catch((e) => {
-        if (active)
-          setState({
-            region: selectedRegion,
-            status: 'error',
-            error: (e as Error).message,
-          });
-      });
-    return () => {
-      active = false;
-    };
-  }, [selectedRegion, retryKey]);
+  const query = useRegionQuery(
+    '/api/weather',
+    selectedRegion,
+    weatherResponseSchema,
+    retryKey,
+  );
+  const state: WeatherPanelState = query.data
+    ? { region: selectedRegion, status: 'ready', data: query.data }
+    : query.error
+      ? { region: selectedRegion, status: 'error', error: query.error }
+      : { region: selectedRegion, status: 'loading' };
 
   return (
     <WeatherPanelView

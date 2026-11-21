@@ -1,6 +1,12 @@
 import { z } from 'zod';
 import { places, placeIds } from '@/lib/domain/catalog';
-import { buildOutfit, outfitSchema, type Outfit } from '@/lib/domain/outfit';
+import {
+  buildOutfit,
+  outfitSchema,
+  RAIN_CODES,
+  SNOW_CODES,
+  type Outfit,
+} from '@/lib/domain/outfit';
 
 type RegionMeta = {
   cityId: string | null;
@@ -323,6 +329,14 @@ export const WEATHER_REGIONS: Record<string, RegionMeta> = {
 
 export const validWeatherRegions = new Set(Object.keys(WEATHER_REGIONS));
 
+export function regionForCity(cityId: string | null): string {
+  return (
+    Object.keys(WEATHER_REGIONS).find(
+      (name) => WEATHER_REGIONS[name].cityId === cityId,
+    ) ?? '전체'
+  );
+}
+
 export const weatherQuerySchema = z.object({
   region: z
     .string()
@@ -387,11 +401,6 @@ export const weatherResponseSchema = z.object({
 
 export type WeatherResponse = z.infer<typeof weatherResponseSchema>;
 export type WeatherIcon = z.infer<typeof weatherIconSchema>;
-
-const SNOW_CODES = new Set([71, 73, 75, 77, 85, 86]);
-const RAIN_CODES = new Set([
-  51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99,
-]);
 
 export function describeWeatherCode(
   code: number,
@@ -528,7 +537,7 @@ export function pickRecommendedPlaces(
   return [...new Set(sorted.map((p) => p.id))].slice(0, 3);
 }
 
-const kstDate = (now: number, daysOffset = 0) =>
+export const kstDate = (now: number, daysOffset = 0) =>
   new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Asia/Seoul',
     year: 'numeric',

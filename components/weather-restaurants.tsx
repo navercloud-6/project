@@ -1,11 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { api } from '@/lib/adapters/client-api';
-import {
-  restaurantsResponseSchema,
-  type RestaurantsResponse,
-} from '@/lib/domain/restaurants';
-import { ErrorText } from './assistant/shared';
+import { restaurantsResponseSchema } from '@/lib/domain/restaurants';
+import { ErrorText, useRegionQuery } from './assistant/shared';
 
 const mapSearch = (name: string, region: string) =>
   `https://map.naver.com/p/search/${encodeURIComponent(
@@ -21,38 +16,12 @@ export function WeatherRestaurants({
   // 안내 음성과 같은 개수·순서만 보여 줄 때 쓴다.
   limit?: number;
 }) {
-  const [state, setState] = useState<{
-    region: string;
-    data?: RestaurantsResponse;
-    error?: string;
-  }>({ region });
-
-  useEffect(() => {
-    let active = true;
-    const controller = new AbortController();
-    setState({ region });
-    api(
-      `/api/restaurants?region=${encodeURIComponent(region)}`,
-      'GET',
-      undefined,
-      controller.signal,
-    )
-      .then((r) => {
-        const data = restaurantsResponseSchema.parse(r);
-        if (active && data.region === region) setState({ region, data });
-      })
-      .catch((e) => {
-        if (!active || (e instanceof Error && e.name === 'AbortError')) return;
-        setState({ region, error: (e as Error).message });
-      });
-    return () => {
-      active = false;
-      controller.abort();
-    };
-  }, [region]);
-
-  const data = state.region === region ? state.data : undefined;
-  const loading = !data && !state.error;
+  const { data, error } = useRegionQuery(
+    '/api/restaurants',
+    region,
+    restaurantsResponseSchema,
+  );
+  const loading = !data && !error;
   return (
     <section
       className="weather-restaurants"
@@ -64,7 +33,7 @@ export function WeatherRestaurants({
         <span className="pill">NAVER 지역 검색·블로그 후기</span>
       </div>
       {loading && <p className="fine">맛집을 찾는 중…</p>}
-      <ErrorText text={state.region === region ? (state.error ?? '') : ''} />
+      <ErrorText text={error ?? ''} />
       {data?.message && <p className="fine">{data.message}</p>}
       {data && data.items.length > 0 && (
         <ul className="weather-restaurant-list">

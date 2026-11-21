@@ -20,18 +20,26 @@ import { WeatherPanel } from './weather-panel';
 import { GyeonggiCityExplorer } from './gyeonggi-city-explorer';
 import { gyeonggiCities } from '@/lib/domain/gyeonggi';
 import { searchPlaces } from '@/lib/domain/place-labels';
+import { kstDate } from '@/lib/domain/weather';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey, Recommendation } from '@/lib/domain/contracts';
 
 type ExploreTask = 'browse' | 'review';
 
-const today = () =>
-  new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date());
+const LOGIN_MESSAGES: Record<
+  string,
+  { kind: 'notice' | 'error'; text: string }
+> = {
+  success: {
+    kind: 'notice',
+    text: '네이버 계정으로 로그인했어요. 내 여행을 확인해 보세요.',
+  },
+  logout: {
+    kind: 'notice',
+    text: '로그아웃했어요. 계정 여행은 다시 로그인하면 확인할 수 있어요.',
+  },
+  cancelled: { kind: 'error', text: '네이버 로그인을 취소했어요.' },
+};
 
 const EXPLORE_COPY: Record<
   ExploreTask,
@@ -96,9 +104,17 @@ export default function Tourpass({
   const regions = ['전체', ...new Set(places.map((p) => p.region))];
   const byId = new Map(places.map((p) => [p.id, p]));
   const filtered = searchPlaces(places, query, region);
+  function clearError() {
+    setError('');
+    setLimitReached(false);
+  }
   function clearRecommendation() {
     recommendationRequestRef.current++;
     setResult(null);
+  }
+  function focusSearchInput() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    searchInputRef.current?.focus({ preventScroll: true });
   }
   const selected = selection.map((id) => byId.get(id)!);
   const goExplore = (task: ExploreTask = 'browse') => {
@@ -141,23 +157,17 @@ export default function Tourpass({
   }
 
   useEffect(() => {
-    setDate(today());
+    setDate(kstDate(Date.now()));
     const url = new URL(window.location.href);
     const login = url.searchParams.get('login');
     if (login) {
       setTab('profile');
-      if (login === 'success')
-        setNotice('네이버 계정으로 로그인했어요. 내 여행을 확인해 보세요.');
-      else if (login === 'logout')
-        setNotice(
-          '로그아웃했어요. 계정 여행은 다시 로그인하면 확인할 수 있어요.',
-        );
-      else
-        setError(
-          login === 'cancelled'
-            ? '네이버 로그인을 취소했어요.'
-            : '네이버 로그인에 실패했어요. 다시 시도해 주세요.',
-        );
+      const feedback = LOGIN_MESSAGES[login] ?? {
+        kind: 'error' as const,
+        text: '네이버 로그인에 실패했어요. 다시 시도해 주세요.',
+      };
+      if (feedback.kind === 'notice') setNotice(feedback.text);
+      else setError(feedback.text);
       url.searchParams.delete('login');
       window.history.replaceState(null, '', url);
     }
@@ -182,8 +192,7 @@ export default function Tourpass({
       exploreTask === 'browse'
     ) {
       focusSearchRef.current = false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      searchInputRef.current?.focus({ preventScroll: true });
+      focusSearchInput();
       return;
     }
     if (
@@ -211,8 +220,7 @@ export default function Tourpass({
 
   async function logout() {
     setBusy(true);
-    setError('');
-    setLimitReached(false);
+    clearError();
     try {
       await api('/api/auth/logout', 'POST');
       window.location.assign('/?login=logout');
@@ -223,8 +231,7 @@ export default function Tourpass({
   }
 
   function savePreferences(next: TravelPreferences) {
-    setError('');
-    setLimitReached(false);
+    clearError();
     setNotice('');
     try {
       storePreferences(localStorage, next);
@@ -243,8 +250,7 @@ export default function Tourpass({
 
   function toggle(id: string) {
     setNotice('');
-    setError('');
-    setLimitReached(false);
+    clearError();
     if (selection.includes(id)) setSelection(selection.filter((x) => x !== id));
     else if (selection.length < 8) setSelection([...selection, id]);
     else {
@@ -268,8 +274,7 @@ export default function Tourpass({
     const requestId = ++recommendationRequestRef.current;
     setResult(null);
     setBusy(true);
-    setError('');
-    setLimitReached(false);
+    clearError();
     setNotice('');
     try {
       const recommendation = await api<Recommendation>(
@@ -299,8 +304,7 @@ export default function Tourpass({
     focusSearchRef.current = true;
     if (tab === 'explore' && exploreTask === 'browse') {
       focusSearchRef.current = false;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      searchInputRef.current?.focus({ preventScroll: true });
+      focusSearchInput();
       return;
     }
     setTab('explore');
@@ -309,8 +313,7 @@ export default function Tourpass({
 
   async function save() {
     setBusy(true);
-    setError('');
-    setLimitReached(false);
+    clearError();
     try {
       const { journey } = await api<{ journey: Journey }>(
         '/api/journeys',
@@ -371,8 +374,7 @@ export default function Tourpass({
                     type="button"
                     className="secondary compact"
                     onClick={() => {
-                      setError('');
-                      setLimitReached(false);
+                      clearError();
                       goExplore('review');
                     }}
                   >
@@ -382,10 +384,7 @@ export default function Tourpass({
                 <button
                   type="button"
                   className="message-close"
-                  onClick={() => {
-                    setError('');
-                    setLimitReached(false);
-                  }}
+                  onClick={clearError}
                   aria-label="오류 닫기"
                 >
                   ×

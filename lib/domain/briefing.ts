@@ -2,7 +2,9 @@ import { z } from 'zod';
 import type { Place } from './catalog';
 import type { WeatherResponse } from './weather';
 import type { Restaurant } from './restaurants';
-import { OUTFIT_VOCABULARY } from './outfit';
+import { formatNum, joinKoreanList, josa, OUTFIT_VOCABULARY } from './outfit';
+
+const squash = (text: string) => text.replace(/\s+/g, '');
 
 export const BRIEFING_ENDING = '즐거운 여행 되세요!';
 // CLOVA Voice 1회 입력 상한(2,000자) 안에서 약 1분 분량을 목표로 한다.
@@ -118,9 +120,6 @@ export function briefingFacts(
   };
 }
 
-const num = (value: number) =>
-  Number.isInteger(value) ? String(value) : value.toFixed(1);
-
 /** 음성으로 읽기 좋게 기호·음수·단위를 말로 바꾼다. */
 export function spokenKorean(text: string): string {
   return text
@@ -199,7 +198,7 @@ export function ruleHead(facts: BriefingHeadFacts): string {
   const { region, weather, outfit } = facts;
   return [
     `안녕하세요! 오늘 ${region} 날씨부터 알려드릴게요.`,
-    `지금은 ${weather.condition}, 기온은 ${num(weather.temperature)}도예요. 오늘 최저 ${num(weather.tempMin)}도, 최고 ${num(weather.tempMax)}도이고 비 올 확률은 ${weather.precipitationProbability}%입니다.`,
+    `지금은 ${weather.condition}, 기온은 ${formatNum(weather.temperature)}도예요. 오늘 최저 ${formatNum(weather.tempMin)}도, 최고 ${formatNum(weather.tempMax)}도이고 비 올 확률은 ${weather.precipitationProbability}%입니다.`,
     `다음은 옷차림이에요. ${outfit.summary}`,
     ...outfit.notes,
   ].join(' ');
@@ -318,7 +317,6 @@ export function withReasons(
   // 명소 순서대로, 이어서 맛집 순서대로의 AI 문장
   reasons: (string | undefined)[],
 ): BriefingFacts {
-  const squash = (text: string) => text.replace(/\s+/g, '');
   const names = [...facts.places, ...facts.restaurants].map((p) =>
     squash(p.name),
   );
@@ -351,22 +349,6 @@ export function withReasons(
       return { ...r, line: line && hasMenu ? line : undefined };
     }),
   };
-}
-
-/** 코드가 붙이는 뒷부분: 명소 이름·추천 이유, 맛집 이름·메뉴를 자료 그대로 말한다. */
-// 한글 마지막 글자에 받침이 있는지(조사 고르기). 한글이 아니면 받침 없음으로 본다.
-function hasBatchim(word: string): boolean {
-  const code = word.trim().charCodeAt(word.trim().length - 1);
-  return code >= 0xac00 && code <= 0xd7a3 && (code - 0xac00) % 28 !== 0;
-}
-const josa = (word: string, withBatchim: string, without: string) =>
-  `${word}${hasBatchim(word) ? withBatchim : without}`;
-/** ['A','B','C'] → 'A, B와 C' (마지막 이음은 와/과) */
-function joinMenus(menus: string[]): string {
-  if (menus.length <= 1) return menus.join('');
-  const head = menus.slice(0, -1);
-  const last = head[head.length - 1];
-  return `${[...head.slice(0, -1), josa(last, '과', '와')].join(', ')} ${menus[menus.length - 1]}`;
 }
 
 /** 네이버 분류 끝부분을 말하기 좋은 음식 종류로('곱창,막창,양' → '곱창 맛집', '양식' → '양식 맛집'). */
@@ -410,7 +392,7 @@ export function menuSentence(
   return MENU_PHRASES[index % MENU_PHRASES.length](
     name,
     foodKind(category),
-    joinMenus(menus),
+    joinKoreanList(menus),
   );
 }
 
@@ -461,7 +443,6 @@ export function tidyHead(text: string): string {
 export function foreignItems(head: string, facts: BriefingHeadFacts): string[] {
   const { outer, top, bottom, accessories, extras } = facts.outfit;
   const today = [...outer, ...top, ...bottom, ...accessories, ...extras];
-  const squash = (text: string) => text.replace(/\s+/g, '');
   let rest = squash(head);
   for (const item of [...today].sort((a, b) => b.length - a.length))
     rest = rest.split(squash(item)).join('|');
@@ -514,11 +495,10 @@ export function unknownNumbers(
  * 관광객이 이름으로 찾아가므로 한 글자라도 다르면 틀린 것으로 본다.
  */
 export function missingNames(script: string, facts: BriefingFacts): string[] {
-  const squash = (text: string) => spokenKorean(text).replace(/\s+/g, '');
-  const body = squash(script);
+  const body = squash(spokenKorean(script));
   return [...facts.places, ...facts.restaurants]
     .map((item) => item.name)
-    .filter((name) => !body.includes(squash(name)));
+    .filter((name) => !body.includes(squash(spokenKorean(name))));
 }
 
 /** 첫 인사 문장 바로 뒤에 안전 안내(특보·지진)를 넣는다. 안내가 없으면 그대로. */

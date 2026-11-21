@@ -1,13 +1,16 @@
-import { session, checkOrigin, jsonBody, failure } from '@/lib/adapters/http';
+import {
+  session,
+  checkOrigin,
+  jsonBody,
+  failure,
+  noStoreJson,
+} from '@/lib/adapters/http';
 import { journeys, operations, saveRecord } from '@/lib/server';
 import { journeyInput, recordInput } from '@/lib/domain/contracts';
 export const runtime = 'nodejs';
 export async function GET() {
   try {
-    return Response.json(
-      { journeys: await journeys(await session()) },
-      { headers: { 'Cache-Control': 'no-store' } },
-    );
+    return noStoreJson({ journeys: await journeys(await session()) });
   } catch (e) {
     return failure(e);
   }
