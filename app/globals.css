@@ -1,20 +1,24 @@
 :root {
-  --ink: #162a20;
-  --brand: #02823a;
-  --brand-hover: #026b30;
-  --brand-vivid: #03c75a;
-  --brand-deep: #065f2d;
-  --brand-soft: #eaf8ef;
-  --brand-border: #bfe5cd;
-  --control-border: #c2d4c9;
-  --muted: #4f6358;
-  --line: #d8e4dd;
-  --paper: #f4f7f5;
+  --ink: #122922;
+  --brand: #03c75a;
+  --brand-accent: #04d1c9;
+  --brand-hover: #02b14f;
+  --brand-ink: #027d3b;
+  --brand-deep: #046858;
+  --brand-soft: #e8fbf4;
+  --brand-border: #aeead8;
+  --brand-gradient: linear-gradient(135deg, #03c75a 0%, #04d1c9 100%);
+  --brand-gradient-hover: linear-gradient(135deg, #02b14f 0%, #03bcb5 100%);
+  --brand-gradient-soft: linear-gradient(135deg, #eafbf2 0%, #e6faf9 100%);
+  --control-border: #bed8cf;
+  --muted: #4b645c;
+  --line: #d4e5df;
+  --paper: #f3f8f6;
   --surface: #fff;
-  --surface-subtle: #f4f8f5;
+  --surface-subtle: #f1f9f6;
   --focus: #e79323;
-  --success-bg: #e7f6ed;
-  --success-ink: #0f5a30;
+  --success-bg: #e6f9f0;
+  --success-ink: #0a5c36;
   --danger-bg: #fff1ec;
   --danger-ink: #943a22;
   --radius-badge: 8px;
@@ -35,8 +39,8 @@
   );
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-short: 120ms;
-  --color-shadow: oklch(28% 0.02 150 / 0.04);
-  --color-shadow-raised: oklch(28% 0.02 150 / 0.07);
+  --color-shadow: oklch(28% 0.025 162 / 0.04);
+  --color-shadow-raised: oklch(28% 0.025 162 / 0.07);
   --shadow-navigation:
     inset 0 1px 0 #fff, 0 3px 8px var(--color-shadow),
     0 12px 28px var(--color-shadow-raised);
@@ -88,7 +92,7 @@ button:disabled {
   opacity: 0.5;
 }
 a {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 button {
   color: inherit;
@@ -185,7 +189,11 @@ form select {
 .brand-mark {
   font-size: 58px;
   line-height: 1;
-  color: var(--brand-vivid);
+  color: var(--brand);
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   transform: rotate(-12deg);
 }
 .bottom-navigation {
@@ -247,8 +255,8 @@ form select {
   letter-spacing: -0.02em;
 }
 .bottom-navigation :is(a, button)[aria-current] {
-  background: var(--brand-soft);
-  color: var(--brand);
+  background: var(--brand-gradient-soft);
+  color: var(--brand-ink);
   font-weight: 800;
   box-shadow: none;
 }
@@ -282,7 +290,7 @@ form select {
   font-weight: 700;
   line-height: 1;
   background: var(--brand-soft);
-  color: var(--brand);
+  color: var(--brand-ink);
   padding: 0 5px;
   border-radius: var(--radius-pill);
   font-variant-numeric: tabular-nums;
@@ -293,8 +301,8 @@ form select {
 }
 @media (hover: hover) {
   .bottom-navigation :is(a, button):hover {
-    background: var(--brand-soft);
-    color: var(--brand);
+    background: var(--brand-gradient-soft);
+    color: var(--brand-ink);
   }
 }
 .service-label {
@@ -331,7 +339,11 @@ main {
 }
 .ai-icon {
   font-size: 30px;
-  color: var(--brand-deep);
+  color: var(--brand);
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .planner h2 {
   font-size: 29px;
@@ -366,7 +378,7 @@ main {
 .suggestions button:hover {
   background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .primary,
 .secondary {
@@ -379,15 +391,20 @@ main {
   transition:
     background var(--dur-short) var(--ease-out),
     border-color var(--dur-short) var(--ease-out),
-    color var(--dur-short) var(--ease-out);
+    color var(--dur-short) var(--ease-out),
+    box-shadow var(--dur-short) var(--ease-out);
 }
 .primary {
   width: 100%;
-  background: var(--brand);
+  background: var(--brand-gradient);
   color: white;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.2);
+  box-shadow: 0 2px 10px rgba(3, 199, 90, 0.22);
 }
 .primary:hover:not(:disabled) {
-  background: var(--brand-hover);
+  background: var(--brand-gradient-hover);
+  box-shadow: 0 4px 14px rgba(3, 199, 90, 0.28);
 }
 .secondary {
   background: var(--surface);
@@ -398,7 +415,7 @@ main {
 .secondary:hover:not(:disabled) {
   background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .compact {
   width: auto;
@@ -525,7 +542,7 @@ main {
   transition: color var(--dur-short) var(--ease-out);
 }
 .text-button:hover {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .place-body > p {
   display: -webkit-box;
@@ -553,11 +570,11 @@ main {
   transition: color var(--dur-short) var(--ease-out);
 }
 .detail-link:hover {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .add {
   border: 1px solid var(--brand-border);
-  color: var(--brand);
+  color: var(--brand-ink);
   border-radius: 6px;
   padding: 7px 10px;
   font-size: 12px;
@@ -575,24 +592,25 @@ main {
   overflow: hidden;
 }
 .ticket-top {
-  background: var(--brand);
+  background: var(--brand-gradient);
   color: white;
   padding: 25px 25px 10px;
   position: relative;
-  border-bottom: 2px dashed #7fd8a4;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.45);
 }
 .ticket-top > span {
   font-size: 12px;
-  color: #d8f8e4;
+  color: rgba(255, 255, 255, 0.92);
 }
 .ticket-top h2 {
   font-size: 27px;
   margin: 7px 0 0;
+  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.16);
 }
 .ticket-wave {
   font-size: 35px;
   letter-spacing: 12px;
-  color: #8adba9;
+  color: rgba(255, 255, 255, 0.45);
 }
 .ticket-body {
   padding: 24px;
@@ -641,7 +659,7 @@ main {
   background: var(--brand-soft);
   border-radius: 50%;
   font-size: 11px;
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .selected-list li > div {
   min-width: 0;
@@ -693,7 +711,7 @@ main {
 .icon-button:hover:not(:disabled) {
   background: var(--brand-soft);
   border-color: var(--brand-border);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .ticket-body label {
   font-size: 12px;
@@ -703,8 +721,8 @@ main {
 }
 .recommendation {
   margin-top: 28px;
-  background: #eff9f3;
-  border-left: 4px solid var(--brand-deep);
+  background: var(--brand-gradient-soft);
+  border-left: 4px solid var(--brand);
   padding: 28px;
   border-radius: 0 12px 12px 0;
 }
@@ -838,7 +856,7 @@ main {
   overflow-wrap: anywhere;
 }
 .saved-top {
-  background: var(--brand-soft);
+  background: var(--brand-gradient-soft);
   color: var(--ink);
   padding: var(--panel-padding);
   border-bottom: 1px dashed var(--brand-border);
@@ -903,6 +921,10 @@ main {
   display: block;
   font-size: 70px;
   color: var(--brand);
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   line-height: 1.2;
   margin-bottom: 20px;
 }
@@ -937,10 +959,10 @@ dialog {
   max-width: calc(100vw - 32px);
   max-height: 85vh;
   color: var(--ink);
-  box-shadow: 0 20px 80px #162a2033;
+  box-shadow: 0 20px 80px #12292233;
 }
 dialog::backdrop {
-  background: #102419a6;
+  background: #0d231ea6;
 }
 .dialog-content {
   padding: 28px;
@@ -1313,7 +1335,7 @@ dd {
 }
 .journey-options > summary:hover {
   background: var(--surface-subtle);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .journey-options > :not(summary) {
   padding-inline: 24px;
@@ -1417,8 +1439,9 @@ summary {
   color: var(--muted);
 }
 .view-button.active {
-  background: var(--brand);
+  background: var(--brand-gradient);
   color: #fff;
+  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.18);
 }
 .place-map-wrap {
   display: flex;
@@ -1459,7 +1482,7 @@ summary {
   display: inline-block;
 }
 .legend-dot.route {
-  background: var(--brand);
+  background: var(--brand-gradient);
   border-color: var(--brand);
 }
 .legend-dot.recorded {
@@ -1505,7 +1528,7 @@ summary {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(234, 248, 239, 0.92);
+  background: rgba(232, 251, 244, 0.92);
   color: var(--ink);
   font-size: 14px;
   font-weight: 600;
@@ -1528,7 +1551,7 @@ summary {
 .naver-map-fit-btn:hover {
   background: #fff;
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .nm-pin {
   position: relative;
@@ -1548,7 +1571,7 @@ summary {
   border-radius: 50%;
   background: #fff;
   border: 2.5px solid var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
   font-size: 11px;
   font-weight: 800;
   display: flex;
@@ -1565,7 +1588,7 @@ summary {
 .nm-pin.is-route .nm-dot {
   width: 28px;
   height: 28px;
-  background: var(--brand);
+  background: var(--brand-gradient);
   border-color: #fff;
   color: #fff;
 }
@@ -1685,7 +1708,7 @@ summary {
 .route-chip.active {
   border-color: var(--brand);
   background: var(--brand-soft);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .route-chip-num {
   display: inline-flex;
@@ -1694,7 +1717,7 @@ summary {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--brand);
+  background: var(--brand-gradient);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -1753,7 +1776,7 @@ summary {
 .route-order-badge {
   font-size: 11px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--brand-ink);
   background: var(--brand-soft);
   padding: 3px 8px;
   border-radius: 5px;
@@ -1797,7 +1820,7 @@ summary {
   text-underline-offset: 3px;
 }
 .map-external-link:hover {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 @media (max-width: 760px) {
   .naver-map-stage {
@@ -1876,12 +1899,13 @@ summary {
 .weather-region-chip:hover:not(.active) {
   background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .weather-region-chip.active {
-  background: var(--brand);
-  border-color: var(--brand);
+  background: var(--brand-gradient);
+  border-color: transparent;
   color: #fff;
+  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.18);
 }
 .weather-content {
   transition: opacity var(--dur-short) var(--ease-out);
@@ -1896,7 +1920,7 @@ summary {
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 28px;
-  background: linear-gradient(135deg, #eef9f2, #ffffff);
+  background: linear-gradient(135deg, #e8fbf2 0%, #e6faf9 52%, #ffffff 100%);
   margin-bottom: 36px;
 }
 .weather-meta-row {
@@ -1936,8 +1960,8 @@ summary {
   width: 64px;
   height: 64px;
   border-radius: 16px;
-  background: var(--brand-soft);
-  color: var(--brand);
+  background: var(--brand-gradient-soft);
+  color: var(--brand-ink);
 }
 .weather-temp-value {
   font-size: 44px;
@@ -1979,15 +2003,15 @@ summary {
 .weather-advisory-box {
   border-radius: 12px;
   padding: 22px;
-  background: #edf8f1;
-  border-left: 4px solid var(--brand-deep);
+  background: var(--brand-gradient-soft);
+  border-left: 4px solid var(--brand);
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .weather-advisory-box.mixed {
-  background: #f2f8f4;
-  border-left-color: var(--brand);
+  background: #eefaf8;
+  border-left-color: var(--brand-accent);
 }
 .weather-advisory-box.indoor {
   background: #f9f4ef;
@@ -2037,7 +2061,7 @@ summary {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  color: var(--brand);
+  color: var(--brand-ink);
   margin: 6px 0;
   font-size: 12px;
   font-weight: 600;
@@ -2057,7 +2081,7 @@ summary {
   color: var(--control-border);
 }
 .temp-max {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .weather-day-rain {
   font-size: 11px;
@@ -2152,8 +2176,8 @@ main:focus {
   color: var(--ink);
 }
 .task-switch button[aria-pressed='true'] {
-  background: var(--brand-soft);
-  color: var(--brand);
+  background: var(--brand-gradient-soft);
+  color: var(--brand-ink);
   font-weight: 700;
 }
 .explore-workspace {
@@ -2217,7 +2241,7 @@ main:focus {
   font-size: 14px;
 }
 .session-status {
-  background: var(--brand-soft);
+  background: var(--brand-gradient-soft);
   border-radius: 8px;
   padding: 16px;
   display: flex;
@@ -2311,7 +2335,7 @@ main:focus {
   font-weight: 750;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .profile-counts small {
   font-size: 14px;
@@ -2375,14 +2399,14 @@ main:focus {
 .naver-login {
   border: 0;
   border-radius: var(--radius-control);
-  background: var(--brand-vivid);
+  background: var(--brand);
   color: #fff;
   font-weight: 700;
   padding: 13px 20px;
   transition: background var(--dur-short) var(--ease-out);
 }
 .naver-login:hover:not(:disabled) {
-  background: #02b14f;
+  background: var(--brand-hover);
 }
 .naver-login:disabled {
   opacity: 0.5;
@@ -2443,8 +2467,9 @@ main:focus {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: var(--brand);
+  background: var(--brand-gradient);
   color: #fff;
+  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.18);
   border-radius: var(--radius-pill);
   padding: 3px 10px;
   font-size: 11px;
@@ -2453,15 +2478,17 @@ main:focus {
 .add {
   border: 1px solid var(--brand);
   background: var(--brand-soft);
-  color: var(--brand);
+  color: var(--brand-ink);
   border-radius: var(--radius-control);
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 700;
 }
 .add:hover {
-  background: var(--brand);
+  border-color: transparent;
+  background: var(--brand-gradient);
   color: #fff;
+  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.18);
 }
 .add.selected {
   border-color: var(--control-border);
@@ -2470,7 +2497,9 @@ main:focus {
 }
 .add.selected:hover {
   border-color: var(--brand);
-  color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand-ink);
+  text-shadow: none;
 }
 .empty-actions {
   display: flex;
@@ -2596,7 +2625,7 @@ dialog {
 }
 .gyeonggi-map-panel {
   position: relative;
-  background: #eff8f2;
+  background: var(--brand-gradient-soft);
 }
 .gyeonggi-map-heading {
   display: flex;
@@ -2683,10 +2712,10 @@ dialog {
   color: #649bc6;
 }
 .gyeonggi-map-weather-icon.wind {
-  color: #2f8556;
+  color: #1e8f77;
 }
 .gyeonggi-map-weather strong {
-  color: #1b432c;
+  color: #164034;
   font-size: 23px;
   font-weight: 700;
   line-height: 1.2;
@@ -2698,7 +2727,7 @@ dialog {
   margin-left: 2px;
 }
 .gyeonggi-map-weather small {
-  color: #5c7365;
+  color: #537067;
   font-size: 10px;
 }
 .gyeonggi-map-guidance {
@@ -2716,7 +2745,7 @@ dialog {
 .map-status-dot {
   width: 7px;
   height: 7px;
-  background: var(--brand-vivid);
+  background: var(--brand-gradient);
   border-radius: 50%;
 }
 .gyeonggi-map-svg {
@@ -2727,8 +2756,8 @@ dialog {
   min-height: 0;
 }
 .gyeonggi-city-shape {
-  fill: #d2ecd9;
-  stroke: #f6fcf8;
+  fill: #cdeee2;
+  stroke: #f5fcf9;
   stroke-width: 1.4;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -2736,14 +2765,14 @@ dialog {
   transition: fill 150ms ease;
 }
 .gyeonggi-city-shape:nth-of-type(3n) {
-  fill: #c3e5ce;
+  fill: #bde7df;
 }
 .gyeonggi-city-shape:nth-of-type(3n + 1) {
-  fill: #dff3e5;
+  fill: #dbf5ea;
 }
 .gyeonggi-city-shape:hover {
-  fill: #8fd8aa;
-  stroke: #02823a;
+  fill: #7de4c2;
+  stroke: var(--brand);
 }
 .gyeonggi-city-shape.is-selected {
   fill: var(--brand);
@@ -2763,31 +2792,31 @@ dialog {
 .gyeonggi-map-labels text {
   font-size: 13px;
   font-weight: 700;
-  fill: #1b432c;
-  stroke: #edf7f0;
+  fill: #164034;
+  stroke: #ebf9f5;
   stroke-width: 2.5;
   paint-order: stroke;
   stroke-linejoin: round;
 }
 .gyeonggi-map-labels text.is-selected {
   fill: #fff;
-  stroke: var(--brand);
+  stroke: var(--brand-ink);
 }
 .gyeonggi-map-context path {
-  fill: #e8eeea;
-  stroke: #cfe0d5;
+  fill: #e5efec;
+  stroke: #c6ded7;
   stroke-width: 1;
   stroke-dasharray: 3 3;
 }
 .gyeonggi-map-context text {
   text-anchor: middle;
-  fill: #788e81;
+  fill: #6f8b82;
   font-size: 15px;
   font-weight: 600;
 }
 .gyeonggi-map-compass {
-  fill: #5e7e6c;
-  stroke: #5e7e6c;
+  fill: #51796e;
+  stroke: #51796e;
   stroke-width: 1.2;
 }
 .gyeonggi-map-compass text {
@@ -2834,7 +2863,7 @@ dialog {
 .gyeonggi-map-controls button:hover {
   background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .gyeonggi-map-controls button > span {
   font-size: 16px;
@@ -2874,7 +2903,7 @@ dialog {
 }
 .city-place-count {
   background: var(--brand-soft);
-  color: var(--brand);
+  color: var(--brand-ink);
   border-radius: var(--radius-pill);
   padding: 3px 10px;
   font-size: 12px;
@@ -2920,7 +2949,7 @@ dialog {
 }
 .city-place-photo > svg {
   width: 30px;
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .city-place-body {
   min-width: 0;
@@ -2944,7 +2973,7 @@ dialog {
   transition: color var(--dur-short) var(--ease-out);
 }
 .city-place-body h4 button:hover {
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .city-place-body > p {
   display: -webkit-box;
@@ -2997,8 +3026,8 @@ dialog {
   width: 88px;
   height: 88px;
   border-radius: 50%;
-  background: var(--brand-soft);
-  color: var(--brand);
+  background: var(--brand-gradient-soft);
+  color: var(--brand-ink);
   margin-bottom: 18px;
   flex-shrink: 0;
 }
@@ -3052,7 +3081,7 @@ dialog {
 .city-quick-picks button:hover {
   background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .city-empty-reset {
   margin-top: 16px;
@@ -3122,7 +3151,7 @@ form > .label-row:first-child {
   margin-top: 16px;
   padding: 12px 14px;
   border-radius: var(--radius-control);
-  background: var(--brand-soft);
+  background: var(--brand-gradient-soft);
   color: var(--ink);
   font-size: 13px;
 }
@@ -3140,7 +3169,7 @@ form > .label-row:first-child {
 .saved-progress {
   font-size: 12px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--brand-ink);
   font-variant-numeric: tabular-nums;
 }
 .preference-heading {
@@ -3199,12 +3228,12 @@ form > .label-row:first-child {
 .rating-chip:hover:not(.active) {
   background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .rating-chip.active {
   background: var(--brand-soft);
   border-color: var(--brand);
-  color: var(--brand);
+  color: var(--brand-ink);
 }
 .poster-ocr-box.is-disabled {
   background: var(--surface-subtle);
