@@ -2,6 +2,7 @@ import { places } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
 import { type History, demoEdit } from '@/lib/domain/assistant';
 import { ApplicationError } from '@/lib/domain/errors';
+import { placeSearchText, scorePlaceMatch } from '@/lib/domain/place-labels';
 import type { AIPort } from './ports';
 
 export function createAssistant(ai: AIPort) {
@@ -11,10 +12,11 @@ export function createAssistant(ai: AIPort) {
     const chunks = [...new Set(compact.match(/.{2}/g) || [])];
     return places
       .map((p) => {
-        const text = [p.name, p.description, p.region, ...p.tags].join('');
+        const text = placeSearchText(p).replace(/\s/g, '');
         const score =
           (p.id === placeId ? 100 : 0) +
           (compact.includes(p.name.replace(/\s/g, '')) ? 30 : 0) +
+          scorePlaceMatch(p, question) +
           chunks.filter((c) => text.includes(c)).length;
         return { p, score };
       })

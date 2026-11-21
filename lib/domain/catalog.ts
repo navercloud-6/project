@@ -1,5 +1,11 @@
 import data from '@/data/places.json';
+import labelData from '@/data/place-labels.json';
 import { projectRoute } from '@/lib/domain/coordinates';
+import {
+  inferHeuristicLabels,
+  type PlaceLabel,
+  type PlaceLabelMap,
+} from '@/lib/domain/place-labels';
 
 export type PlaceCoordinates = {
   lat: number;
@@ -31,13 +37,17 @@ export const placeCoordinates: Record<string, { lat: number; lng: number }> = {
   PLACE_REAL_020: { lat: 37.3264, lng: 126.6742 },
 };
 
+const labelsById = labelData as PlaceLabelMap;
+
 export const places = data.map((p) => {
   const base =
     'coordinates' in p && p.coordinates
       ? p.coordinates
       : placeCoordinates[p.id];
+  const labels: PlaceLabel = labelsById[p.id] ?? inferHeuristicLabels(p);
   return {
     ...p,
+    labels,
     coordinates: {
       ...base,
       ...projectRoute(base.lat, base.lng),

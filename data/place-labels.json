@@ -1,0 +1,11693 @@
+{
+  "PLACE_REAL_001": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "갯골생태공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_002": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "선사유적공원",
+      "신석기"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_003": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습",
+      "비오는날"
+    ],
+    "keywords": [
+      "박물관",
+      "선사문화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_004": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "연꽃",
+      "테마파크"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_005": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "연꽃",
+      "역사",
+      "자연"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_006": {
+    "setting": "실내·야외",
+    "themes": [
+      "캠핑·레저"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "서핑",
+      "인공 파도",
+      "거북섬"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_007": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "배곧한울공원",
+      "해안 산책",
+      "노을 감상"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_008": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "호수공원",
+      "산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_009": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "물왕호수",
+      "담수호"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_010": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "호조벌"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_011": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "소래산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_012": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "월곶포구",
+      "서해안"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_013": {
+    "setting": "실내·야외",
+    "themes": [
+      "바다",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "인공섬",
+      "해양레저"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_014": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "옥구공원",
+      "서해 낙조"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_015": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "시흥 에코센터",
+      "환경 전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_016": {
+    "setting": "야외",
+    "themes": [
+      "전망·야경"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "빨강등대",
+      "서해 풍경"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_017": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "황새바위길",
+      "부잔교"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_018": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "함상전망대",
+      "복합문화공간"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_019": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "시흥아트센터",
+      "전문공연장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_REAL_020": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "시흥 해양생태과학관",
+      "해양 생물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125555": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "수원 화성",
+      "세계유산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2480899": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "수원 화성",
+      "역사 유적"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4067984": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트",
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "수원 화성",
+      "성곽 길"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129437": {
+    "setting": "실내·야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "화성행궁",
+      "수원 화성"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2662855": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "광교호수",
+      "도심속"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2613658": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "수원성",
+      "동북각루"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2930334": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "광교호수공원",
+      "반려견 놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1921150": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "수원화성박물관",
+      "전문 박물관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2754720": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "고렴근린공원",
+      "곡반정동"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2747097": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "광교마루길",
+      "산책길"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2739469": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "광교중앙공원",
+      "유아숲체험원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2872885": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "공원",
+      "도서관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125577": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "노송지대",
+      "소나무"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2745729": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "대부둑공원",
+      "잔디광장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3428384": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "대유평공원",
+      "도심 속"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2613657": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "동북공심돈",
+      "수원 화성"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2742299": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "세류역",
+      "생태연못"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3351831": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "만석공원",
+      "수원미술관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2739476": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "매탄공원",
+      "운동장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2781860": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "어린이공원",
+      "물놀이장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128040": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "율동공원",
+      "호수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127372": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "성남 중앙공원",
+      "분당 호"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2371204": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130845": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "성남아트센터",
+      "성남큐브미술관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2871985": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "분당선",
+      "탄천"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2759981": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "낙생대공원",
+      "판교"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_611738": {
+    "setting": "실내",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "닭죽촌",
+      "식당"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2760156": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "대왕저수지",
+      "성남"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_304794": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브",
+      "휴식"
+    ],
+    "keywords": [
+      "사찰",
+      "마애여래좌상"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127369": {
+    "setting": "실내",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "절",
+      "사찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2759943": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "공원",
+      "전통가마"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2914491": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "상희공원",
+      "근린공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127373": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "맛집거리",
+      "음식점"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2760778": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "수진공원",
+      "벚꽃"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_337425": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "약사사",
+      "성남"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2762750": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "공원",
+      "산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2760802": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "위례신도시",
+      "랜드마크"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2766149": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "성남시",
+      "근린공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2551122": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "사찰",
+      "연꽃"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2760792": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "절",
+      "약수터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_488093": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "회룡사",
+      "절"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736428": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "근린공원",
+      "피크닉"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_612807": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "부대찌개",
+      "음식특화 거리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2705299": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "의정부미술도서관",
+      "미술전문"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1955869": {
+    "setting": "실내·야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "노강서원",
+      "박태보"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_309298": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "미륵불",
+      "설화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_318197": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "석림사",
+      "의정부"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736387": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "근린공원",
+      "역사적 의의"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4065899": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "의정부천문대",
+      "천체관측"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3482667": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "가금철교",
+      "문화공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3515742": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "맨발 황톳길",
+      "도시 속 숲"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2999501": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "공원",
+      "산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3519254": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "근린공원",
+      "민락동"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1032289": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "떡 만들기",
+      "체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127029": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "망월사",
+      "도봉산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3531270": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "의정부시",
+      "고산동"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3518538": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "송산1호수변공원",
+      "맨발걷기"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2999522": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "계곡",
+      "북한산 국립공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3079770": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "의정부역",
+      "도시 근린공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3519404": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "유아숲체험원",
+      "오목문화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125514": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "안양예술공원",
+      "삼성산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2464432": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "김중업",
+      "건축박물관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_814153": {
+    "setting": "실내·야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "안양천",
+      "생태하천"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1624639": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "공원",
+      "도심속 휴식"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2874858": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "카페 거리",
+      "유럽풍 카페"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_304801": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "원효대사",
+      "신라시대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736383": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "인공폭포",
+      "캠핑장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2738181": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "타워",
+      "굴뚝 축소 모형"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127023": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "원효대사",
+      "삼층석탑"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_756548": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "남녀근석",
+      "성기 숭배"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_756551": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "마애삼존불",
+      "조선 후기"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2738157": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "계곡",
+      "여름 물놀이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1624669": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "등산로",
+      "운동기구"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2738384": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "먹거리촌",
+      "동네 맛집"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2738070": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "안양새물공원",
+      "운동"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4039603": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "안양수목원",
+      "식물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_611917": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "안양중앙시장",
+      "순대곱창골목"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_337513": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "염불암",
+      "삼성산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2738397": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "자유공원",
+      "어린이교통공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_611419": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "평촌먹거리촌",
+      "음식점"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4078125": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "산책"
+    ],
+    "keywords": [
+      "부천자연생태공원",
+      "생태박물관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2470347": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날"
+    ],
+    "keywords": [
+      "한국만화박물관",
+      "만화자료"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_756618": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "상동호수공원",
+      "인공호수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736374": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "고강선사유적공원",
+      "청동기 시대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_611883": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "까치울음식테마마을",
+      "전원마을"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2742252": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "동물 체험",
+      "먹이주기",
+      "병아리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736408": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "생태공원",
+      "하수처리시설",
+      "물놀이장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2741593": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "둘리광장",
+      "송내역",
+      "친환경 자전거"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736371": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "장미원",
+      "부천",
+      "공공근로사업"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2767538": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "테마파크",
+      "실내 놀이터",
+      "디지털 체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127943": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "근린공원",
+      "운동시설",
+      "어린이교통나라"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_407030": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "부천식물원",
+      "유리온실",
+      "희귀식물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3534509": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습",
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "천문과학관",
+      "시민천문대",
+      "천체관측"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2764942": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "생태공원",
+      "하수처리시설",
+      "체육시설"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_318207": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "부천",
+      "사찰",
+      "포교"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3425101": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "안중근",
+      "역사",
+      "공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2741601": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "역곡",
+      "대학",
+      "공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736380": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "오정",
+      "축구장",
+      "공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3075254": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "비오는날"
+    ],
+    "keywords": [
+      "아쿠아리움",
+      "부천",
+      "체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_756602": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "도당",
+      "장미",
+      "공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2649975": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "광명",
+      "동굴",
+      "역사"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2034106": {
+    "setting": "실내",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "광명",
+      "아트센터",
+      "업사이클"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733419": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡",
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "구름산",
+      "산림욕장",
+      "피톤치드"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2404923": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님",
+      "연인·데이트"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "금강정사",
+      "템플스테이",
+      "사찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2994172": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "출렁다리",
+      "도덕산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736048": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "도덕산",
+      "등산로",
+      "인공폭포"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733422": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "음식문화거리",
+      "광명"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2787092": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "친환경 녹지공간",
+      "벚꽃",
+      "메타세쿼이아"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733412": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "습지",
+      "금개구리",
+      "생태공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2830827": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적",
+      "공원·숲"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "충현역사공원",
+      "이원익",
+      "종택"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3586768": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "산책",
+      "교육·학습",
+      "액티비티"
+    ],
+    "keywords": [
+      "가구전문 거리",
+      "광명사거리역",
+      "브랜드매장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4152129": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습",
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "전통예술",
+      "광명시립농악단",
+      "전수관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733410": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날"
+    ],
+    "keywords": [
+      "에디슨",
+      "과학체험",
+      "어린이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2537146": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "기형도문학관",
+      "시인",
+      "전시회"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130707": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130093": {
+    "setting": "실내",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "광명문화원",
+      "문화예술프로그램"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2741575": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "동물원",
+      "체험놀이",
+      "캠핑",
+      "바이킹",
+      "썰매장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127176": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "캠핑·레저"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "레일바이크",
+      "오토캠핑장",
+      "여름 나들이",
+      "취사 가능"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127562": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수",
+      "예술·공연",
+      "전망·야경"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "드라이브",
+      "사진명소"
+    ],
+    "keywords": [
+      "평택호",
+      "뱃머리전망대",
+      "한국소리터",
+      "평택민요보존회"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2633945": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "어린이 놀이터",
+      "다양한 체험",
+      "꽃축제",
+      "농촌문화체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2865100": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "수변공원",
+      "체육 시설",
+      "모래놀이장",
+      "놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2746949": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "드라이브",
+      "사진명소"
+    ],
+    "keywords": [
+      "저수지",
+      "드라이브",
+      "걷기",
+      "힐링"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2746257": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "안성천",
+      "잔디밭",
+      "자전거길",
+      "뮬리 정원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2746329": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "드라이브",
+      "사진명소"
+    ],
+    "keywords": [
+      "벚꽃",
+      "유채꽃",
+      "코스모스",
+      "자전거 길",
+      "봄·가을 축제"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2746270": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "댕당공원",
+      "LH 가든쇼"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2746261": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "덕동산근린공원",
+      "어린이 공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4041453": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티",
+      "휴식"
+    ],
+    "keywords": [
+      "로렌츠감성치유시골체험",
+      "치유농장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_304696": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "만기사",
+      "철조여래좌상"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2750380": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "모곡근린공원",
+      "운동 시설"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2795005": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "문헌사",
+      "정도전 사당"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129408": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "바람새마을",
+      "치유농장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2606226": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "소풍정원",
+      "수변공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2750338": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "배다리생태공원",
+      "생태계"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2750342": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "배다리지",
+      "분수 쇼"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2746304": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "부락산",
+      "문화공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3456435": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "부락산분수공원",
+      "분수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127513": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "소요산",
+      "단풍",
+      "등산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2774723": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "연인·데이트",
+      "아이동반"
+    ],
+    "styles": [
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "니지모리 스튜디오",
+      "일본",
+      "영화세트장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4152152": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "소요산",
+      "등산",
+      "의상대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2661425": {
+    "setting": "실내·야외",
+    "themes": [
+      "캠핑·레저",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "동두천자연휴양림",
+      "펜션",
+      "캠핑"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2493039": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "경기북부어린이박물관",
+      "어린이",
+      "박물관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2765238": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡",
+      "역사·유적",
+      "시장·거리"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "배꼽다리",
+      "동점마을"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4135627": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "상패수변공원",
+      "황톳길",
+      "맨발걷기"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2765236": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "왕방계곡",
+      "계곡",
+      "동두천"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1624907": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "신라 선덕여왕",
+      "원효대사"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2764945": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "탑동계곡",
+      "국사봉"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2782725": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티",
+      "산책"
+    ],
+    "keywords": [
+      "수도권 유일의 숲 테마파크",
+      "야외 체험시설"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1957487": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "외국인관광특구",
+      "다민족·다문화 공간"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2705419": {
+    "setting": "야외",
+    "themes": [
+      "캠핑·레저"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "반려견놀이터",
+      "마사토 운동장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130685": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "한국전쟁",
+      "자유와 평화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2948061": {
+    "setting": "실내",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "단관극장",
+      "영화관 장면 촬영"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1897900": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습",
+      "비오는날"
+    ],
+    "keywords": [
+      "어린이 도서관",
+      "그림책 관련 강연"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129860": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "향토 문화",
+      "지역 문화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4116691": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "복합문화커뮤니티센터",
+      "VR체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2863990": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "메타세콰이어",
+      "산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2761255": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "어촌체험",
+      "갯벌체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2863955": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "대부도",
+      "공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2717411": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "비오는날",
+      "산책",
+      "교육·학습",
+      "사진명소"
+    ],
+    "keywords": [
+      "고랫부리",
+      "생태관광"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2862693": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "시화나래",
+      "조력공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126844": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "드라이브"
+    ],
+    "keywords": [
+      "대부도",
+      "섬여행"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_611515": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "음식문화",
+      "먹거리타운"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128066": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "갈대습지",
+      "생태공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2633912": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "바다향기",
+      "수목원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_631278": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날"
+    ],
+    "keywords": [
+      "경기도미술관",
+      "기획전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2698680": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "목공소",
+      "목공 체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2863978": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "근린공원",
+      "운동기구",
+      "산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2761294": {
+    "setting": "야외",
+    "themes": [
+      "전망·야경"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "드라이브"
+    ],
+    "keywords": [
+      "개미허리 아치교",
+      "낙조 전망대",
+      "대부도"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2761583": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "고래뿌리 선착장",
+      "낚시",
+      "대부도"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2761552": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "구봉솔숲해수욕장",
+      "갯벌 체험",
+      "오토캠핑장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2656733": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "대부바다향기테마파크",
+      "갈대",
+      "수변공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128062": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "별망성지",
+      "해안산성",
+      "수군만호영"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4020566": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "세종도예원",
+      "도자기 체험",
+      "핸드페인팅"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2863011": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "시아테마파크",
+      "스포츠파크몰",
+      "놀이시설"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2762569": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "대부광산 퇴적암층",
+      "공룡 발자국",
+      "대부도"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127197": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "일산호수공원",
+      "인공호수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2744496": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트",
+      "가족"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "노래하는분수대",
+      "분수쇼"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125562": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "행주산성",
+      "덕양산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125552": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "서오릉",
+      "조선왕실"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2661736": {
+    "setting": "야외",
+    "themes": [
+      "전망·야경"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "행주산성역사공원",
+      "한강뷰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_615822": {
+    "setting": "실내",
+    "themes": [
+      "산·계곡",
+      "역사·유적",
+      "시장·거리"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "행주산성먹거리촌",
+      "장어구이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2660801": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "현대모터스튜디오",
+      "자동차테마파크"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1917066": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날"
+    ],
+    "keywords": [
+      "아쿠아플라넷",
+      "수도권최대규모"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128139": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "공양왕릉",
+      "고려마지막왕"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2456640": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "일산호수공원",
+      "라페스타"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3449335": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "드론",
+      "연구개발"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2732164": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "생태공원",
+      "생태체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_250395": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "고양향교",
+      "조선시대 향교"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2891598": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "주말 가족농장",
+      "밀랍 인형"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2891579": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "대화레포츠공원",
+      "일산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2903911": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "문화공원",
+      "일산서구"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2874966": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "근린공원",
+      "놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2891556": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "어린이",
+      "교통안전"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733850": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "고양시",
+      "근린공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2872502": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "공원",
+      "산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126712": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "서울대공원",
+      "동물원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2748983": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "산림욕장",
+      "청계산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126719": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "놀이공원",
+      "서울랜드"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_660722": {
+    "setting": "실내·야외",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "국립과천과학관",
+      "과학문화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129764": {
+    "setting": "실내·야외",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "국립현대미술관",
+      "야외조각공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2747760": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날"
+    ],
+    "keywords": [
+      "키즈카페",
+      "실내놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2747752": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "포니랜드",
+      "말체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128581": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "보광사",
+      "도심속사찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2602750": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "비오는날"
+    ],
+    "keywords": [
+      "쥬라기랜드",
+      "공룡체험관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2363553": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "갱매폭포",
+      "청계산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2615457": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "은행나무",
+      "가로수",
+      "메타세쿼이아"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2615455": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "야생화",
+      "자연학습장",
+      "잣나무",
+      "코스모스"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128580": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "과천향교",
+      "대성전",
+      "명륜당",
+      "유림"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127024": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "연주암",
+      "연주대",
+      "관악산",
+      "의상대사"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128579": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "온온사",
+      "객사",
+      "전패",
+      "동헌"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2749064": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "용마골소공원",
+      "둘레길",
+      "주차장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3421455": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "원더파크",
+      "미디어파크",
+      "체험형",
+      "희귀 동식물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130089": {
+    "setting": "실내",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "과천시민회관",
+      "복합문화시설",
+      "대극장",
+      "소극장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129796": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "서울 말박물관",
+      "마문화",
+      "한국마사회",
+      "전통"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2615462": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "아해박물관",
+      "전통 놀잇감",
+      "순우리말",
+      "어린이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_228874": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "구리한강시민공원",
+      "코스모스"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125545": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "동구릉",
+      "세계유산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3447439": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "생태체험관",
+      "환경교육"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4075415": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "고구려 대장간",
+      "전문 박물관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3007381": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "갈매중앙공원",
+      "하천변 산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129549": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "곤충생태관",
+      "생태문화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_753747": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "광개토대왕",
+      "동상",
+      "역사"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_753768": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "구리역 앞",
+      "도심 속 공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129553": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "나만갑선생신도비",
+      "문신"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_612862": {
+    "setting": "실내·야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "산책",
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "곱창골목",
+      "먹거리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2767686": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "왕숙천",
+      "시민공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2462631": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "자원회수시설",
+      "구리타워"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129554": {
+    "setting": "실내",
+    "themes": [
+      "전망·야경"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "구리타워",
+      "전망대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2782126": {
+    "setting": "실내",
+    "themes": [
+      "캠핑·레저"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "온천",
+      "탄산천"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3447845": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "구릉산",
+      "무장애 산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3426935": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소"
+    ],
+    "keywords": [
+      "구리문화재단",
+      "구리아트홀"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2767677": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "왕숙체육공원",
+      "축구장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3007378": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "어린이천문대",
+      "천체관측"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2777939": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "장자호수",
+      "생태체험관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129865": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적",
+      "박물관·전시"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "구리문화원",
+      "향토자료"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2602619": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "물의 정원",
+      "강변 산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125546": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "남양주 광릉",
+      "세계유산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129516": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "수종사",
+      "전망"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3012162": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "실학박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733839": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "남양주한강공원",
+      "플리마켓"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2724112": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "능내역사문화공원",
+      "폐역"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2500687": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "다산생태공원",
+      "수변공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2734937": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "다산수변공원",
+      "왕숙천"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2772196": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "다산중앙공원",
+      "잔디마당"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3018017": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "마음정원",
+      "북한강변"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1213516": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_304812": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "묘적사",
+      "원효대사"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2633910": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "수목원",
+      "체험",
+      "유아숲"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127579": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "백봉산",
+      "등산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126539": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "봉선사",
+      "남양주"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3080045": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마",
+      "캠핑·레저"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "승마",
+      "복합문화시설",
+      "레저"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125560": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "정약용",
+      "묘소",
+      "능내리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126806": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "정약용",
+      "유적지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4121419": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "청학문화공원",
+      "도심속 자연놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_780768": {
+    "setting": "실내·야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "인공폭포",
+      "화도 푸른물 센터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128986": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "물향기수목원",
+      "식물자원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126845": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "독산성",
+      "세마대지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3012431": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "오산미니어처빌리지",
+      "피규어뮤지엄"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1955882": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "문헌서원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128059": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "보적사",
+      "약사전"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2752932": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "서랑저수지",
+      "둘레길"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733043": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "고인돌공원",
+      "지석묘"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733063": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "죽미령 평화공원",
+      "유엔군 초전"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125554": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "유엔군 초전기념비"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3012433": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "경기도국민안전체험관",
+      "안전체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128060": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "공자 후손",
+      "조선 전기 문신"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2753093": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "독산성",
+      "세마대지",
+      "산림욕장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2752942": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "야외 관측소",
+      "야간 관측돔",
+      "다양한 체험 프로그램"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733049": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "생태체험학습관",
+      "캠핑장",
+      "물놀이장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2752952": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "동물원",
+      "먹이주기",
+      "별빛터널"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3057781": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마",
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "조류 전문 동물원",
+      "생태 체험교육관",
+      "시청 민원실"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_612497": {
+    "setting": "실내",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "드라이브"
+    ],
+    "keywords": [
+      "한식 거리",
+      "향토음식 전문점",
+      "단체 모임"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1730375": {
+    "setting": "실내",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "문화 예술회관",
+      "대공연장",
+      "소공연장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1825463": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적",
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "유엔군",
+      "625 전쟁",
+      "국가수호 현충 시설"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2782072": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "양서류",
+      "파충류",
+      "생태 박물관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751298": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "철쭉",
+      "군포"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751296": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "생태공원",
+      "수리산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2703447": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "반월호수",
+      "군포"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125457": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "수리산",
+      "등산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751315": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "갈치저수지",
+      "낚시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733529": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "조선백자",
+      "요지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3353061": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "중앙공원",
+      "산본동"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751115": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "수리산",
+      "숲속놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751122": {
+    "setting": "실내·야외",
+    "themes": [
+      "캠핑·레저",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "스포츠",
+      "체육공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751261": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "산본중앙공원",
+      "근린공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126843": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "수리사",
+      "절"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2781984": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "한우물근린공원",
+      "풋살장",
+      "운동"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128730": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "천문대",
+      "천체 관측"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751131": {
+    "setting": "실내",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "부모님"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "군포시평생학습마을",
+      "평생학습",
+      "문화센터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751124": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "산본IC체육공원",
+      "배드민턴",
+      "족구장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130104": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "군포문화원",
+      "전통문화",
+      "향토사"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2463812": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "의왕철도박물관",
+      "철도",
+      "박물관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126705": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "백운호수",
+      "인공호수",
+      "맛집"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2633917": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "백운호수 생태탐방로",
+      "생태 탐방",
+      "호수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_612461": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "백운호수 음식마을",
+      "음식점",
+      "한식 마을"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2745573": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "가막들공원",
+      "놀이터",
+      "집라인",
+      "미끄럼틀"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2749170": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "갈미한글공원",
+      "한글 조형물",
+      "잔디밭",
+      "동산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_309329": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "백운사",
+      "암자",
+      "청풍김씨",
+      "중건"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2749098": {
+    "setting": "실내",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "용화사",
+      "대한불교",
+      "조계종",
+      "현대식 건물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2743315": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "의왕도깨비도로",
+      "착시 현상",
+      "하우고개",
+      "언덕"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2859584": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습",
+      "액티비티"
+    ],
+    "keywords": [
+      "의왕어린이천문대",
+      "천체관측",
+      "우주과학",
+      "자연과학"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125530": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "교육·학습",
+      "액티비티",
+      "드라이브",
+      "휴식"
+    ],
+    "keywords": [
+      "청계사",
+      "우담바라꽃",
+      "용주사",
+      "통일신라시대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2742075": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "청계산맑은숲공원",
+      "피톤치드욕",
+      "산림욕",
+      "휴게광장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2742135": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "뿌리깊은나무숲",
+      "자연학습장",
+      "먹이주기",
+      "미니풀장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1624814": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "하우현성당",
+      "건축사적 가치",
+      "천주교서울대교구",
+      "박해"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1850672": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2743336": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "캠핑·레저"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "체육공원",
+      "운동",
+      "산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2743329": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마",
+      "캠핑·레저"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "체육공원",
+      "놀이터",
+      "산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2743324": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "체육공원",
+      "축구장",
+      "놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130399": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "문화원",
+      "문화예술",
+      "문화학교"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_750824": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "검단산",
+      "등산",
+      "자연경관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130726": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "역사박물관",
+      "전시회",
+      "교육프로그램"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751647": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "당정뜰",
+      "수변공원",
+      "생태공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2900511": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "박물관·전시",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "미사한강공원",
+      "근린공원",
+      "산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2746200": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "미사한강공원",
+      "체육공원",
+      "전망대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2753125": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "미사한강공원",
+      "산책로",
+      "어린이 놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_529248": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "이성산성",
+      "성곽",
+      "포곡형 산성"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_750843": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "현충탑",
+      "검단산",
+      "추모 조형물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_750850": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "교육·학습",
+      "액티비티",
+      "드라이브",
+      "휴식"
+    ],
+    "keywords": [
+      "호국사",
+      "검단산",
+      "사찰 건물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_750834": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "곱돌광산약수터",
+      "검단산",
+      "약수터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1954092": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "광주향교",
+      "조선시대",
+      "지방 교육기관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126805": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "구산성지",
+      "순교자",
+      "성당"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2902497": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "덕풍공원",
+      "근린공원",
+      "운동장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2738722": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "미사호수공원",
+      "인공 호수",
+      "산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1625059": {
+    "setting": "실내·야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "서원",
+      "제향"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2790497": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "사찰",
+      "마애약사여래좌상"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2648177": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "휴식",
+      "액티비티"
+    ],
+    "keywords": [
+      "아쿠아필드",
+      "찜질스파"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2747065": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "환경기초시설",
+      "폐기물 처리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3085065": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "비오는날"
+    ],
+    "keywords": [
+      "동물원",
+      "실내"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751657": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "나무고아원",
+      "도시숲"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125578": {
+    "setting": "실내·야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "민속촌",
+      "전통"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_773293": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "농촌 생활",
+      "종합 체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3582744": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "한복 대여",
+      "문화 기획사"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127797": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "테마파크",
+      "놀이공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130136": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2629751": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129765": {
+    "setting": "실내",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "산책",
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "미술관",
+      "한국 미술품"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2732252": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "계곡",
+      "카페"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2734940": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "호수공원",
+      "순환산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2734948": {
+    "setting": "야외",
+    "themes": [
+      "캠핑·레저",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "반려동물 놀이터",
+      "야외활동"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2499842": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "연꽃 단지",
+      "수생 식물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_304686": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "사찰",
+      "풍경"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2734944": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "호수공원",
+      "산책길"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733833": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "드라이브"
+    ],
+    "keywords": [
+      "저수지",
+      "둘레길"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2757161": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "사찰",
+      "목조 관세음보살상"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2792841": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "용인 사찰",
+      "7080 콘서트"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2463772": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "모빌리티 뮤지엄",
+      "클래식카"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733848": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "생태 휴식공간",
+      "지압 산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3027640": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "석성산",
+      "일출"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2653129": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "등산",
+      "전망대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128168": {
+    "setting": "실내·야외",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "헤이리마을",
+      "예술마을"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128626": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "벽초지수목원",
+      "수목원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3022911": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "습지체험원",
+      "야간조명"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127548": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "임진각",
+      "평화누리공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2724661": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "곤돌라",
+      "DMZ"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125583": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "통일전망대",
+      "북한"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_560481": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "파주 출판도시",
+      "출판문화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_736105": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129195": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "경기미래교육",
+      "파주캠퍼스"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3032487": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "호수",
+      "데크길",
+      "하니랜드"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3075859": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "팜크닉",
+      "체험농원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4096575": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "액티비티",
+      "교육·학습"
+    ],
+    "keywords": [
+      "그림그리기",
+      "아크릴물감",
+      "미술체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2569507": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "평화공원",
+      "DMZ"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_252560": {
+    "setting": "야외",
+    "themes": [
+      "전망·야경"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "전망대",
+      "북한"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2764930": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "마장리계곡",
+      "박달산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_750804": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "마장호수",
+      "수변데크"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2633942": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "출렁다리",
+      "자연경관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129273": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "박달산",
+      "산림욕장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_750812": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "발랑저수지",
+      "낚시터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127674": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "보광사",
+      "대한불교조계종"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763775": {
+    "setting": "실내·야외",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "드라이브"
+    ],
+    "keywords": [
+      "이천도자예술마을",
+      "도자기 체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1624755": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "설봉공원",
+      "이천의 힐링"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2514731": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "덕평공룡수목원",
+      "가족 테마파크"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2470361": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "경기도자미술관",
+      "현대 도자예술"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763759": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "단내 성가정 성지",
+      "순교 정신"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2383999": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "휴게소",
+      "쇼핑"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763848": {
+    "setting": "실내·야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "민주화운동",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763852": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "수변공원",
+      "족구장",
+      "캠핑장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3012678": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마",
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티",
+      "산책"
+    ],
+    "keywords": [
+      "도예촌",
+      "도자기",
+      "전통시장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763828": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "설봉저수지",
+      "고사분수",
+      "호수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763831": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "연꽃단지",
+      "백련",
+      "홍련"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763805": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "안흥유원지",
+      "안흥지",
+      "애련정"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_337524": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "영원사",
+      "절",
+      "약사여래좌상"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2795484": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "영월암",
+      "마애여래입상",
+      "고찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763797": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "용학사",
+      "기도",
+      "승천"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128304": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "부래미마을",
+      "농촌체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127978": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "산수유축제",
+      "요리체험",
+      "압화체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2763788": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "이천쌀",
+      "민속문화",
+      "추수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2764307": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "시장·거리",
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "운동장",
+      "잔디광장",
+      "예술공간"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128870": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "액티비티"
+    ],
+    "keywords": [
+      "독일식 온천",
+      "바데풀",
+      "삼림욕"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127556": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "김대건신부",
+      "우리말",
+      "성지순례"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2463653": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "동물먹이주기",
+      "놀이시설",
+      "농축산업"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2525563": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "남사당공연",
+      "천문과학관",
+      "캠핑장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125536": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "칠현산",
+      "악인교화",
+      "설화"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130440": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "안성맞춤",
+      "유기제작",
+      "문화유산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128533": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "경앙사",
+      "제사"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128272": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트",
+      "아이동반"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "고삼호수",
+      "낚시터",
+      "영화 촬영지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4062815": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "전망·야경"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "단풍",
+      "전망대",
+      "남사당 바우덕이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128535": {
+    "setting": "실내·야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "오두인",
+      "기사사화",
+      "서원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2747175": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "마둔저수지",
+      "둘레길",
+      "서운산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2892937": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "만세고개",
+      "독립운동",
+      "시위"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128537": {
+    "setting": "실내·야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "매산리석불입상",
+      "봉업사지",
+      "보살상"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2747133": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "연인·데이트",
+      "아이동반"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "미산저수지",
+      "카페",
+      "솔뫼길"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128284": {
+    "setting": "실내·야외",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "박두진 시비",
+      "문학관",
+      "시비 광장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125571": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "서운산성",
+      "전략적 요충지",
+      "성벽"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2738711": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "석남사계곡",
+      "피서"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1995934": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "선비마을",
+      "산신제"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128541": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "안성 객사",
+      "정청"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_604854": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "구메농사마을",
+      "복조리제작"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128516": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티"
+    ],
+    "keywords": [
+      "남사당",
+      "바우덕이묘"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126542": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "장릉",
+      "세계유산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125454": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "애기봉평화생태공원",
+      "평화관광지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125544": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "문수산성",
+      "병인양요"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2720202": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "드라이브"
+    ],
+    "keywords": [
+      "라베니체",
+      "금빛수로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2633971": {
+    "setting": "실내·야외",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "아트빌리지",
+      "샘재한옥마을"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_228863": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "대명항",
+      "해산물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127402": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "덕포진",
+      "돈대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127403": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "수안산성",
+      "성벽"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2736436": {
+    "setting": "실내",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날"
+    ],
+    "keywords": [
+      "레코파크",
+      "하수처리장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2653096": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "김포한강야생조류생태공원",
+      "습지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2396844": {
+    "setting": "야외",
+    "themes": [
+      "바다",
+      "공원·숲",
+      "박물관·전시",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "김포함상공원",
+      "안보의식"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2853109": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "마송중앙공원",
+      "근린공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2854739": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "모담공원",
+      "산책로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126703": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "문수산산림욕장",
+      "등산로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2855216": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "전망·야경"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "뱃길조각공원",
+      "조각품"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2638785": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "김포",
+      "근현대문화유산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_346647": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "용화사",
+      "강화 방면",
+      "강변 조망"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2781584": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "은여울공원",
+      "메타세쿼이아",
+      "도심 속 힐링"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2781615": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "조강저수지",
+      "문수산",
+      "자연 경관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1624822": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "통진향교",
+      "고려시대",
+      "조선시대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2945376": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "서해랑 제부도 해상케이블카",
+      "해상 케이블카",
+      "갯벌"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125503": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "제부도",
+      "모세의 기적",
+      "낙조"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129008": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "제부도 해안산책로",
+      "탑재산",
+      "해안 데크"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2743344": {
+    "setting": "야외",
+    "themes": [
+      "전망·야경"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "제부도등대",
+      "빨간 등대",
+      "포토존"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2757218": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "제부도선착장",
+      "바다 낚시",
+      "펜션"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2514454": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "연인·데이트",
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브",
+      "산책"
+    ],
+    "keywords": [
+      "궁평항",
+      "낙조",
+      "수산시장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2863634": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "궁평항광장",
+      "물놀이시설",
+      "바닷가"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2514428": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "전곡항",
+      "요트",
+      "보트"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3456908": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님",
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "융건릉",
+      "정조",
+      "효심"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125531": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "용주사",
+      "사도세자",
+      "원찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3013872": {
+    "setting": "야외",
+    "themes": [
+      "바다"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "제부도",
+      "매바위",
+      "모세의 기적"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_611549": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "제부도 모세거리",
+      "모세",
+      "바닷길"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1932056": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "제부도해수욕장",
+      "백사장",
+      "기암절벽"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4152188": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "전곡항마리나클럽하우스",
+      "요트투어",
+      "체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2654624": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "동탄호수공원",
+      "피크닉장",
+      "피톤치드"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2734903": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "개나리",
+      "동탄센트럴파크",
+      "어린이 놀이터"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4059517": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "바다"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "고렴산",
+      "수변공원",
+      "전곡항"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2757397": {
+    "setting": "야외",
+    "themes": [
+      "시장·거리"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "궁평항",
+      "해송길",
+      "일몰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2733830": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡",
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "궁평항",
+      "해송군락지",
+      "갯벌체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2902649": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "기배역사공원",
+      "융건릉",
+      "게이트볼장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2436233": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "드라이브",
+      "사진명소"
+    ],
+    "keywords": [
+      "화담숲",
+      "LG상록재단",
+      "생태계복원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125449": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡",
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "남한산성",
+      "세계유산",
+      "도립공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751248": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "남한산성행궁",
+      "조선인조",
+      "병자호란"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130358": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "경기도자박물관",
+      "청자",
+      "백자"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_294476": {
+    "setting": "실내",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "개원사",
+      "남한산성",
+      "호국사찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2737307": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "한옥마을",
+      "한옥 스테이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_630741": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "경안천",
+      "갈대숲",
+      "철새"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2862208": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "곤지암",
+      "향나무",
+      "고양이형상"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2867659": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티",
+      "산책"
+    ],
+    "keywords": [
+      "반디숲",
+      "피크닉타운",
+      "북카페"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1903260": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "비오는날"
+    ],
+    "keywords": [
+      "곤지암도자공원",
+      "경기도자박물관",
+      "왕실용 도자기"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_802566": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "산두른마을",
+      "활쏘기시합",
+      "농촌산골마을"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2742052": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적",
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "호국보훈공원",
+      "나라사랑정신",
+      "역사교육"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1624998": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "국청사",
+      "의승군",
+      "남한산성"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_298101": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "극락사",
+      "백마산",
+      "의승들거주지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1624958": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "수어장대",
+      "남한산성",
+      "군사목적누각"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3007368": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "남한산성",
+      "탐방로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2820602": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "도자기",
+      "장애인가족"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751255": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "체육공원",
+      "도척면민"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_304797": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "남한산성",
+      "고찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751258": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "계곡",
+      "물놀이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2670558": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "천일홍축제",
+      "가을여행"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2703426": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "북한산국립공원",
+      "오봉분소"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129194": {
+    "setting": "실내·야외",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "비오는날"
+    ],
+    "keywords": [
+      "사립미술관",
+      "조각공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126544": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "휴식"
+    ],
+    "keywords": [
+      "회암사지",
+      "왕실 사찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2790984": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "장욱진미술관",
+      "근현대미술"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3407913": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "기산저수지",
+      "수변산책로",
+      "향토음식점"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2748342": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "독바위",
+      "야외공연장",
+      "갈대밭"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751283": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "선돌근린공원",
+      "토피어리 정원",
+      "잔디밭"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127018": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "황사영",
+      "순교자",
+      "묘역"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2754288": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "양주 관아",
+      "행정구역",
+      "유양리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127429": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "양주향교",
+      "지방 교육기관",
+      "대성전"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_776575": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "휴식"
+    ],
+    "keywords": [
+      "육지장사",
+      "지장보살",
+      "템플스테이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125511": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "일영유원지",
+      "수영장",
+      "피크닉"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2789674": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "비오는날"
+    ],
+    "keywords": [
+      "일영허브랜드",
+      "족욕카페",
+      "베이커리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2949823": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "장흥참숯가마",
+      "셀프 바베큐",
+      "찜질방"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_612964": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "장흥계곡",
+      "한식마을"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2754275": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "장흥유원지",
+      "계곡"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_631568": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "장흥자생수목원",
+      "생태학습장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2751570": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "청련사",
+      "신라"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2789664": {
+    "setting": "실내·야외",
+    "themes": [
+      "캠핑·레저"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티",
+      "비오는날"
+    ],
+    "keywords": [
+      "토담참숯가마",
+      "찜질방"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2464201": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "포천아트밸리",
+      "폐채석장"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125523": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "산·계곡"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "산정호수",
+      "포천"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127497": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "국립수목원",
+      "광릉숲"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127695": {
+    "setting": "실내·야외",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "허브아일랜드",
+      "허브식물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2569476": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡",
+      "전망·야경"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "비둘기낭 폭포",
+      "현무암"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2648106": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_130187": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "국립수목원",
+      "산림박물관"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2914808": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "고모호수",
+      "둘레길",
+      "산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2777870": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "드라이브"
+    ],
+    "keywords": [
+      "깊이울",
+      "유원지",
+      "계곡"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2772347": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "드라마 촬영지",
+      "돌담병원",
+      "산정호수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2752705": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "도성사",
+      "납골당",
+      "지장보살"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3011204": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티",
+      "산책"
+    ],
+    "keywords": [
+      "명성산",
+      "억새밭",
+      "등산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125492": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "백운계곡",
+      "계곡",
+      "산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_4139468": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "산정호수",
+      "조각공원",
+      "산책"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125518": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "서운동산",
+      "관광농원",
+      "체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1955906": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "옥병서원",
+      "사암 박순"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_337561": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "왕산사",
+      "대한불교조계종"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129481": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "용연서원",
+      "남인세력"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_848248": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "인평대군",
+      "신도비"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_848256": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "인평대군",
+      "치제문비"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128926": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "신륵사",
+      "봉미산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3018216": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "강천섬유원지",
+      "은행나무"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1903255": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "여주도자세상",
+      "한국도자재단"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126557": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "신륵사관광지",
+      "황포돛배"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125573": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "여주 영릉과 영릉",
+      "세종"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2665727": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "수목원",
+      "테마정원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2781746": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "강변",
+      "생태공원",
+      "역사·문화유적"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3075851": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "달맞이광장",
+      "정월대보름"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2743841": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "봄꽃",
+      "경관농업단지",
+      "핑크뮬리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3112049": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "반려동물",
+      "복합문화공간"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2766859": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "오토캠핑장",
+      "국립공원",
+      "잔디공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2766840": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "여주강변",
+      "남한강변",
+      "코스모스"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2766152": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "남한강",
+      "둔치",
+      "영월루"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2998758": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "이포보",
+      "백로"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1955953": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "송시열",
+      "사당"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1955867": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "기천서원",
+      "조선시대",
+      "문화유산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3537123": {
+    "setting": "야외",
+    "themes": [
+      "전망·야경"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "남한강",
+      "출렁다리",
+      "보행자전용"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_299991": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "부모님",
+      "가족"
+    ],
+    "styles": [
+      "휴식",
+      "산책"
+    ],
+    "keywords": [
+      "대법사",
+      "사찰",
+      "명성황후"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2994829": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마",
+      "예술·공연"
+    ],
+    "companions": [
+      "아이동반",
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "액티비티"
+    ],
+    "keywords": [
+      "루덴시아",
+      "유럽형테마파크",
+      "고벽돌건축"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1955880": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "가족",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "매산서원",
+      "문익점",
+      "서원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125496": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "재인폭포",
+      "주상절리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2843976": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "출렁다리",
+      "주상절리"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128647": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "호로고루",
+      "임진강"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128646": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "당포성",
+      "고구려 성곽"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2841245": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "댑싸리 정원",
+      "다양한 꽃들"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1284966": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2841299": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "임진강",
+      "인공조형물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2616251": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "응회암",
+      "지질공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126820": {
+    "setting": "야외",
+    "themes": [
+      "호수",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "계곡",
+      "유원지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129335": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "농촌체험",
+      "임진강"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2569479": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "신탄리역"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2570218": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "낙농 체험",
+      "밀크스쿨"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128576": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "경순왕릉",
+      "신라"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2605807": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적",
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습",
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "나룻터",
+      "역사공원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_630374": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "액티비티"
+    ],
+    "keywords": [
+      "나룻배마을",
+      "팜스테이"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125540": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "숭의전지",
+      "고려시대"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_803802": {
+    "setting": "야외",
+    "themes": [
+      "체험·테마",
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "오옥",
+      "임진강",
+      "옥녀봉"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1137812": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "유엔군",
+      "화장장",
+      "6·25 전쟁"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_250366": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소"
+    ],
+    "keywords": [
+      "급수탑",
+      "증기기관차",
+      "철도"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2616500": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "판상절리",
+      "습곡구조",
+      "지질 체험"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_126668": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "아침고요수목원",
+      "축령산",
+      "삼림욕"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1437418": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "드라이브"
+    ],
+    "keywords": [
+      "자라섬",
+      "북한강",
+      "남이섬"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1060192": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "이화원",
+      "식물 정원",
+      "유자나무"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_603727": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "호명호수",
+      "양수발전소",
+      "백두산 천지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_604009": {
+    "setting": "실내·야외",
+    "themes": [
+      "예술·공연"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "쁘띠프랑스",
+      "프랑스 문화마을",
+      "청소년수련"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2407108": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "잣나무",
+      "산림치유"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3077222": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "어린이 놀이터",
+      "음악"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_921096": {
+    "setting": "실내·야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "가평향교",
+      "전통"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125488": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "사진명소",
+      "산책"
+    ],
+    "keywords": [
+      "계곡",
+      "청우산",
+      "조종천"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1104215": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "뉴질랜드전투기념비",
+      "UN독립군"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125493": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "액티비티",
+      "드라이브"
+    ],
+    "keywords": [
+      "명지계곡",
+      "명지산"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1201288": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "한국전쟁",
+      "영국 호주 캐나다 뉴질랜드"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1201197": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "월사집목판",
+      "이정구"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_921156": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "아이동반",
+      "가족",
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "이방실장군묘"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1200953": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "교육·학습"
+    ],
+    "keywords": [
+      "이정구선생묘",
+      "삼세신도비"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1199931": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "조종천계곡",
+      "계곡"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125517": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "청평호반",
+      "호수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_129634": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "부모님"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "캐나다전투기념비",
+      "기념비"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1284213": {
+    "setting": "야외",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "호주전투기념비",
+      "기념비"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3083161": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티",
+      "산책"
+    ],
+    "keywords": [
+      "화악계곡",
+      "계곡"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128918": {
+    "setting": "야외",
+    "themes": [
+      "호수"
+    ],
+    "companions": [
+      "연인·데이트",
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "양평 두물머리",
+      "호수"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_407051": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "세미원",
+      "정원"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_753619": {
+    "setting": "실내",
+    "themes": [
+      "체험·테마"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습",
+      "사진명소"
+    ],
+    "keywords": [
+      "황순원문학촌",
+      "소나기마을"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3537762": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통",
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "휴식"
+    ],
+    "keywords": [
+      "용문사 은행나무",
+      "은행나무"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125537": {
+    "setting": "실내·야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "휴식",
+      "산책"
+    ],
+    "keywords": [
+      "용문사",
+      "사찰"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3012425": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "박물관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_1926610": {
+    "setting": "실내",
+    "themes": [
+      "박물관·전시"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "비오는날",
+      "교육·학습"
+    ],
+    "keywords": [
+      "양평군립미술관",
+      "현대미술"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2755829": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "산책",
+      "벚꽃",
+      "남한강변"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2773394": {
+    "setting": "야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "연인·데이트"
+    ],
+    "styles": [
+      "산책"
+    ],
+    "keywords": [
+      "산책",
+      "남한강변",
+      "조형물"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2757536": {
+    "setting": "야외",
+    "themes": [
+      "캠핑·레저"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "액티비티"
+    ],
+    "keywords": [
+      "체육공원",
+      "동물조형물",
+      "레포츠"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_128226": {
+    "setting": "실내",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "교육·학습"
+    ],
+    "keywords": [
+      "민물고기",
+      "생태학습관",
+      "전시"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127171": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲",
+      "산·계곡"
+    ],
+    "companions": [
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "자연휴양림",
+      "등산",
+      "치유의숲"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2554095": {
+    "setting": "실내·야외",
+    "themes": [
+      "체험·테마",
+      "공원·숲"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "휴식",
+      "액티비티"
+    ],
+    "keywords": [
+      "치유의숲",
+      "산림치유",
+      "무장애데크로드"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2792937": {
+    "setting": "실내",
+    "themes": [
+      "역사·유적"
+    ],
+    "companions": [
+      "혼자·힐링",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "노산사지",
+      "주자",
+      "송시열"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_3486675": {
+    "setting": "실내·야외",
+    "themes": [
+      "공원·숲"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "사진명소"
+    ],
+    "keywords": [
+      "정원",
+      "철학"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2792940": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "계곡",
+      "자연"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2846008": {
+    "setting": "야외",
+    "themes": [
+      "전망·야경"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "사진명소",
+      "드라이브"
+    ],
+    "keywords": [
+      "별 관측",
+      "야경"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_2792904": {
+    "setting": "야외",
+    "themes": [
+      "산·계곡"
+    ],
+    "companions": [
+      "아이동반",
+      "가족"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "계곡",
+      "피서지"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_127688": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "연인·데이트",
+      "부모님"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "절",
+      "불교"
+    ],
+    "source": "clova"
+  },
+  "PLACE_TOURAPI_125539": {
+    "setting": "야외",
+    "themes": [
+      "사찰·전통"
+    ],
+    "companions": [
+      "혼자·힐링"
+    ],
+    "styles": [
+      "산책",
+      "휴식"
+    ],
+    "keywords": [
+      "사원",
+      "역사"
+    ],
+    "source": "clova"
+  }
+}
