@@ -1,7 +1,7 @@
 import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { consumeLimit, db, transaction } from '../lib/adapters/postgres';
-import { jsonBody, readBody } from '../lib/adapters/http';
+import { failure, jsonBody, readBody } from '../lib/adapters/http';
 import { ApplicationError } from '../lib/domain/errors';
 import { api, request } from '../lib/adapters/client-api';
 import { setupTestSchema } from './helpers/pg';
@@ -184,4 +184,36 @@ test('요청 한도 버킷은 시간당 한도를 지키면서 지난 시간 버
     true,
     '현재 시간 버킷은 유지된다',
   );
+});
+
+test('다른 번들 청크에서 던져진 ApplicationError와 ZodError도 올바른 HTTP 상태로 변환한다', async () => {
+  const brand = Symbol.for('tourpass.ApplicationError');
+  class ForeignApplicationError extends Error {
+    readonly [brand] = true;
+    constructor(
+      public code: 'SESSION_REQUIRED',
+      message: string,
+    ) {
+      super(message);
+      this.name = 'ApplicationError';
+    }
+  }
+  const foreignAppError = new ForeignApplicationError(
+    'SESSION_REQUIRED',
+    '세션이 만료되었습니다.',
+  );
+  assert.equal(foreignAppError instanceof ApplicationError, true);
+  const appRes = failure(foreignAppError);
+  assert.equal(appRes.status, 401);
+  assert.deepEqual(await appRes.json(), { error: '세션이 만료되었습니다.' });
+
+  class ForeignZodError extends Error {
+    issues = [{ message: 'invalid' }];
+    constructor() {
+      super('invalid');
+      this.name = 'ZodError';
+    }
+  }
+  const zodRes = failure(new ForeignZodError());
+  assert.equal(zodRes.status, 400);
 });
