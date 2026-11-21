@@ -104,6 +104,7 @@ def build(source_path):
             "shortName": name[:-1],
             "path": svg_path(geometry),
             "label": project(point.x, point.y),
+            "coordinates": {"lat": round(point.y, 6), "lng": round(point.x, 6)},
         })
     seoul_geometry = unary_union(seoul).simplify(0.0015, preserve_topology=True)
     seoul_point = seoul_geometry.representative_point()

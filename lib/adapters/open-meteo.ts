@@ -1,4 +1,10 @@
 import { z } from 'zod';
+import { ApplicationError } from '@/lib/domain/errors';
+import {
+  cityWeatherObservationSchema,
+  type CityWeatherLocation,
+  type CityWeatherObservation,
+} from '@/lib/domain/city-weather';
 import {
   WEATHER_REGIONS,
   describeWeatherCode,
@@ -7,6 +13,81 @@ import {
   weatherResponseSchema,
   type WeatherResponse,
 } from '@/lib/domain/weather';
+
+const currentCityUpstreamSchema = z.object({
+  timezone: z.literal('Asia/Seoul'),
+  utc_offset_seconds: z.literal(32400),
+  current: z.object({
+    time: z.iso.datetime({ local: true }),
+    temperature_2m: z.number().min(-100).max(70),
+    weather_code: z
+      .number()
+      .int()
+      .refine((code) =>
+        [
+          0, 1, 2, 3, 45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73,
+          75, 77, 80, 81, 82, 85, 86, 95, 96, 99,
+        ].includes(code),
+      ),
+    wind_speed_10m: z.number().min(0),
+  }),
+});
+
+export async function liveCityWeather(
+  city: CityWeatherLocation,
+): Promise<CityWeatherObservation> {
+  const url = new URL('https://api.open-meteo.com/v1/forecast');
+  url.search = new URLSearchParams({
+    latitude: String(city.coordinates.lat),
+    longitude: String(city.coordinates.lng),
+    current: 'temperature_2m,weather_code,wind_speed_10m',
+    wind_speed_unit: 'ms',
+    timezone: 'Asia/Seoul',
+    forecast_days: '1',
+  }).toString();
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      headers: { Accept: 'application/json' },
+      cache: 'no-store',
+      redirect: 'error',
+      signal: AbortSignal.timeout(8000),
+    });
+  } catch (error) {
+    throw new ApplicationError(
+      error instanceof Error &&
+      ['TimeoutError', 'AbortError'].includes(error.name)
+        ? 'UPSTREAM_TIMEOUT'
+        : 'UNAVAILABLE',
+      '날씨 정보를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.',
+    );
+  }
+  if (!response.ok)
+    throw new ApplicationError(
+      'UPSTREAM_INVALID',
+      '날씨 제공 서비스가 응답하지 않습니다. 잠시 후 다시 시도해 주세요.',
+    );
+  const parsed = currentCityUpstreamSchema.safeParse(
+    await response.json().catch(() => null),
+  );
+  if (!parsed.success)
+    throw new ApplicationError(
+      'UPSTREAM_INVALID',
+      '현재 날씨 응답을 확인할 수 없습니다.',
+    );
+  const raw = parsed.data.current;
+  const description = describeWeatherCode(raw.weather_code, raw.wind_speed_10m);
+  const time = raw.time.length === 16 ? `${raw.time}:00` : raw.time;
+  return cityWeatherObservationSchema.parse({
+    observedAt: `${time}+09:00`,
+    current: {
+      temperature: Number(raw.temperature_2m.toFixed(1)),
+      weatherCode: raw.weather_code,
+      condition: description.condition,
+      icon: description.icon,
+    },
+  });
+}
 const openMeteoUpstreamSchema = z.object({
   current: z.object({
     time: z.string(),
