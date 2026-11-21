@@ -2,6 +2,9 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 const base = process.env.TEST_BASE_URL || 'http://127.0.0.1:3100';
+const catalog = JSON.parse(
+  readFileSync(new URL('../data/places.json', import.meta.url), 'utf8'),
+);
 async function call(path, method = 'GET', body, cookie, origin = base) {
   return fetch(base + path, {
     method,
@@ -65,16 +68,41 @@ const list = await (
   await call('/api/journeys', 'GET', undefined, cookie)
 ).json();
 assert.equal(list.journeys[0].records.PLACE_REAL_001.note, visit.note);
+const recommendationPlace = catalog.find(
+  (place) => place.id === input.placeIds[0],
+);
+assert.ok(recommendationPlace, '추천 검사의 장소가 카탈로그에 있어야 한다');
 const response = await call(
   '/api/recommend',
   'POST',
-  { prompt: '자연 산책', region: '장곡·갯골' },
+  { prompt: recommendationPlace.name, region: recommendationPlace.region },
   cookie,
 );
 assert.equal(response.status, 200);
 const rec = await response.json();
 assert.ok(rec.stops.length > 0);
+assert.ok(rec.stops.length <= 3);
 assert.equal(rec.mode, 'demo');
+assert.ok(rec.stops.some((stop) => stop.placeId === recommendationPlace.id));
+assert.ok(
+  rec.stops.every(
+    (stop) =>
+      catalog.find((place) => place.id === stop.placeId)?.region ===
+      recommendationPlace.region,
+  ),
+);
+const outsideCity = catalog.find(
+  (place) => place.cityId !== recommendationPlace.cityId,
+);
+assert.ok(outsideCity, '지역 제한 검사에는 다른 도시가 필요하다');
+const wrongRegion = await call(
+  '/api/recommend',
+  'POST',
+  { prompt: recommendationPlace.name, region: outsideCity.region },
+  cookie,
+);
+assert.equal(wrongRegion.status, 400);
+assert.match((await wrongRegion.json()).error, /조건에 맞는 장소가 없/);
 assert.equal(
   (await call('/api/recommend', 'POST', { prompt: 'x'.repeat(10000) }, cookie))
     .status,
@@ -100,9 +128,6 @@ for (const docPath of ['/api/docs', '/scalar']) {
   assert.match(docRes.headers.get('content-type') || '', /text\/html/i);
   assert.match(await docRes.text(), /\/api\/openapi/);
 }
-const catalog = JSON.parse(
-  readFileSync(new URL('../data/places.json', import.meta.url), 'utf8'),
-);
 const newCityPlace = catalog.find((place) => place.cityId === '41110');
 assert.ok(newCityPlace, '수원 관광지가 등록되어 있어야 한다');
 const newCitySave = await call(

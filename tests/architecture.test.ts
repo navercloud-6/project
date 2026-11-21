@@ -44,6 +44,7 @@ test('안쪽 계층은 프레임워크·어댑터·I/O에 의존하지 않고 �
           (layer === 'application' &&
             target.startsWith(resolve(root, 'lib/application') + sep)) ||
           target === resolve(root, 'data/places.json') ||
+          target === resolve(root, 'data/place-labels.json') ||
           target === resolve(root, 'data/gyeonggi-map.json');
         assert.ok(allowed, `${relative(root, file)} -> ${name}`);
       }
@@ -187,13 +188,13 @@ test('추천 유스케이스는 만족도만 외부에 전달하고 한도 초�
       translate: false,
       ocr: false,
     }),
-    recommend: async (_prompt, _candidates, feedback) => {
+    recommend: async (_prompt, candidates, feedback) => {
       calls++;
       assert.deepEqual(feedback, [{ placeId: draft.placeIds[0], rating: 5 }]);
       return {
         title: '여행',
         summary: '추천',
-        stops: [{ placeId: draft.placeIds[0], reason: '바다' }],
+        stops: [{ placeId: candidates[0].id, reason: '바다' }],
       };
     },
   });

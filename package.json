@@ -8,6 +8,7 @@
     "start": "next start --hostname 0.0.0.0",
     "typecheck": "tsc --noEmit",
     "data:tourapi": "node --env-file=.env.local --import tsx scripts/import-tourapi.ts",
+    "data:label": "node --env-file=.env.local --import tsx scripts/label-places.ts",
     "test": "tsx --test tests/*.test.ts",
     "format": "prettier --write app components lib tests next.config.mjs package.json tsconfig.json .prettierrc.json",
     "format:check": "prettier --check app components lib tests next.config.mjs package.json tsconfig.json .prettierrc.json"
