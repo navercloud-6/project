@@ -13,7 +13,14 @@ const mapSearch = (name: string, region: string) =>
   )}`;
 
 /** 선택 시·군의 맛집과 후기 기반 인기 메뉴. */
-export function WeatherRestaurants({ region }: { region: string }) {
+export function WeatherRestaurants({
+  region,
+  limit,
+}: {
+  region: string;
+  // 안내 음성과 같은 개수·순서만 보여 줄 때 쓴다.
+  limit?: number;
+}) {
   const [state, setState] = useState<{
     region: string;
     data?: RestaurantsResponse;
@@ -53,7 +60,7 @@ export function WeatherRestaurants({ region }: { region: string }) {
       {data?.message && <p className="fine">{data.message}</p>}
       {data && data.items.length > 0 && (
         <ul className="weather-restaurant-list">
-          {data.items.map((item) => (
+          {data.items.slice(0, limit).map((item) => (
             <li key={item.name}>
               <div className="weather-restaurant-head">
                 <strong>{item.name}</strong>

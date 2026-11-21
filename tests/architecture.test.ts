@@ -126,6 +126,7 @@ function ai(overrides: Partial<AIPort> = {}): AIPort {
     translate: unexpected,
     voice: unexpected,
     briefing: unexpected,
+    placeReasons: unexpected,
     restaurantMenus: unexpected,
     ocr: unexpected,
     ...overrides,

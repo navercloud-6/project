@@ -92,6 +92,11 @@ export const assistantInput = z.discriminatedUnion('action', [
     lang: briefingLanguage,
   }),
   z.object({
+    action: z.literal('briefingVoice'),
+    region: weatherQuerySchema.shape.region,
+    lang: briefingLanguage,
+  }),
+  z.object({
     action: z.literal('diary'),
     journeyId: z.string().uuid(),
     placeId: placeIdSchema,

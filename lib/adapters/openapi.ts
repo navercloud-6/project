@@ -13,6 +13,7 @@ import {
 import { weatherResponseSchema } from '@/lib/domain/weather';
 import { briefingOutput } from '@/lib/domain/briefing';
 import { restaurantsResponseSchema } from '@/lib/domain/restaurants';
+import { alertsResponseSchema } from '@/lib/domain/alerts';
 import {
   cityWeatherResponseSchema,
   cityWeatherLocations,
@@ -133,6 +134,7 @@ export const openApiDocument = {
       WeatherResponse: toSchema(weatherResponseSchema),
       BriefingOutput: toSchema(briefingOutput),
       RestaurantsResponse: toSchema(restaurantsResponseSchema),
+      AlertsResponse: toSchema(alertsResponseSchema),
       CityWeatherResponse: toSchema(cityWeatherResponseSchema),
       AssistantRequest: {
         oneOf: [
@@ -197,7 +199,23 @@ export const openApiDocument = {
             ['action', 'region', 'lang'],
             {
               title:
-                'briefing (시·군 날씨·옷차림·추천 명소 통합 안내 원고·MP3)',
+                'briefing (시·군 날씨·옷차림·추천 명소·맛집 통합 안내 원고, 시·군·언어별 10분 공유)',
+            },
+          ),
+          obj(
+            {
+              action: { type: 'string', const: 'briefingVoice' },
+              region: {
+                type: 'string',
+                description:
+                  '`전체` 또는 경기도 31개 시·군 이름(날씨 API와 동일)',
+              },
+              lang: { type: 'string', enum: ['ko', 'en'] },
+            },
+            ['action', 'region', 'lang'],
+            {
+              title:
+                'briefingVoice (같은 통합 안내 원고의 MP3, ko=nara·en=clara)',
             },
           ),
           obj(
@@ -353,7 +371,7 @@ export const openApiDocument = {
                 schema: {
                   type: 'object',
                   description:
-                    'guide/edit/apply/translate/diary 결과 객체, briefing은 BriefingOutput(audio는 base64 MP3 또는 null)',
+                    'guide/edit/apply/translate/diary 결과 객체, briefing은 BriefingOutput(원고). voice·briefingVoice는 audio/mpeg',
                 },
               },
               'audio/mpeg': { schema: binary },
@@ -430,6 +448,36 @@ export const openApiDocument = {
           ),
           '429': err('시간당 포스터 인식 한도 초과'),
           '503': err('CLOVA OCR 설정 누락'),
+        },
+      },
+    },
+    '/api/alerts': {
+      get: {
+        tags: ['Weather'],
+        summary: '경기도 시·군 기상특보·예비특보·최근 지진 안내',
+        description:
+          '기상청 특보 발효 현황(공공데이터포털)에서 선택 시·군에 걸린 주의보·경보·예비특보를 찾고, 최근 24시간 국내 지진(경기도 발생 또는 규모 3.0 이상)과 경기도에서 느낀 해외 지진을 더합니다. 전국 자료는 10분간 공유하며 인증키 미설정 시 mode=unavailable입니다.',
+        parameters: [
+          {
+            name: 'region',
+            in: 'query',
+            required: false,
+            description: '`전체` 또는 경기도 31개 시·군 이름(날씨 API와 동일)',
+            schema: { type: 'string', default: '전체' },
+          },
+        ],
+        responses: {
+          '200': {
+            description: '지역·모드·출처·발표 시각·안내 목록',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/AlertsResponse' },
+              },
+            },
+          },
+          '400': err('지원하지 않는 지역'),
+          '502': err('기상청 응답 오류'),
+          '504': err('기상청 시간 초과'),
         },
       },
     },
