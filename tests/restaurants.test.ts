@@ -11,6 +11,11 @@ import {
   briefingFacts,
   ruleScript,
   spokenKorean,
+  menuSentence,
+  kindSentence,
+  withReasons,
+  placesTail,
+  foodKind,
 } from '../lib/domain/briefing';
 import { buildDemoWeather } from '../lib/domain/weather';
 import { places } from '../lib/domain/catalog';
@@ -231,7 +236,7 @@ test('통합 안내 원고는 맛집과 검증된 메뉴를 명소 다음에 말
     script.indexOf('추천 명소') <
       script.indexOf('근처 맛집이에요. 갈비집 본점'),
   );
-  assert.match(script, /후기에 자주 나온 메뉴는 왕갈비 정식입니다/);
+  assert.match(script, /갈비집 본점은 육류 맛집인데 왕갈비 정식이 유명해요\./);
   // 음성은 화면 카드와 같은 순서로 명소를 말한다(번호 없이).
   const positions = facts.places.map((p) =>
     script.indexOf(`${spokenKorean(p.name)}, `),
@@ -282,4 +287,143 @@ test('명소 블로그 후기는 그 장소 글만 3개까지 모으고 10분 �
     },
   });
   assert.deepEqual(await broken('화성행궁', '수원시'), []);
+});
+
+test('맛집은 음식 종류와 검증된 메뉴를 넣어 맛집마다 다른 표현·맞는 조사로 말한다', () => {
+  assert.equal(foodKind('음식점>일식>일식당'), '일식당');
+  assert.equal(foodKind('한식>곱창,막창,양'), '곱창 맛집');
+  assert.equal(foodKind('카페,디저트>베이커리'), '베이커리');
+  assert.equal(foodKind(''), '');
+  assert.equal(
+    menuSentence(
+      '요미우돈교자',
+      ['오코노미야끼교자', '우동'],
+      0,
+      '음식점>일식>일식당',
+    ),
+    '요미우돈교자는 일식당인데 오코노미야끼교자와 우동이 유명해요.',
+  );
+  assert.equal(
+    menuSentence(
+      '하얀풍차제과점 망포역점',
+      ['화이트롤', '찹쌀도넛', '조각 케이크'],
+      1,
+      '카페,디저트>베이커리',
+    ),
+    '베이커리인 하얀풍차제과점 망포역점에서는 화이트롤, 찹쌀도넛과 조각 케이크가 인기 메뉴예요.',
+  );
+  assert.equal(
+    menuSentence(
+      '조개포차 오이도본점',
+      ['가리비', '키조개'],
+      2,
+      '해물,생선요리>조개요리',
+    ),
+    '조개포차 오이도본점은 조개요리 맛집으로, 가리비와 키조개를 많이 찾아요.',
+  );
+  assert.equal(
+    menuSentence('델씨엘로', ['피자'], 3),
+    '델씨엘로는 피자가 유명해요.',
+  );
+  assert.equal(
+    kindSentence('셰프스위트', '음식점>양식'),
+    '셰프스위트는 양식 맛집이에요.',
+  );
+});
+
+test('맛집 한 문장은 블로그 근거 AI 문장을 검사해 쓰고, 가격·다른 이름이 섞이면 음식 종류·메뉴 규칙 문장을 쓴다', () => {
+  const weather = buildDemoWeather(
+    '수원시',
+    Date.parse('2026-11-21T03:00:00Z'),
+  );
+  const facts = briefingFacts(weather, places, [
+    {
+      name: '요미우돈교자',
+      category: '음식점>일식>일식당',
+      address: '경기도 수원시 팔달구 1',
+      link: null,
+      menus: ['오코노미야끼교자', '우동'],
+    },
+    {
+      name: '셰프스위트',
+      category: '음식점>양식',
+      address: '경기도 수원시 팔달구 2',
+      link: null,
+      menus: ['뇨끼'],
+    },
+  ]);
+  const n = facts.places.length;
+  const lines = Array(n).fill(undefined);
+  lines.push(
+    '행궁동에서 일본 감성으로 유명한 일식당이라 우동과 교자를 즐기기 좋아요',
+    '파스타 한 접시에 15000원이라 가성비가 좋아요.',
+  );
+  const result = withReasons(facts, lines);
+  assert.equal(
+    result.restaurants[0].line,
+    '행궁동에서 일본 감성으로 유명한 일식당이라 우동과 교자를 즐기기 좋아요.',
+  );
+  assert.equal(
+    result.restaurants[1].line,
+    undefined,
+    '숫자(가격)가 있으면 버린다',
+  );
+  const tail = placesTail(result);
+  assert.match(tail, /요미우돈교자, 행궁동에서 일본 감성으로/);
+  assert.match(
+    tail,
+    /셰프스위트에서는 양식 맛집|셰프스위트는 양식 맛집|양식 맛집인 셰프스위트/,
+  );
+  assert.doesNotMatch(tail, /15000/);
+});
+
+test('후기로 확인된 메뉴가 있는 맛집은 문장에 그 메뉴가 없으면 메뉴를 말하는 규칙 문장을 쓴다', () => {
+  const weather = buildDemoWeather(
+    '시흥시',
+    Date.parse('2026-11-21T03:00:00Z'),
+  );
+  const facts = briefingFacts(weather, places, [
+    {
+      name: '조개포차 오이도본점',
+      category: '한식>조개요리',
+      address: '경기도 시흥시 오이도로 1',
+      link: null,
+      menus: ['가리비', '키조개'],
+    },
+    {
+      name: '어부파스타',
+      category: '음식점>이탈리아음식',
+      address: '경기도 시흥시 은계번영길 2',
+      link: null,
+      menus: [],
+    },
+  ]);
+  const lines = [
+    ...Array(facts.places.length).fill(undefined),
+    '푸짐하게 나오는 조개를 즐기며 오션뷰를 바라보기 좋아요.',
+    '분위기도 좋고 깔끔해서 기분 전환하기 좋아요.',
+  ];
+  const [clam, pasta] = withReasons(facts, lines).restaurants;
+  assert.equal(
+    clam.line,
+    undefined,
+    '메뉴(가리비·키조개)를 말하지 않으면 버린다',
+  );
+  assert.equal(
+    pasta.line,
+    '분위기도 좋고 깔끔해서 기분 전환하기 좋아요.',
+    '메뉴가 없는 맛집은 그대로 쓴다',
+  );
+  assert.match(
+    placesTail(withReasons(facts, lines)),
+    /조개포차 오이도본점은 조개요리 맛집인데 가리비와 키조개가 유명해요\./,
+  );
+  const withMenu = withReasons(facts, [
+    ...Array(facts.places.length).fill(undefined),
+    '푸짐한 가리비와 키조개를 바다를 보며 즐기기 좋아요.',
+  ]).restaurants[0];
+  assert.equal(
+    withMenu.line,
+    '푸짐한 가리비와 키조개를 바다를 보며 즐기기 좋아요.',
+  );
 });

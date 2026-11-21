@@ -57,7 +57,13 @@ export type BriefingFacts = {
     // 오늘 추천하는 이유 한 문장(검증을 통과한 AI 문장 또는 규칙 문장)
     reason: string;
   }[];
-  restaurants: { name: string; category: string; menus: string[] }[];
+  restaurants: {
+    name: string;
+    category: string;
+    menus: string[];
+    // 블로그 후기를 근거로 AI가 쓴 한 문장(검증 통과 시). 없으면 음식 종류·메뉴 규칙 문장
+    line?: string;
+  }[];
 };
 
 // 소개는 첫 문장 하나만 쓴다. 너무 길면 중간에 자르지 않고 소개를 생략한다.
@@ -309,31 +315,105 @@ export function politeEnding(text: string): string {
  */
 export function withReasons(
   facts: BriefingFacts,
+  // 명소 순서대로, 이어서 맛집 순서대로의 AI 문장
   reasons: (string | undefined)[],
 ): BriefingFacts {
   const squash = (text: string) => text.replace(/\s+/g, '');
   const names = [...facts.places, ...facts.restaurants].map((p) =>
     squash(p.name),
   );
+  // 같은 검사(길이·숫자·계절·다른 이름)를 통과한 문장만 쓰고, 아니면 빈 문자열
+  const checked = (raw: string | undefined, name: string) => {
+    const text = politeEnding(
+      withoutOwnName(spokenKorean(raw ?? ''), name),
+    ).replace(/[.!?]*$/, '.');
+    const own = squash(name);
+    const ok =
+      text.length >= 8 &&
+      text.length <= REASON_MAX &&
+      !/\d/.test(text) &&
+      offSeasonWords(text, facts.weather.season).length === 0 &&
+      !names.some((n) => n !== own && squash(text).includes(n));
+    return ok ? text : '';
+  };
   return {
     ...facts,
-    places: facts.places.map((place, i) => {
-      const text = politeEnding(
-        withoutOwnName(spokenKorean(reasons[i] ?? ''), place.name),
-      ).replace(/[.!?]*$/, '.');
-      const own = squash(place.name);
-      const ok =
-        text.length >= 8 &&
-        text.length <= REASON_MAX &&
-        !/\d/.test(text) &&
-        offSeasonWords(text, facts.weather.season).length === 0 &&
-        !names.some((n) => n !== own && squash(text).includes(n));
-      return { ...place, reason: ok ? text : ruleReason(place.tags) };
+    places: facts.places.map((place, i) => ({
+      ...place,
+      reason: checked(reasons[i], place.name) || ruleReason(place.tags),
+    })),
+    restaurants: facts.restaurants.map((r, j) => {
+      const line = checked(reasons[facts.places.length + j], r.name);
+      // 후기로 확인된 메뉴가 있는 맛집은 그 메뉴를 하나 이상 꼭 말해야 한다.
+      const hasMenu =
+        r.menus.length === 0 ||
+        r.menus.some((m) => squash(line).includes(squash(m)));
+      return { ...r, line: line && hasMenu ? line : undefined };
     }),
   };
 }
 
 /** 코드가 붙이는 뒷부분: 명소 이름·추천 이유, 맛집 이름·메뉴를 자료 그대로 말한다. */
+// 한글 마지막 글자에 받침이 있는지(조사 고르기). 한글이 아니면 받침 없음으로 본다.
+function hasBatchim(word: string): boolean {
+  const code = word.trim().charCodeAt(word.trim().length - 1);
+  return code >= 0xac00 && code <= 0xd7a3 && (code - 0xac00) % 28 !== 0;
+}
+const josa = (word: string, withBatchim: string, without: string) =>
+  `${word}${hasBatchim(word) ? withBatchim : without}`;
+/** ['A','B','C'] → 'A, B와 C' (마지막 이음은 와/과) */
+function joinMenus(menus: string[]): string {
+  if (menus.length <= 1) return menus.join('');
+  const head = menus.slice(0, -1);
+  const last = head[head.length - 1];
+  return `${[...head.slice(0, -1), josa(last, '과', '와')].join(', ')} ${menus[menus.length - 1]}`;
+}
+
+/** 네이버 분류 끝부분을 말하기 좋은 음식 종류로('곱창,막창,양' → '곱창 맛집', '양식' → '양식 맛집'). */
+export function foodKind(category: string): string {
+  const kind = (category.split('>').pop() ?? '').split(',')[0].trim();
+  if (!kind) return '';
+  return /(당|점|집|카페|베이커리|제과|주점|레스토랑|뷔페)$/.test(kind)
+    ? kind
+    : `${kind} 맛집`;
+}
+
+// 맛집 문장: 음식 종류와 후기로 검증된 메뉴를 넣고, 맛집마다 표현을 바꿔 자연스럽게 말한다.
+const MENU_PHRASES = [
+  (name: string, kind: string, menu: string) =>
+    kind
+      ? `${josa(name, '은', '는')} ${kind}인데 ${josa(menu, '이', '가')} 유명해요.`
+      : `${josa(name, '은', '는')} ${josa(menu, '이', '가')} 유명해요.`,
+  (name: string, kind: string, menu: string) =>
+    kind
+      ? `${kind}인 ${name}에서는 ${josa(menu, '이', '가')} 인기 메뉴예요.`
+      : `${name}에서는 ${josa(menu, '이', '가')} 인기 메뉴예요.`,
+  (name: string, kind: string, menu: string) =>
+    kind
+      ? `${josa(name, '은', '는')} ${josa(kind, '으로', '로')}, ${josa(menu, '을', '를')} 많이 찾아요.`
+      : `${josa(name, '은', '는')} ${josa(menu, '을', '를')} 많이 찾아요.`,
+];
+/** 메뉴가 없는 맛집: '셰프스위트는 양식 맛집이에요.' */
+export function kindSentence(name: string, category: string): string {
+  const kind = foodKind(category);
+  return kind
+    ? `${josa(name, '은', '는')} ${josa(kind, '이에요', '예요')}.`
+    : `${name}.`;
+}
+
+export function menuSentence(
+  name: string,
+  menus: string[],
+  index: number,
+  category = '',
+): string {
+  return MENU_PHRASES[index % MENU_PHRASES.length](
+    name,
+    foodKind(category),
+    joinMenus(menus),
+  );
+}
+
 export function placesTail(facts: BriefingFacts): string {
   const parts: string[] = [];
   // 화면 카드와 같은 순서로 말한다.
@@ -345,10 +425,12 @@ export function placesTail(facts: BriefingFacts): string {
   if (facts.restaurants.length > 0)
     parts.push(
       '마지막으로 근처 맛집이에요.',
-      ...facts.restaurants.map((r) =>
-        r.menus.length > 0
-          ? `${r.name}, 후기에 자주 나온 메뉴는 ${r.menus.join(', ')}입니다.`
-          : `${r.name}${r.category ? `, ${r.category} 맛집이에요.` : '.'}`,
+      ...facts.restaurants.map((r, i) =>
+        r.line
+          ? `${r.name}, ${r.line}`
+          : r.menus.length > 0
+            ? menuSentence(r.name, r.menus, i, r.category)
+            : kindSentence(r.name, r.category),
       ),
     );
   return parts.join(' ');

@@ -14,6 +14,7 @@ import {
   unknownNumbers,
   withReasons,
   withSafety,
+  foodKind,
   type BriefingLanguage,
   type BriefingOutput,
 } from '@/lib/domain/briefing';
@@ -83,14 +84,24 @@ export function createBriefing({
       // 블로그 후기 검색 → 장소별 추천 이유 작성을 앞부분 작성과 동시에 진행한다.
       const reasons = (async () =>
         ai.placeReasons(
-          await Promise.all(
-            facts.places.map(async ({ name, description, tags }) => ({
+          await Promise.all([
+            ...facts.places.map(async ({ name, description, tags }) => ({
               name,
               description,
               tags,
               reviews: placeReviews ? await placeReviews(name, region) : [],
+              kind: 'place' as const,
             })),
-          ),
+            // 맛집도 같은 요청에서 블로그 표현을 근거로 한 문장씩 쓴다.
+            ...facts.restaurants.map(async ({ name, category, menus }) => ({
+              name,
+              description: foodKind(category),
+              tags: [category],
+              reviews: placeReviews ? await placeReviews(name, region) : [],
+              kind: 'restaurant' as const,
+              menus,
+            })),
+          ]),
           head.weather,
         ))().catch(() => [] as string[]);
       let accepted = '';
