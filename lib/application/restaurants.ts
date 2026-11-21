@@ -94,3 +94,27 @@ export function createRestaurants(search: RestaurantSearchPort, ai: AIPort) {
     return request;
   };
 }
+
+/**
+ * 명소 블로그 후기: '이름 지역' 블로그 검색에서 그 장소 이야기인 글만 최대 3개.
+ * 추천 이유의 근거로만 쓰며, 검색 키가 없거나 실패하면 빈 목록(소개·태그만 사용).
+ * 같은 장소는 10분간 캐시한다.
+ */
+export function createPlaceReviews(search: RestaurantSearchPort) {
+  const cache = new Map<string, { at: number; reviews: string[] }>();
+  return async function placeReviews(name: string, region: string) {
+    if (!search.configured()) return [];
+    const key = `${region}:${name}`;
+    const hit = cache.get(key);
+    if (hit && search.now() - hit.at < RESTAURANT_CACHE_MS) return hit.reviews;
+    try {
+      const reviews = (await search.blog(`${name} ${searchArea(region)}`))
+        .filter((text) => aboutPlace(name, text))
+        .slice(0, 3);
+      cache.set(key, { at: search.now(), reviews });
+      return reviews;
+    } catch {
+      return [];
+    }
+  };
+}

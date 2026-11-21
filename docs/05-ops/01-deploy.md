@@ -13,6 +13,7 @@
 | CLOVA Voice | Voice 활성화 앱 ID·Secret |
 | Papago | 별도 Translation 앱 ID·Secret |
 | 검색(지역·블로그) | NAVER API HUB 검색 앱 ID·Secret(`NAVER_SEARCH_ID`·`NAVER_SEARCH_SECRET`, 맛집) |
+| 공공데이터포털 | 기상청 기상특보·지진정보 조회서비스 활용신청한 일반 인증키(`DATA_GO_KR_SERVICE_KEY`, 무료, 개발계정 일 10,000건) |
 | General OCR | `/general`로 끝나는 HTTPS Invoke URL(`*.apigw.ntruss.com`)·Secret |
 | Maps (Web Dynamic Map) | `NAVER_MAP_CLIENT_ID` 및 콘솔 Web 서비스 URL(`APP_ORIGIN`) 등록 |
 
