@@ -334,7 +334,7 @@ export const weatherQuerySchema = z.object({
     ),
 });
 
-const weatherIconSchema = z.enum([
+export const weatherIconSchema = z.enum([
   'sun',
   'cloud-sun',
   'cloud',

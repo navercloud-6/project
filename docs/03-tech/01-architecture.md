@@ -30,7 +30,11 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 [GyeonggiCityExplorer](../../components/gyeonggi-city-explorer.tsx)는 [지도 요구사항](../01-func/01-requirements.md#경기도-지역-선택-지도)을 구현하는 정적 SVG 탐색 컴포넌트다.
 
 - [build_gyeonggi_map.py](../../scripts/build_gyeonggi_map.py)가 SGIS 기반 [vuski/admdongkor(2026-10-01)](https://github.com/vuski/admdongkor/tree/3bc00489b76696db864bdbea4b19985cdfa8b403/ver20261001) 원본의 SHA-256을 검증하고 경기도 31개 시·군 병합·단순화를 거쳐 [gyeonggi-map.json](../../data/gyeonggi-map.json)과 [라이선스](../../data/gyeonggi-map.LICENSE.txt)를 생성한다.
-- 선택 상태는 `Tourpass`의 `selectedCityId`가 소유하며 기존 시흥 권역 필터(`region`)와 분리한다. 오른쪽 목록은 카탈로그의 `cityId`로 필터링하고, 지도 상단 날씨는 [WeatherSymbol](../../components/weather-symbol.tsx)을 공유한다.
+- 선택 상태는 `Tourpass`의 `selectedCityId`가 소유하며 날씨 탭과 공유하고 기존 시흥 권역 필터(`region`)와 분리한다. 오른쪽 목록은 카탈로그의 `cityId`로 필터링하고, 지도 상단의 [CityWeatherBadge](../../components/city-weather-badge.tsx)는 날씨 탭과 [WeatherSymbol](../../components/weather-symbol.tsx)을 공유한다.
+
+## 날씨 연동
+
+[weather.ts](../../lib/domain/weather.ts)의 `WEATHER_REGIONS`가 두 화면의 기상 조회 좌표를 관리한다. 날씨 탭은 `/api/weather?region=...`의 현재 기상·5일 예보를 사용하고, 지도는 `/api/weather/current?cityId=...`의 현재 날씨를 사용한다. 지도 전용 [유스케이스](../../lib/application/city-weather.ts)와 [브라우저 클라이언트](../../lib/adapters/city-weather-client.ts)는 도시별 성공 응답을 10분간 캐시하고 동시 요청을 합친다. 두 화면은 도시 변경 후 도착한 이전 응답을 무시하며 실패·시연 정책은 [요구사항](../01-func/01-requirements.md#탐색추천날씨)을 따른다.
 
 ## 네이버 지도와 관광 데이터
 

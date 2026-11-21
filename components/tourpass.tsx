@@ -586,6 +586,8 @@ export default function Tourpass({
           </div>
         ) : tab === 'weather' ? (
           <WeatherPanel
+            selectedCityId={selectedCityId}
+            onSelectCity={setSelectedCityId}
             places={places}
             selection={selection}
             onTogglePlace={toggle}

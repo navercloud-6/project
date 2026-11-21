@@ -6,7 +6,8 @@ import {
 } from './adapters/postgres';
 import { identity } from './adapters/identity';
 import { naver } from './adapters/naver';
-import { liveWeather } from './adapters/open-meteo';
+import { liveWeather, liveCityWeather } from './adapters/open-meteo';
+import { createCityWeather } from './application/city-weather';
 import { createJourneys } from './application/journeys';
 import { createSession } from './application/session';
 import { createAssistant } from './application/assistant';
@@ -41,6 +42,11 @@ export const fetchWeather = createWeather({
   now: identity.now,
   demo: () => process.env.WEATHER_MODE === 'demo',
   current: liveWeather,
+});
+export const fetchCityWeather = createCityWeather({
+  now: identity.now,
+  demo: () => process.env.WEATHER_MODE === 'demo',
+  current: liveCityWeather,
 });
 export const capabilities = naver.capabilities;
 export { naverMapClientId };
