@@ -3,14 +3,20 @@ import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { loadPreferences, storePreferences } from '../lib/adapters/preferences';
+import { BottomNavigation } from '../components/bottom-navigation';
 import { MyJourneys } from '../components/my-journeys';
 import { MyProfile } from '../components/my-profile';
+import { PlaceCatalog } from '../components/place-catalog';
 import { PlaceDetail } from '../components/place-detail';
 import { TripBuilder } from '../components/trip-builder';
+import { WeatherPanel } from '../components/weather-panel';
+import { Poster } from '../components/assistant/poster';
+import { ImageConfigContext } from 'next/dist/shared/lib/image-config-context.shared-runtime';
+import { imageConfigDefault } from 'next/dist/shared/lib/image-config';
 import { places } from '../lib/domain/catalog';
 import type { Journey } from '../lib/domain/contracts';
 
-test('마이는 방문 기록이 있는 고유 장소만 집계하고 연결 전에는 집계를 숨긴다', () => {
+test('프로필은 방문 기록이 있는 고유 장소만 집계하고 연결 전에는 집계를 숨긴다', () => {
   const journeys: Journey[] = [
     {
       id: 'first',
@@ -44,11 +50,52 @@ test('마이는 방문 기록이 있는 고유 장소만 집계하고 연결 전
         busy: false,
       }),
     );
+  assert.match(render(true), /<h1>프로필<\/h1>/);
+  assert.doesNotMatch(render(true), /<h1>마이<\/h1>/);
   assert.match(render(true), /저장한 여행<\/dt><dd>2<small>개/);
   assert.match(render(true), /기록한 방문 장소<\/dt><dd>2<small>곳/);
   assert.doesNotMatch(render(false), /<dd>/);
   assert.match(render(false), /연결 상태를 확인/);
   assert.match(render(true, []), /첫 여행을 찾아보세요/);
+});
+
+test('하단 메뉴는 자연스러운 여행 흐름 순서를 따르고 프로필 라벨을 표시한다', () => {
+  const nav = renderToStaticMarkup(
+    createElement(BottomNavigation, {
+      tab: 'explore',
+      savedCount: 3,
+      onTab() {},
+    }),
+  );
+  const labels = [
+    ...nav.matchAll(/<span class="navigation-label-full">([^<]+)/g),
+  ].map((match) => match[1].trim());
+  assert.deepEqual(labels, [
+    '경기 둘러보기',
+    '경기 날씨',
+    '여행 도우미',
+    '내 여행',
+    '프로필',
+  ]);
+});
+
+test('경기 날씨 화면은 시흥 기준 문구 대신 경기도 전체와 31개 시·군 선택을 제공한다', () => {
+  const markup = renderToStaticMarkup(
+    createElement(WeatherPanel, {
+      selectedCityId: null,
+      onSelectCity() {},
+      places,
+      selection: [],
+      onTogglePlace() {},
+      onDetailPlace() {},
+      onExploreRegion() {},
+    }),
+  );
+  assert.match(markup, /경기도 전체 \(수원 대표\)/);
+  assert.match(markup, /<option value="수원시">수원시<\/option>/);
+  assert.match(markup, /<option value="가평군">가평군<\/option>/);
+  assert.match(markup, /<option value="시흥시">시흥시<\/option>/);
+  assert.doesNotMatch(markup, /시흥권|시흥 10개 권역/);
 });
 
 test('여행 취향은 같은 키로 저장·복원하고 잘못된 저장값을 사용하지 않는다', () => {
@@ -179,4 +226,118 @@ test('빈 목록·8곳 상한·내 여행 접이식 작업은 막다른 흐름 �
   assert.match(savedJourneys, /<summary>코스 지도 보기<\/summary>/);
   assert.match(savedJourneys, /<summary>대화로 여행 수정<\/summary>/);
   assert.match(savedJourneys, /<summary>여행 번역<\/summary>/);
+});
+
+test('상세·담은 여행·카탈로그·포스터는 일관된 버튼 위계와 데드엔드 없는 흐름을 제공한다', () => {
+  const capabilities = {
+    clova: false,
+    voice: false,
+    translate: false,
+    ocr: false,
+  };
+  const selectedDetail = renderToStaticMarkup(
+    createElement(PlaceDetail, {
+      detail: places[0],
+      selected: true,
+      full: false,
+      selectionCount: 2,
+      capabilities,
+      onClose() {},
+      onToggle() {},
+      onReview() {},
+    }),
+  );
+  assert.match(selectedDetail, /class="primary"[^>]*>담은 여행 확인 \(2곳\)/);
+  assert.match(selectedDetail, /class="secondary"[^>]*>담기 취소/);
+
+  const populatedBuilder = renderToStaticMarkup(
+    createElement(TripBuilder, {
+      selected: places.slice(0, 2),
+      name: '나의 경기 여행',
+      date: '2026-11-20',
+      ready: false,
+      loading: false,
+      busy: false,
+      hidden: false,
+      onBrowse() {},
+      onRetrySession() {},
+      onMoveUp() {},
+      onMoveDown() {},
+      onClear() {},
+      onToggle() {},
+      onName() {},
+      onDate() {},
+      onSave() {},
+    }),
+  );
+  assert.match(populatedBuilder, /아래로 이동/);
+  assert.match(populatedBuilder, /모두 비우기/);
+  assert.match(populatedBuilder, /다시 시도/);
+
+  const emptyMapCatalog = renderToStaticMarkup(
+    createElement(PlaceCatalog, {
+      places,
+      regions: ['전체'],
+      filtered: [],
+      selection: [],
+      query: '없는장소',
+      region: '전체',
+      viewMode: 'map',
+      hidden: false,
+      onQuery() {},
+      onRegion() {},
+      onViewMode() {},
+      onToggle() {},
+      onDetail() {},
+    }),
+  );
+  assert.equal([...emptyMapCatalog.matchAll(/class="empty"/g)].length, 1);
+  assert.match(emptyMapCatalog, /전체 장소 보기/);
+
+  const pagedCatalog = renderToStaticMarkup(
+    createElement(
+      ImageConfigContext.Provider,
+      {
+        value: {
+          ...imageConfigDefault,
+          remotePatterns: [
+            {
+              protocol: 'https',
+              hostname: 'tong.visitkorea.or.kr',
+              pathname: '/cms/**',
+              search: '',
+            },
+          ],
+        },
+      },
+      createElement(PlaceCatalog, {
+        places,
+        regions: ['전체'],
+        filtered: places.slice(0, 25),
+        selection: [],
+        query: '',
+        region: '전체',
+        viewMode: 'grid',
+        hidden: false,
+        onQuery() {},
+        onRegion() {},
+        onViewMode() {},
+        onToggle() {},
+        onDetail() {},
+      }),
+    ),
+  );
+  assert.match(pagedCatalog, /장소 더 보기/);
+  assert.equal([...pagedCatalog.matchAll(/<article\b/g)].length, 18);
+
+  const posterMarkup = renderToStaticMarkup(
+    createElement(Poster, {
+      places: places.slice(0, 25),
+      capabilities,
+      onSaved() {},
+      onBrowse() {},
+    }),
+  );
+  assert.match(posterMarkup, /<optgroup label=/);
+  assert.match(posterMarkup, /장소 찾기/);
 });

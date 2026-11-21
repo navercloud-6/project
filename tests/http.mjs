@@ -87,11 +87,11 @@ assert.equal(openapi.openapi, '3.1.0');
 assert.ok(openapi.paths['/api/journeys']);
 assert.ok(openapi.paths['/api/weather']);
 const weatherRes = await call(
-  '/api/weather?region=' + encodeURIComponent('오이도'),
+  '/api/weather?region=' + encodeURIComponent('수원시'),
 );
 assert.equal(weatherRes.status, 200);
 const weather = await weatherRes.json();
-assert.equal(weather.region, '오이도');
+assert.equal(weather.region, '수원시');
 assert.ok(weather.daily.length >= 1);
 assert.equal((await call('/api/weather?region=invalid-region')).status, 400);
 for (const docPath of ['/api/docs', '/scalar']) {

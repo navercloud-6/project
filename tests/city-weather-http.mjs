@@ -43,17 +43,21 @@ for (const cityId of ['', '11110', '99999', '수원시']) {
   assert.equal(response.headers.get('cache-control'), 'no-store');
   assert.ok((await response.json()).error);
 }
-const legacy = await fetch(
-  `${base}/api/weather?region=${encodeURIComponent('오이도')}`,
-);
-assert.equal(legacy.status, 200);
-const oldWeather = await legacy.json();
-assert.equal(oldWeather.region, '오이도');
-assert.equal(oldWeather.daily.length, 5);
-assert.ok(oldWeather.recommendedPlaceIds.length > 0);
+for (const city of ['수원시', '시흥시', '가평군']) {
+  const response = await fetch(
+    `${base}/api/weather?region=${encodeURIComponent(city)}`,
+  );
+  assert.equal(response.status, 200);
+  const forecast = await response.json();
+  assert.equal(forecast.region, city);
+  assert.equal(forecast.daily.length, 5);
+  assert.ok(forecast.recommendedPlaceIds.length > 0);
+  if (process.env.EXPECT_LIVE_WEATHER === 'true')
+    assert.equal(forecast.mode, 'live');
+}
 const spec = await (await fetch(`${base}/api/openapi`)).json();
 assert.ok(spec.paths['/api/weather/current']);
 assert.ok(spec.components.schemas.CityWeatherResponse);
 console.log(
-  'PASS: city weather, default city, metadata, shared cache, invalid IDs, legacy weather, and OpenAPI.',
+  'PASS: city weather, default city, metadata, shared cache, invalid IDs, city forecasts, and OpenAPI.',
 );

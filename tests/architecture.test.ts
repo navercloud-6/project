@@ -238,7 +238,7 @@ test('세션과 날씨 유스케이스는 쿠키·환경 변수·네트워크 �
       throw Error('offline');
     },
   });
-  const fallback = await weather('오이도');
+  const fallback = await weather('수원시');
   assert.equal(fallback.mode, 'demo');
   assert.equal(fallback.daily[0].date, '2026-11-18');
   assert.equal(fallback.observedAt, '2026-11-18 시연 기준');

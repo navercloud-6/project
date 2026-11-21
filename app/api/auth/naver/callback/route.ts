@@ -1,6 +1,11 @@
 import { cookies } from 'next/headers';
 import { auth } from '@/lib/server';
-import { cookieOptions, sessionCookie } from '@/lib/adapters/http';
+import {
+  cookieOptions,
+  oauthStateCookie,
+  redirect303,
+  sessionCookie,
+} from '@/lib/adapters/http';
 export const runtime = 'nodejs';
 export async function GET(request: Request) {
   const jar = await cookies();
@@ -12,7 +17,7 @@ export async function GET(request: Request) {
   try {
     const token = await auth.complete(
       jar.get(sessionCookie)?.value,
-      jar.get('tourpass-oauth-state')?.value,
+      jar.get(oauthStateCookie)?.value,
       params.get('state'),
       params.get('code'),
       params.has('error'),
@@ -25,13 +30,6 @@ export async function GET(request: Request) {
       params.has('error') ? 'cancelled' : 'failed',
     );
   }
-  jar.set('tourpass-oauth-state', '', cookieOptions(0));
-  return new Response(null, {
-    status: 303,
-    headers: {
-      Location: target.href,
-      'Cache-Control': 'no-store',
-      'Referrer-Policy': 'no-referrer',
-    },
-  });
+  jar.set(oauthStateCookie, '', cookieOptions(0));
+  return redirect303(target.href);
 }

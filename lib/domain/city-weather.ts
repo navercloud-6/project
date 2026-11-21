@@ -1,12 +1,17 @@
 import { z } from 'zod';
 import { gyeonggiCities } from '@/lib/domain/gyeonggi';
-import { describeWeatherCode, weatherIconSchema } from '@/lib/domain/weather';
+import {
+  describeWeatherCode,
+  WEATHER_REGIONS,
+  weatherIconSchema,
+} from '@/lib/domain/weather';
 
 export const DEFAULT_WEATHER_CITY_ID = '41110';
 export const CITY_WEATHER_CACHE_MS = 10 * 60 * 1000;
-export const cityWeatherLocations = gyeonggiCities.map(
-  ({ id, name, coordinates }) => ({ id, name, coordinates }),
-);
+export const cityWeatherLocations = gyeonggiCities.map(({ id, name }) => {
+  const { lat, lng } = WEATHER_REGIONS[name];
+  return { id, name, coordinates: { lat, lng } };
+});
 export type CityWeatherLocation = (typeof cityWeatherLocations)[number];
 
 export const cityWeatherQuerySchema = z.object({
@@ -57,7 +62,7 @@ export function buildCityWeatherResponse(
     ...observation,
     cityId: city.id,
     cityName: city.name,
-    areaNote: `${city.name} 경계 내 대표 지점 기준`,
+    areaNote: `${city.name} 대표 지점 기준`,
     coordinates: city.coordinates,
     mode,
     fetchedAt: new Date(now).toISOString(),

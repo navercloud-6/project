@@ -2,40 +2,32 @@ export interface NaverLatLng {
   lat(): number;
   lng(): number;
 }
-
 export interface NaverLatLngBounds {
   extend(coord: NaverLatLng): void;
 }
-
 export interface NaverPoint {
   x: number;
   y: number;
 }
-
 export interface NaverMapEventListener {
   eventName?: string;
 }
-
 export interface NaverMap {
   setCenter(coord: NaverLatLng): void;
   setZoom(zoom: number, effect?: boolean): void;
-  panTo(coord: NaverLatLng, transitionOptions?: Record<string, unknown>): void;
+  panTo(coord: NaverLatLng, options?: Record<string, unknown>): void;
   fitBounds(
     bounds: NaverLatLngBounds,
     margin?: { top?: number; right?: number; bottom?: number; left?: number },
   ): void;
   destroy(): void;
 }
-
 export interface NaverMarker {
   setMap(map: NaverMap | null): void;
-  setZIndex(zIndex: number): void;
 }
-
 export interface NaverPolyline {
   setMap(map: NaverMap | null): void;
 }
-
 export interface NaverMaps {
   LatLng: new (lat: number, lng: number) => NaverLatLng;
   LatLngBounds: new (sw?: NaverLatLng, ne?: NaverLatLng) => NaverLatLngBounds;
@@ -43,10 +35,7 @@ export interface NaverMaps {
   Map: new (element: HTMLElement, options: Record<string, unknown>) => NaverMap;
   Marker: new (options: Record<string, unknown>) => NaverMarker;
   Polyline: new (options: Record<string, unknown>) => NaverPolyline;
-  Position?: {
-    TOP_RIGHT?: number;
-    BOTTOM_RIGHT?: number;
-  };
+  Position?: { TOP_RIGHT?: number };
   Event: {
     addListener(
       target: unknown,
@@ -72,14 +61,14 @@ export function normalizeNaverMapClientId(value?: string | null): string {
   return CLIENT_ID_PATTERN.test(trimmed) ? trimmed : '';
 }
 
-export function naverMapClientId(): string {
-  return normalizeNaverMapClientId(process.env.NAVER_MAP_CLIENT_ID);
-}
+export const naverMapClientId = () =>
+  normalizeNaverMapClientId(process.env.NAVER_MAP_CLIENT_ID);
 
 export function naverMapScriptUrl(clientId: string): string | null {
   const normalized = normalizeNaverMapClientId(clientId);
-  if (!normalized) return null;
-  return `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(normalized)}`;
+  return normalized
+    ? `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${encodeURIComponent(normalized)}`
+    : null;
 }
 
 export function naverMapSearchUrl(place: {
@@ -103,8 +92,8 @@ function installAuthFailureHook() {
   window.navermap_authFailure = () => {
     authFailed = true;
     pendingLoad = null;
-    for (const listener of authFailureListeners) listener();
-    if (typeof previous === 'function') previous();
+    authFailureListeners.forEach((listener) => listener());
+    previous?.();
   };
 }
 
@@ -115,9 +104,7 @@ export function onNaverMapAuthFailure(listener: () => void): () => void {
   }
   installAuthFailureHook();
   authFailureListeners.add(listener);
-  return () => {
-    authFailureListeners.delete(listener);
-  };
+  return () => authFailureListeners.delete(listener);
 }
 
 export function loadNaverMaps(
@@ -126,35 +113,27 @@ export function loadNaverMaps(
 ): Promise<NaverMaps> {
   const normalized = normalizeNaverMapClientId(clientId);
   const url = naverMapScriptUrl(normalized);
-  if (!url) {
+  if (!url)
     return Promise.reject(
       new Error('네이버 지도 Client ID 형식이 올바르지 않습니다.'),
     );
-  }
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
+  if (typeof window === 'undefined' || typeof document === 'undefined')
     return Promise.reject(
       new Error('브라우저 환경에서만 네이버 지도를 불러올 수 있습니다.'),
     );
-  }
-  if (authFailed) {
+  if (authFailed)
     return Promise.reject(new Error('네이버 지도 인증에 실패했습니다.'));
-  }
   installAuthFailureHook();
-
-  if (window.naver?.maps?.Map) {
-    return Promise.resolve(window.naver.maps);
-  }
-  if (pendingLoad && loadedKey === normalized) {
-    return pendingLoad;
-  }
+  if (window.naver?.maps?.Map) return Promise.resolve(window.naver.maps);
+  if (pendingLoad && loadedKey === normalized) return pendingLoad;
 
   loadedKey = normalized;
-  pendingLoad = new Promise<NaverMaps>((resolve, reject) => {
+  return (pendingLoad = new Promise<NaverMaps>((resolve, reject) => {
     const existing = document.querySelector<HTMLScriptElement>(
       'script[data-naver-maps-sdk="true"]',
     );
     const script =
-      existing && existing.dataset.naverMapsKey === normalized
+      existing?.dataset.naverMapsKey === normalized
         ? existing
         : document.createElement('script');
 
@@ -166,41 +145,35 @@ export function loadNaverMaps(
       unsubscribeAuth();
       if (error || !maps) {
         pendingLoad = null;
-        if (!existing && script.parentNode) {
-          script.parentNode.removeChild(script);
-        }
+        if (!existing) script.parentNode?.removeChild(script);
         reject(error ?? new Error('네이버 지도를 초기화하지 못했습니다.'));
       } else {
         resolve(maps);
       }
     };
 
-    const unsubscribeAuth = onNaverMapAuthFailure(() => {
-      finish(new Error('네이버 지도 인증에 실패했습니다.'));
-    });
+    const unsubscribeAuth = onNaverMapAuthFailure(() =>
+      finish(new Error('네이버 지도 인증에 실패했습니다.')),
+    );
+    const timer = setTimeout(
+      () => finish(new Error('네이버 지도 응답 시간이 초과되었습니다.')),
+      timeoutMs,
+    );
 
-    const timer = setTimeout(() => {
-      finish(new Error('네이버 지도 응답 시간이 초과되었습니다.'));
-    }, timeoutMs);
-
-    const onLoad = () => {
-      if (authFailed) {
-        finish(new Error('네이버 지도 인증에 실패했습니다.'));
-        return;
-      }
-      if (window.naver?.maps?.Map) {
-        finish(undefined, window.naver.maps);
-      } else {
-        finish(new Error('네이버 지도 SDK를 확인하지 못했습니다.'));
-      }
-    };
-
-    const onError = () => {
-      finish(new Error('네이버 지도 스크립트를 불러오지 못했습니다.'));
-    };
-
-    script.addEventListener('load', onLoad, { once: true });
-    script.addEventListener('error', onError, { once: true });
+    script.addEventListener(
+      'load',
+      () => {
+        if (authFailed) finish(new Error('네이버 지도 인증에 실패했습니다.'));
+        else if (window.naver?.maps?.Map) finish(undefined, window.naver.maps);
+        else finish(new Error('네이버 지도 SDK를 확인하지 못했습니다.'));
+      },
+      { once: true },
+    );
+    script.addEventListener(
+      'error',
+      () => finish(new Error('네이버 지도 스크립트를 불러오지 못했습니다.')),
+      { once: true },
+    );
 
     if (script !== existing) {
       script.type = 'text/javascript';
@@ -211,9 +184,7 @@ export function loadNaverMaps(
       script.dataset.naverMapsKey = normalized;
       document.head.appendChild(script);
     }
-  });
-
-  return pendingLoad;
+  }));
 }
 
 export function resetNaverMapsLoader() {

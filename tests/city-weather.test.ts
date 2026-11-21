@@ -10,8 +10,7 @@ import {
   DEFAULT_WEATHER_CITY_ID,
   type CityWeatherObservation,
 } from '../lib/domain/city-weather';
-import { gyeonggiCities } from '../lib/domain/gyeonggi';
-import { projectGyeonggi } from '../lib/domain/coordinates';
+import { WEATHER_REGIONS } from '../lib/domain/weather';
 import { createCityWeather } from '../lib/application/city-weather';
 import { liveCityWeather } from '../lib/adapters/open-meteo';
 import { createCityWeatherClient } from '../lib/adapters/city-weather-client';
@@ -40,7 +39,7 @@ function deferred<T>() {
   return { promise, resolve, reject };
 }
 
-test('31개 시·군 날씨 대표 GPS 좌표가 원본 경계의 대표 지점과 대응하고 기본 지역은 수원이다', () => {
+test('31개 시·군의 지도 날씨와 예보가 같은 GPS 좌표를 사용하고 기본 지역은 수원이다', () => {
   assert.equal(cityWeatherLocations.length, 31);
   assert.equal(
     cityWeatherQuerySchema.parse({}).cityId,
@@ -53,10 +52,9 @@ test('31개 시·군 날씨 대표 GPS 좌표가 원본 경계의 대표 지점�
     );
     assert.ok(city.coordinates.lat >= 36.8 && city.coordinates.lat <= 38.4);
     assert.ok(city.coordinates.lng >= 126.3 && city.coordinates.lng <= 128);
-    const point = projectGyeonggi(city.coordinates.lat, city.coordinates.lng);
-    const label = gyeonggiCities.find((item) => item.id === city.id)!.label;
-    assert.ok(Math.abs(point.x - label[0]) < 0.02);
-    assert.ok(Math.abs(point.y - label[1]) < 0.02);
+    const region = WEATHER_REGIONS[city.name];
+    assert.equal(region.cityId, city.id);
+    assert.deepEqual(city.coordinates, { lat: region.lat, lng: region.lng });
   }
   for (const cityId of ['', '전체', '11110', '99999', '수원시'])
     assert.equal(cityWeatherQuerySchema.safeParse({ cityId }).success, false);

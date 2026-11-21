@@ -1,9 +1,10 @@
 'use client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
+import { api } from '@/lib/adapters/client-api';
 import {
-  assistant,
   ErrorText,
+  groupPlacesByRegion,
   type Capabilities,
   type History,
 } from './shared';
@@ -28,18 +29,27 @@ export function Guide({
   } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const groupedPlaces = useMemo(() => groupPlacesByRegion(places), [places]);
+
   async function ask() {
     setBusy(true);
     setError('');
     try {
-      const data = await (
-        await assistant({
-          action: 'guide',
-          question,
-          placeId: placeId || undefined,
-          history,
-        })
-      ).json();
+      const data = await api<{
+        answer: string;
+        mode: string;
+        sources: {
+          id: string;
+          title: string;
+          url: string;
+          checkedOn: string;
+        }[];
+      }>('/api/assistant', 'POST', {
+        action: 'guide',
+        question,
+        placeId: placeId || undefined,
+        history,
+      });
       setAnswer(data);
       setHistory(
         [
@@ -57,12 +67,12 @@ export function Guide({
   return (
     <section className="tool-section">
       <span className="pill">근거 있는 관광 안내</span>
-      <h2>궁금한 경기, 출처와 함께</h2>
+      <h2>궁금한 경기, 출처와 함께 찾아보세요</h2>
       <p className="fine">
         {capabilities.clova
-          ? '검색한 관광 자료를 바탕으로 AI가 답합니다.'
-          : '현재는 AI 답변 대신 관광 자료 검색 결과를 보여드립니다.'}{' '}
-        현재 자료는 검토 전이며 운영·요금·예약은 확인할 수 없습니다.
+          ? '검색한 관광 자료를 바탕으로 AI가 답변합니다.'
+          : '현재는 AI 답변 대신 등록된 관광 자료 검색 결과를 보여드립니다.'}{' '}
+        검토 전 자료이며 운영·요금·예약 정보는 확인할 수 없습니다.
       </p>
       <form
         onSubmit={(e) => {
@@ -70,7 +80,7 @@ export function Guide({
           void ask();
         }}
       >
-        <label htmlFor="guide-place">궁금한 장소</label>
+        <label htmlFor="guide-place">궁금한 장소 (선택)</label>
         <select
           id="guide-place"
           value={placeId}
@@ -80,20 +90,27 @@ export function Guide({
             setAnswer(null);
           }}
         >
-          <option value="">전체에서 검색</option>
-          {places.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.name}
-            </option>
+          <option value="">전체 관광지에서 검색</option>
+          {groupedPlaces.map(([regionName, items]) => (
+            <optgroup key={regionName} label={regionName}>
+              {items.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
-        <label htmlFor="guide-question">질문</label>
+        <div className="label-row">
+          <label htmlFor="guide-question">질문</label>
+          <span className="char-count">{question.length} / 500</span>
+        </div>
         <input
           id="guide-question"
           required
           minLength={2}
           maxLength={500}
-          placeholder="오이도박물관에서는 무엇을 볼 수 있나요?"
+          placeholder="예: 오이도박물관에서는 무엇을 볼 수 있나요?"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
@@ -108,9 +125,26 @@ export function Guide({
             </button>
           ))}
         </div>
-        <button className="primary" disabled={busy}>
-          {busy ? '근거를 찾고 있어요…' : '관광 안내 받기'}
-        </button>
+        <div className="tool-actions">
+          <button className="primary compact" disabled={busy}>
+            {busy ? '근거를 찾고 있어요…' : '관광 안내 받기'}
+          </button>
+          {history.length > 0 && (
+            <button
+              type="button"
+              className="secondary"
+              disabled={busy}
+              onClick={() => {
+                setHistory([]);
+                setAnswer(null);
+                setQuestion('');
+                setError('');
+              }}
+            >
+              대화 초기화
+            </button>
+          )}
+        </div>
       </form>
       <ErrorText text={error} />
       {answer && (
@@ -150,7 +184,7 @@ export function Guide({
             onBrowse && (
               <div className="tool-actions">
                 <button type="button" className="secondary" onClick={onBrowse}>
-                  전체 장소 둘러보기
+                  장소 찾기
                 </button>
               </div>
             )

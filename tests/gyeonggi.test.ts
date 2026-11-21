@@ -91,4 +91,13 @@ test('도시 관광지 패널은 시흥 자료를 다른 도시에 표시하지 
       selectedCityId ? /관광 정보 준비 중/ : /어디로 떠나볼까요/,
     );
   }
+  const initialPanel = render(null, places);
+  const quickPicks = initialPanel.match(
+    /class="city-quick-pick-list"[\s\S]*?<\/div>/,
+  );
+  assert.ok(quickPicks, '미선택 상태에서 대표 도시 빠른 선택이 있어야 한다');
+  assert.ok(
+    [...quickPicks[0].matchAll(/<button\b/g)].length <= 6,
+    '대표 도시 빠른 선택은 6개 이하로 제한해 패널 넘침을 방지한다',
+  );
 });

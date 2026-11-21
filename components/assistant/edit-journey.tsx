@@ -2,12 +2,8 @@
 import { useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
-import {
-  assistant,
-  ErrorText,
-  type Capabilities,
-  type History,
-} from './shared';
+import { api } from '@/lib/adapters/client-api';
+import { ErrorText, type Capabilities, type History } from './shared';
 type Proposal = {
   name: string;
   date: string;
@@ -42,14 +38,12 @@ export function EditJourney({
     setDone('');
     try {
       setPreview(
-        await (
-          await assistant({
-            action: 'edit',
-            journeyId: journey.id,
-            prompt,
-            history,
-          })
-        ).json(),
+        await api('/api/assistant', 'POST', {
+          action: 'edit',
+          journeyId: journey.id,
+          prompt,
+          history,
+        }),
       );
     } catch (e) {
       setError((e as Error).message);
@@ -62,10 +56,12 @@ export function EditJourney({
     setBusy(true);
     setError('');
     try {
-      const d = await (
-        await assistant({ action: 'apply', journeyId: journey.id, ...preview })
-      ).json();
-      onSaved(d.journey);
+      const { journey: updated } = await api<{ journey: Journey }>(
+        '/api/assistant',
+        'POST',
+        { action: 'apply', journeyId: journey.id, ...preview },
+      );
+      onSaved(updated);
       setHistory(
         [
           ...history,
@@ -74,7 +70,8 @@ export function EditJourney({
         ].slice(-6) as History,
       );
       setPreview(null);
-      setDone('여행 변경을 저장했습니다.');
+      setPrompt('');
+      setDone('여행 변경을 저장했어요.');
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -85,8 +82,11 @@ export function EditJourney({
     <div className="edit-tool">
       <p className="fine">
         {capabilities.clova
-          ? '원하는 변경을 말해 주세요. 변경안을 확인한 뒤 적용합니다.'
-          : '규칙 데모: “2번째 빼기”, “순서 반대로”, “오이도 빨강등대 추가”'}
+          ? '원하는 변경을 입력하면 변경안을 미리 확인한 뒤 적용할 수 있어요.'
+          : '데모 모드에서는 아래 예시처럼 순서 변경·제외·추가를 요청할 수 있어요.'}
+        {journey.event
+          ? ' 포스터로 등록한 행사 일정은 날짜를 변경할 수 없어요.'
+          : ''}
       </p>
       <form
         onSubmit={(e) => {
@@ -104,6 +104,13 @@ export function EditJourney({
           placeholder="예: 순서 반대로, 2번째 빼기"
           onChange={(e) => setPrompt(e.target.value)}
         />
+        <div className="suggestions">
+          {['순서 반대로', '2번째 빼기', '오이도 빨강등대 추가'].map((text) => (
+            <button type="button" key={text} onClick={() => setPrompt(text)}>
+              {text}
+            </button>
+          ))}
+        </div>
         <button className="secondary" disabled={busy}>
           {busy && !preview ? '변경안 만드는 중…' : '변경안 만들기'}
         </button>

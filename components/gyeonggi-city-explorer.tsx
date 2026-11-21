@@ -1,5 +1,4 @@
 'use client';
-
 import Image from 'next/image';
 import { useId } from 'react';
 import type { Place } from '@/lib/domain/catalog';
@@ -11,14 +10,18 @@ import {
   placesInCity,
 } from '@/lib/domain/gyeonggi';
 
-function LocationIcon({ className = '' }: { className?: string }) {
+const FEATURED_CITY_IDS = [
+  '41110', // 수원시
+  '41390', // 시흥시
+  '41480', // 파주시
+  '41460', // 용인시
+  '41820', // 가평군
+  '41590', // 화성시
+];
+
+function LocationIcon() {
   return (
-    <svg
-      className={className}
-      viewBox="0 0 48 48"
-      fill="none"
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
       <path
         d="M38 20c0 10-14 22-14 22S10 30 10 20a14 14 0 1 1 28 0Z"
         stroke="currentColor"
@@ -48,20 +51,27 @@ export function GyeonggiCityExplorer({
   const labelId = useId();
   const city = gyeonggiCities.find((item) => item.id === selectedCityId);
   const cityPlaces = placesInCity(places, selectedCityId);
+  const populated = new Set(places.map((p) => p.cityId));
   const availableCities = gyeonggiCities.filter((item) =>
-    places.some((place) => place.cityId === item.id),
+    populated.has(item.id),
   );
+  const featuredCities = FEATURED_CITY_IDS.map((id) =>
+    availableCities.find((item) => item.id === id),
+  ).filter((item): item is (typeof availableCities)[number] => Boolean(item));
+  const quickPickCities = featuredCities.length
+    ? featuredCities
+    : availableCities.slice(0, 6);
 
   return (
     <section className="city-explorer" aria-labelledby={labelId}>
       <div className="city-explorer-heading">
         <div>
-          <span className="city-explorer-eyebrow">GYEONGGI TRAVEL</span>
-          <h1 id={labelId}>지도에서 시작하는 경기도 여행</h1>
-          <p>마음이 가는 도시를 누르고, 새로운 하루를 찾아보세요.</p>
+          <span className="city-explorer-eyebrow">경기도 시·군 지도</span>
+          <h2 id={labelId}>지도에서 도시를 골라 보세요</h2>
+          <p>가고 싶은 시·군을 누르면 오른쪽에 등록된 관광지가 나타나요.</p>
         </div>
         <span className="city-explorer-region-count">
-          31개 시·군, 저마다 다른 여행
+          경기도 31개 시·군 탐색
         </span>
       </div>
 
@@ -106,9 +116,9 @@ export function GyeonggiCityExplorer({
                 aria-label={`${item.name} 선택`}
                 aria-pressed={item.id === selectedCityId}
                 onClick={() => onSelectCity(item.id)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
                     onSelectCity(item.id);
                   }
                 }}
@@ -150,9 +160,9 @@ export function GyeonggiCityExplorer({
               <span className="sr-only">지도에서 선택할 시·군</span>
               <select
                 value={selectedCityId ?? ''}
-                onChange={(event) => onSelectCity(event.target.value || null)}
+                onChange={(e) => onSelectCity(e.target.value || null)}
               >
-                <option value="">지역을 목록에서 선택</option>
+                <option value="">시·군을 목록에서 선택</option>
                 {gyeonggiCities.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
@@ -192,9 +202,11 @@ export function GyeonggiCityExplorer({
 
         <aside className="city-places-panel" aria-label="선택한 도시의 관광지">
           <div className="city-places-heading">
-            <span className="city-places-eyebrow">YOUR NEXT STOP</span>
+            <span className="city-places-eyebrow">
+              {city ? '선택한 도시' : '시·군별 추천 목록'}
+            </span>
             <div className="city-places-title-row">
-              <h2>{city ? `${city.name} 둘러보기` : '어디로 떠나볼까요?'}</h2>
+              <h3>{city ? `${city.name} 둘러보기` : '어디로 떠나볼까요?'}</h3>
               {city && (
                 <span className="city-place-count">{cityPlaces.length}곳</span>
               )}
@@ -202,9 +214,9 @@ export function GyeonggiCityExplorer({
             <p role="status" aria-live="polite">
               {city
                 ? cityPlaces.length
-                  ? `${city.name}의 등록 관광지 ${cityPlaces.length}곳을 만나보세요.`
-                  : `${city.name}의 관광 정보를 준비하고 있습니다.`
-                : '지도에서 도시를 선택하면 관광지가 나타나요.'}
+                  ? `${city.name}의 등록 관광지 ${cityPlaces.length}곳을 확인해 보세요.`
+                  : `${city.name}의 관광 정보를 준비하고 있어요.`
+                : '왼쪽 지도에서 도시를 선택하면 관광지가 나타나요.'}
             </p>
           </div>
           {city && cityPlaces.length ? (
@@ -240,7 +252,7 @@ export function GyeonggiCityExplorer({
                           <span className="city-place-category">
                             {place.tags[0] || place.region}
                           </span>
-                          <h3>
+                          <h4>
                             <button
                               type="button"
                               onClick={() => onDetail(place)}
@@ -248,22 +260,22 @@ export function GyeonggiCityExplorer({
                             >
                               {place.name}
                             </button>
-                          </h3>
+                          </h4>
                           <p>{place.description}</p>
                           <div className="city-place-actions">
                             <span>{place.region}</span>
                             <button
                               className={
                                 added
-                                  ? 'city-place-add is-added'
-                                  : 'city-place-add'
+                                  ? 'add selected city-place-add'
+                                  : 'add city-place-add'
                               }
                               type="button"
                               aria-pressed={added}
                               aria-label={`${place.name} ${added ? '담기 취소' : '여행에 담기'}`}
                               onClick={() => onToggle(place.id)}
                             >
-                              {added ? '✓ 담은 장소' : '+ 여행에 담기'}
+                              {added ? '담기 취소' : '여행에 담기'}
                             </button>
                           </div>
                         </div>
@@ -273,7 +285,8 @@ export function GyeonggiCityExplorer({
                 })}
               </ul>
               <p className="city-places-note">
-                검토 전 관광 자료입니다. 상세에서 출처와 운영 안내를 확인하세요.
+                검토 전 관광 자료입니다. 상세에서 출처와 운영 안내를 확인해
+                주세요.
               </p>
             </>
           ) : (
@@ -281,27 +294,38 @@ export function GyeonggiCityExplorer({
               <div className="city-empty-art">
                 <LocationIcon />
               </div>
-              <h3>
-                {city ? '관광 정보 준비 중' : '가보고 싶은 도시를 골라보세요'}
-              </h3>
+              <h4>
+                {city ? '관광 정보 준비 중' : '가보고 싶은 도시를 골라 보세요'}
+              </h4>
               <p>
                 {city
-                  ? '새로운 여행지를 차근차근 모으고 있어요. 다른 도시도 둘러보세요.'
-                  : '도시마다 다른 풍경과 이야기를 지도에서 발견해 보세요.'}
+                  ? '새로운 여행지를 차근차근 모으고 있어요. 다른 도시를 둘러보시겠어요?'
+                  : '지도에서 시·군을 누르거나 아래 대표 도시로 바로 시작해 보세요.'}
               </p>
-              {availableCities.length > 0 && (
+              {quickPickCities.length > 0 && (
                 <div className="city-quick-picks">
-                  <span>지금 둘러볼 수 있는 도시</span>
-                  {availableCities.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => onSelectCity(item.id)}
-                    >
-                      {item.name} <span aria-hidden="true">↗</span>
-                    </button>
-                  ))}
+                  <span>대표 도시 바로 보기</span>
+                  <div className="city-quick-pick-list">
+                    {quickPickCities.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => onSelectCity(item.id)}
+                      >
+                        {item.name}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+              )}
+              {city && (
+                <button
+                  type="button"
+                  className="secondary compact city-empty-reset"
+                  onClick={() => onSelectCity(null)}
+                >
+                  경기도 전체 보기
+                </button>
               )}
             </div>
           )}

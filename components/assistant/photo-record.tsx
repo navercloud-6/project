@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
-import { assistant, ErrorText, type Capabilities } from './shared';
+import { ErrorText, type Capabilities } from './shared';
 import { request, api } from '@/lib/adapters/client-api';
 export function PhotoRecord({
   journey,
@@ -23,6 +23,7 @@ export function PhotoRecord({
   const [file, setFile] = useState<File | null>(null);
   const [busyKind, setBusyKind] = useState<'upload' | 'write' | null>(null);
   const [error, setError] = useState('');
+  const [status, setStatus] = useState('');
   const [draft, setDraft] = useState('');
   useEffect(() => {
     let active = true;
@@ -41,6 +42,7 @@ export function PhotoRecord({
     if (!file) return;
     setBusyKind('upload');
     setError('');
+    setStatus('');
     try {
       const r = await request(url, {
         method: 'POST',
@@ -51,6 +53,8 @@ export function PhotoRecord({
       setExists(true);
       setVersion(Date.now());
       setDraft('');
+      setFile(null);
+      setStatus('사진을 저장했어요.');
       onSaved(d.journey);
     } catch (e) {
       setError((e as Error).message);
@@ -61,15 +65,14 @@ export function PhotoRecord({
   async function write() {
     setBusyKind('write');
     setError('');
+    setStatus('');
     try {
-      const d = await (
-        await assistant({
-          action: 'diary',
-          journeyId: journey.id,
-          placeId: place.id,
-        })
-      ).json();
-      setDraft(d.draft);
+      const { draft: text } = await api<{ draft: string }>(
+        '/api/assistant',
+        'POST',
+        { action: 'diary', journeyId: journey.id, placeId: place.id },
+      );
+      setDraft(text);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -92,7 +95,10 @@ export function PhotoRecord({
         id="visit-photo"
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        onChange={(e) => setFile(e.target.files?.[0] || null)}
+        onChange={(e) => {
+          setFile(e.target.files?.[0] || null);
+          setStatus('');
+        }}
       />
       <div className="tool-actions">
         <button
@@ -119,9 +125,14 @@ export function PhotoRecord({
         </button>
       </div>
       <p className="fine">
-        사진은 이 브라우저의 여행에 비공개로 저장합니다. 초안 만들기를 누를 때만
-        사진을 NAVER Cloud로 보냅니다. AI 키가 없으면 사진 저장만 가능합니다.
+        사진은 내 여행 보관함에 비공개로 저장합니다. 초안 만들기를 누를 때만
+        사진을 NAVER Cloud로 전송하며, AI 키가 없으면 사진 저장만 가능합니다.
       </p>
+      {status && (
+        <p className="tool-result" role="status">
+          {status}
+        </p>
+      )}
       <ErrorText text={error} />
       {draft && (
         <div className="tool-result">
@@ -134,8 +145,8 @@ export function PhotoRecord({
             이 초안을 메모에 넣기
           </button>
           <p className="fine">
-            기존 메모를 초안으로 바꿉니다. 수정 후 ‘방문 기록 저장’을 눌러
-            확정하세요.
+            기존 메모를 초안으로 바꿔요. 수정한 뒤 ‘방문 기록 저장’을 눌러
+            확정해 주세요.
           </p>
         </div>
       )}
