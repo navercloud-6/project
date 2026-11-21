@@ -9,16 +9,40 @@ import {
   searchPlaces,
   scorePlaceMatch,
 } from '@/lib/domain/place-labels';
+import { createCache } from './cache';
 import type { AIPort } from './ports';
 
 const RERANK_CANDIDATE_LIMIT = 20;
 const RELATED_LIMIT = 12;
+export const RECOMMENDATION_CACHE_MS = 10 * 60 * 1000;
+const RECOMMENDATION_CACHE_MAX = 200;
+
+export type RecommendationService = ((
+  prompt: string,
+  region: string,
+  feedback: { placeId: string; rating: number }[],
+) => Promise<Recommendation>) & {
+  hasCached: (
+    prompt: string,
+    region: string,
+    feedback: { placeId: string; rating: number }[],
+  ) => boolean;
+};
 
 export function createRecommendation(
   ai: Pick<AIPort, 'capabilities' | 'recommend'> &
     Partial<Pick<AIPort, 'rerank'>>,
-) {
+  now: () => number = () => 0,
+): RecommendationService {
   const { capabilities } = ai;
+  const cache = createCache<Recommendation>({
+    now,
+    ttlMs: RECOMMENDATION_CACHE_MS,
+    maxEntries: RECOMMENDATION_CACHE_MAX,
+  });
+  const cacheKey = (prompt: string, region: string) =>
+    `${region}:${prompt.trim().replace(/\s+/g, ' ').toLowerCase()}`;
+
   async function recommend(
     prompt: string,
     region: string,
@@ -67,56 +91,72 @@ export function createRecommendation(
       };
     }
 
-    const rerankPool = ranked
-      .slice(0, RERANK_CANDIDATE_LIMIT)
-      .map(({ p }) => p);
-    let citedIds: string[] = [];
-    let reranked = false;
+    const runClova = async (): Promise<Recommendation> => {
+      const rerankPool = ranked
+        .slice(0, RERANK_CANDIDATE_LIMIT)
+        .map(({ p }) => p);
+      let citedIds: string[] = [];
+      let reranked = false;
 
-    if (ai.rerank && rerankPool.length > 1) {
-      try {
-        const rerankResult = await ai.rerank(
-          prompt,
-          rerankPool.map((p) => ({
-            id: p.id,
-            doc: formatPlaceForReranker(p),
-          })),
-        );
-        const poolIds = new Set(rerankPool.map((p) => p.id));
-        citedIds = rerankResult.citedIds.filter((id) => poolIds.has(id));
-        reranked = citedIds.length > 0;
-      } catch {
-        // Reranker 일시 실패 시 1차 라벨·키워드 순위로 안전 폴백한다.
-        citedIds = [];
-        reranked = false;
+      if (ai.rerank && rerankPool.length > 1) {
+        try {
+          const rerankResult = await ai.rerank(
+            prompt,
+            rerankPool.map((p) => ({
+              id: p.id,
+              doc: formatPlaceForReranker(p),
+            })),
+          );
+          const poolIds = new Set(rerankPool.map((p) => p.id));
+          citedIds = rerankResult.citedIds.filter((id) => poolIds.has(id));
+          reranked = citedIds.length > 0;
+        } catch {
+          // Reranker 일시 실패 시 1차 라벨·키워드 순위로 안전 폴백한다.
+          citedIds = [];
+          reranked = false;
+        }
       }
-    }
 
-    const citedSet = new Set(citedIds);
-    const shortlist = reranked
-      ? [
-          ...citedIds.map((id) => rerankPool.find((p) => p.id === id)!),
-          ...rerankPool.filter((p) => !citedSet.has(p.id)),
-        ]
-      : rerankPool;
+      const citedSet = new Set(citedIds);
+      const shortlist = reranked
+        ? [
+            ...citedIds.map((id) => rerankPool.find((p) => p.id === id)!),
+            ...rerankPool.filter((p) => !citedSet.has(p.id)),
+          ]
+        : rerankPool;
 
-    const result = await ai.recommend(prompt, shortlist, feedback);
-    if (result.stops.some((s) => !shortlist.some((p) => p.id === s.placeId)))
-      throw new ApplicationError(
-        'UPSTREAM_INVALID',
-        'AI가 유효한 여행 제안을 반환하지 않았습니다. 다시 시도해 주세요.',
-      );
+      const result = await ai.recommend(prompt, shortlist, feedback);
+      if (result.stops.some((s) => !shortlist.some((p) => p.id === s.placeId)))
+        throw new ApplicationError(
+          'UPSTREAM_INVALID',
+          'AI가 유효한 여행 제안을 반환하지 않았습니다. 다시 시도해 주세요.',
+        );
 
-    const relatedPlaceIds = [
-      ...new Set([
-        ...result.stops.map((s) => s.placeId),
-        ...citedIds,
-        ...shortlist.map((p) => p.id),
-      ]),
-    ].slice(0, RELATED_LIMIT);
+      const relatedPlaceIds = [
+        ...new Set([
+          ...result.stops.map((s) => s.placeId),
+          ...citedIds,
+          ...shortlist.map((p) => p.id),
+        ]),
+      ].slice(0, RELATED_LIMIT);
 
-    return { ...result, mode: 'clova', relatedPlaceIds, reranked };
+      return { ...result, mode: 'clova', relatedPlaceIds, reranked };
+    };
+
+    // 과거 만족도가 없는 일반 질의는 10분간 캐시·동시 요청 병합한다(개인 평가 미포함).
+    if (feedback.length === 0)
+      return cache.getOrLoad(cacheKey(prompt, region), runClova);
+    return runClova();
   }
+
+  recommend.hasCached = (
+    prompt: string,
+    region: string,
+    feedback: { placeId: string; rating: number }[],
+  ) =>
+    capabilities().clova &&
+    feedback.length === 0 &&
+    cache.has(cacheKey(prompt, region));
 
   return recommend;
 }

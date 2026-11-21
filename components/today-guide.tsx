@@ -54,17 +54,25 @@ export function TodayGuide({
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setState({ region });
-    api(`/api/weather?region=${encodeURIComponent(region)}`)
+    api(
+      `/api/weather?region=${encodeURIComponent(region)}`,
+      'GET',
+      undefined,
+      controller.signal,
+    )
       .then((r) => {
         const data = weatherResponseSchema.parse(r);
         if (active && data.region === region) setState({ region, data });
       })
       .catch((e) => {
-        if (active) setState({ region, error: (e as Error).message });
+        if (!active || (e instanceof Error && e.name === 'AbortError')) return;
+        setState({ region, error: (e as Error).message });
       });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [region]);
 

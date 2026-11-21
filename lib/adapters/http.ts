@@ -87,13 +87,22 @@ const statuses = {
   UNAVAILABLE: 503,
   UPSTREAM_TIMEOUT: 504,
 } as const;
+function isZodError(error: unknown): boolean {
+  return (
+    error instanceof ZodError ||
+    (error instanceof Error &&
+      error.name === 'ZodError' &&
+      'issues' in error &&
+      Array.isArray((error as { issues?: unknown }).issues))
+  );
+}
 export function failure(error: unknown) {
   if (error instanceof ApplicationError)
     return Response.json(
       { error: error.message },
       { status: statuses[error.code] },
     );
-  if (error instanceof ZodError)
+  if (isZodError(error))
     return Response.json(
       { error: '입력 항목과 길이를 확인해 주세요.' },
       { status: 400 },

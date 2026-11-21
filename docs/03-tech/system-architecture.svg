@@ -1,0 +1,291 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 630" width="1120" height="630" role="img" aria-labelledby="title desc">
+  <title id="title">경기 하루이음 시스템 아키텍처</title>
+  <desc id="desc">사용자가 브라우저에서 NCP VPC의 리버스 프록시와 Next.js 16 앱으로 접속하고, 사설망의 Cloud DB for PostgreSQL과 외부 NAVER Cloud AI 및 Open-Meteo 기상 API와 연동되는 시스템 아키텍처</desc>
+
+  <defs>
+    <style>
+      .font { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', -apple-system, sans-serif; }
+      .title { font-size: 21px; font-weight: 800; fill: #0f172a; letter-spacing: -0.3px; }
+      .subtitle { font-size: 12px; font-weight: 500; fill: #64748b; }
+      .zone-title { font-size: 13.5px; font-weight: 800; fill: #0f172a; }
+      .card-title { font-size: 12.5px; font-weight: 700; fill: #0f172a; }
+      .card-sub { font-size: 10.5px; font-weight: 400; fill: #475569; }
+      .strip-key { font-size: 11px; font-weight: 700; }
+      .strip-val { font-size: 10.5px; font-weight: 400; fill: #334155; }
+      .chip-title { font-size: 11px; font-weight: 700; fill: #0f172a; }
+      .chip-sub { font-size: 9.5px; font-weight: 400; fill: #475569; }
+      .badge { font-size: 10px; font-weight: 700; }
+      .edge-label { font-size: 10.5px; font-weight: 700; }
+      .edge-sub { font-size: 9.5px; font-weight: 500; fill: #64748b; }
+    </style>
+
+    <filter id="card-shadow" x="-4%" y="-4%" width="108%" height="114%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3.5" flood-color="#0f172a" flood-opacity="0.06" />
+    </filter>
+
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#2563eb" />
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#059669" />
+    </marker>
+    <marker id="arr-sky" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#0284c7" />
+    </marker>
+    <marker id="arr-slate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 1.5 L 8.5 5 L 1 8.5 z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect x="0" y="0" width="1120" height="630" rx="18" fill="#f8fafc" />
+  <rect x="1" y="1" width="1118" height="628" rx="17" fill="none" stroke="#e2e8f0" stroke-width="1.5" />
+
+  <!-- ==================== HEADER ==================== -->
+  <text x="28" y="40" class="font title">경기 하루이음 — 시스템 아키텍처</text>
+  <text x="28" y="61" class="font subtitle">브라우저 요청이 NCP VPC 서버를 거쳐 PostgreSQL과 NAVER Cloud AI·기상 API로 이어지는 구조</text>
+
+  <!-- Legend -->
+  <g transform="translate(804, 30)">
+    <circle cx="6" cy="6" r="5" fill="#3b82f6" />
+    <text x="17" y="10" class="font card-sub">사용자 · DB</text>
+    <circle cx="96" cy="6" r="5" fill="#10b981" />
+    <text x="107" y="10" class="font card-sub">NCP VPC · AI</text>
+    <circle cx="196" cy="6" r="5" fill="#64748b" />
+    <text x="207" y="10" class="font card-sub">기상 · 운영</text>
+  </g>
+
+  <!-- ==================== 1. CLIENT (BROWSER) ==================== -->
+  <g filter="url(#card-shadow)">
+    <rect x="24" y="104" width="204" height="396" rx="16" fill="#ffffff" stroke="#93c5fd" stroke-width="1.6" />
+    <path d="M 24 120 Q 24 104 40 104 L 212 104 Q 228 104 228 120 L 228 184 L 24 184 Z" fill="#eff6ff" />
+    <line x1="24" y1="184" x2="228" y2="184" stroke="#dbeafe" stroke-width="1" />
+  </g>
+
+  <!-- Browser Icon (Monitor + Mobile) -->
+  <g transform="translate(99, 117)">
+    <rect x="0" y="2" width="38" height="26" rx="4" fill="#ffffff" stroke="#2563eb" stroke-width="1.8" />
+    <line x1="0" y1="9" x2="38" y2="9" stroke="#93c5fd" stroke-width="1.2" />
+    <circle cx="5" cy="5.5" r="1.2" fill="#60a5fa" />
+    <circle cx="9.5" cy="5.5" r="1.2" fill="#60a5fa" />
+    <path d="M 14 28 L 12 34 L 26 34 L 24 28" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linejoin="round" />
+    <rect x="36" y="12" width="16" height="24" rx="3" fill="#dbeafe" stroke="#2563eb" stroke-width="1.6" />
+    <line x1="42" y1="32" x2="46" y2="32" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" />
+  </g>
+  <text x="126" y="172" text-anchor="middle" class="font zone-title" fill="#1e40af">사용자 (Browser)</text>
+
+  <!-- Browser Feature Cards -->
+  <rect x="38" y="198" width="176" height="62" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2" />
+  <text x="52" y="220" class="font card-title">React 19 웹 화면</text>
+  <text x="52" y="238" class="font card-sub">둘러보기 · 날씨 · 도우미</text>
+  <text x="52" y="252" class="font card-sub">내 여행 · 프로필 (5개 탭)</text>
+
+  <rect x="38" y="272" width="176" height="58" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2" />
+  <text x="52" y="294" class="font card-title">경기도 지도 뷰</text>
+  <text x="52" y="313" class="font card-sub">31개 시·군 SVG + NAVER Maps</text>
+
+  <rect x="38" y="342" width="176" height="58" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2" />
+  <text x="52" y="364" class="font card-title">세션 · 취향 저장</text>
+  <text x="52" y="383" class="font card-sub">HttpOnly 쿠키 · localStorage</text>
+
+  <!-- Security Pill -->
+  <rect x="38" y="416" width="176" height="68" rx="10" fill="#fefce8" stroke="#fde047" stroke-width="1.2" />
+  <!-- Lock icon -->
+  <g transform="translate(50, 428)">
+    <rect x="1" y="6" width="12" height="9" rx="2" fill="#facc15" stroke="#a16207" stroke-width="1.3" />
+    <path d="M 3.5 6 L 3.5 4 A 3.5 3.5 0 0 1 10.5 4 L 10.5 6" fill="none" stroke="#a16207" stroke-width="1.4" />
+  </g>
+  <text x="70" y="440" class="font card-title" fill="#854d0e">보안 경계</text>
+  <text x="52" y="458" class="font card-sub" fill="#713f12">내부 /api/* 만 호출</text>
+  <text x="52" y="473" class="font card-sub" fill="#713f12">외부 비밀 키 브라우저 미노출</text>
+
+  <!-- ==================== 2. NCP VPC (PRIVATE NETWORK) ==================== -->
+  <rect x="284" y="84" width="432" height="416" rx="18" fill="#f0fdf4" stroke="#10b981" stroke-width="1.8" stroke-dasharray="7 4" />
+
+  <!-- VPC Header with Cloud Icon -->
+  <g transform="translate(300, 96)">
+    <path d="M 6 16 A 4.5 4.5 0 0 1 5.5 7.2 A 6 6 0 0 1 17 6.5 A 4.5 4.5 0 0 1 18.5 16 Z" fill="#a7f3d0" stroke="#059669" stroke-width="1.5" />
+    <text x="27" y="15" class="font zone-title" fill="#065f46">NCP VPC (사설 네트워크)</text>
+  </g>
+  <rect x="598" y="96" width="102" height="22" rx="11" fill="#d1fae5" />
+  <text x="649" y="110.5" text-anchor="middle" class="font badge" fill="#065f46">ACG 방화벽 보호</text>
+
+  <!-- 2A. App Server Card -->
+  <g filter="url(#card-shadow)">
+    <rect x="300" y="128" width="400" height="232" rx="14" fill="#ffffff" stroke="#86efac" stroke-width="1.5" />
+  </g>
+
+  <!-- Reverse Proxy Bar -->
+  <rect x="314" y="140" width="372" height="44" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.2" />
+  <!-- Shield/Gateway icon -->
+  <g transform="translate(328, 150)">
+    <path d="M 10 1 L 19 4.5 L 19 11.5 C 19 16.8 15 20.5 10 22.5 C 5 20.5 1 16.8 1 11.5 L 1 4.5 Z" fill="#e2e8f0" stroke="#475569" stroke-width="1.5" />
+    <path d="M 6.5 11.5 L 9 14 L 14 9" fill="none" stroke="#0f172a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <text x="358" y="159" class="font card-title">리버스 프록시 (Apache HTTP / Caddy HTTPS)</text>
+  <text x="358" y="175" class="font card-sub">외부 80·443 요청을 로컬 앱(127.0.0.1:3000)으로 전달</text>
+
+  <!-- Down Arrow Proxy -> Next.js -->
+  <line x1="500" y1="184" x2="500" y2="200" stroke="#64748b" stroke-width="1.6" marker-end="url(#arr-slate)" />
+  <text x="510" y="195" class="font edge-sub">:3000</text>
+
+  <!-- Next.js 16 Hexagonal App Container -->
+  <rect x="314" y="202" width="372" height="146" rx="11" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.2" />
+  <text x="328" y="220" class="font card-title" fill="#0f172a">Next.js 16 App Router (Docker · 헥사고날)</text>
+
+  <!-- Strip 1: UI / API -->
+  <rect x="326" y="229" width="348" height="32" rx="7" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.1" />
+  <text x="340" y="249" class="font strip-key" fill="#1d4ed8">UI · API</text>
+  <line x1="406" y1="236" x2="406" y2="254" stroke="#bfdbfe" stroke-width="1.2" />
+  <text x="418" y="249" class="font strip-val">화면(SSR) · /api/* Route Handlers · /api/docs</text>
+
+  <!-- Strip 2: Core Domain & Application -->
+  <rect x="326" y="267" width="348" height="35" rx="7" fill="#ecfdf5" stroke="#10b981" stroke-width="1.5" />
+  <text x="340" y="288.5" class="font strip-key" fill="#047857">핵심 로직</text>
+  <line x1="406" y1="274" x2="406" y2="295" stroke="#6ee7b7" stroke-width="1.2" />
+  <text x="418" y="288.5" class="font strip-val">Domain 규칙 · Application 유스케이스 · 10분 캐시</text>
+
+  <!-- Strip 3: Outbound Adapters & Static Data -->
+  <rect x="326" y="308" width="348" height="32" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.1" />
+  <text x="340" y="328" class="font strip-key" fill="#334155">외부 연동</text>
+  <line x1="406" y1="315" x2="406" y2="333" stroke="#e2e8f0" stroke-width="1.2" />
+  <text x="418" y="328" class="font strip-val">Adapters (DB·AI·기상·Sharp) · 정적 관광/지도 JSON</text>
+
+  <!-- Vertical Arrow App <-> Cloud DB -->
+  <line x1="500" y1="363" x2="500" y2="393" stroke="#2563eb" stroke-width="1.8" marker-start="url(#arr-blue)" marker-end="url(#arr-blue)" />
+  <rect x="510" y="369" width="104" height="18" rx="9" fill="#dbeafe" />
+  <text x="562" y="381.5" text-anchor="middle" class="font badge" fill="#1d4ed8">VPC 사설망 · 5432</text>
+
+  <!-- 2B. Cloud DB for PostgreSQL -->
+  <g filter="url(#card-shadow)">
+    <rect x="300" y="396" width="400" height="90" rx="14" fill="#ffffff" stroke="#60a5fa" stroke-width="1.6" />
+  </g>
+
+  <!-- 3D Database Cylinder Icon -->
+  <g transform="translate(322, 415)">
+    <path d="M 0 9 L 0 41 C 0 46 10 50 22 50 C 34 50 44 46 44 41 L 44 9 Z" fill="#dbeafe" stroke="#2563eb" stroke-width="1.8" />
+    <ellipse cx="22" cy="9" rx="22" ry="8" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8" />
+    <path d="M 0 20 C 0 25 10 29 22 29 C 34 29 44 25 44 20" fill="none" stroke="#60a5fa" stroke-width="1.4" />
+    <path d="M 0 31 C 0 36 10 40 22 40 C 34 40 44 36 44 31" fill="none" stroke="#60a5fa" stroke-width="1.4" />
+  </g>
+
+  <text x="382" y="422" class="font zone-title" fill="#1e40af">Cloud DB for PostgreSQL</text>
+  <rect x="598" y="407" width="88" height="20" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1" />
+  <text x="642" y="420.5" text-anchor="middle" class="font badge" fill="#1d4ed8">일일 자동 백업</text>
+  <text x="382" y="445" class="font card-sub">• 여행 · 방문 기록 · 사진(BYTEA) 영속 저장</text>
+  <text x="382" y="465" class="font card-sub">• 세션 · 네이버 로그인 식별 · 1시간 사용 한도 (6개 테이블)</text>
+
+  <!-- ==================== 3. EXTERNAL CLOUD & PUBLIC APIs ==================== -->
+
+  <!-- 3A. NAVER Cloud AI & API -->
+  <g filter="url(#card-shadow)">
+    <rect x="796" y="84" width="300" height="266" rx="16" fill="#ffffff" stroke="#34d399" stroke-width="1.6" />
+    <path d="M 796 100 Q 796 84 812 84 L 1080 84 Q 1096 84 1096 100 L 1096 126 L 796 126 Z" fill="#ecfdf5" />
+    <line x1="796" y1="126" x2="1096" y2="126" stroke="#a7f3d0" stroke-width="1" />
+  </g>
+  <!-- Sparkle AI Icon -->
+  <g transform="translate(812, 95)">
+    <path d="M 10 1 L 12.2 7.8 L 19 10 L 12.2 12.2 L 10 19 L 7.8 12.2 L 1 10 L 7.8 7.8 Z" fill="#10b981" />
+  </g>
+  <text x="838" y="110" class="font zone-title" fill="#065f46">NAVER Cloud · NAVER API</text>
+
+  <!-- 6 Service Chips -->
+  <rect x="810" y="139" width="132" height="48" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1" />
+  <text x="876" y="159" text-anchor="middle" class="font chip-title">CLOVA Studio</text>
+  <text x="876" y="175" text-anchor="middle" class="font chip-sub">추천·안내·편집·일기</text>
+
+  <rect x="950" y="139" width="132" height="48" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1" />
+  <text x="1016" y="159" text-anchor="middle" class="font chip-title">CLOVA Voice</text>
+  <text x="1016" y="175" text-anchor="middle" class="font chip-sub">관광 안내 음성 (TTS)</text>
+
+  <rect x="810" y="195" width="132" height="48" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1" />
+  <text x="876" y="215" text-anchor="middle" class="font chip-title">Papago</text>
+  <text x="876" y="231" text-anchor="middle" class="font chip-sub">장소·일정·원고 번역</text>
+
+  <rect x="950" y="195" width="132" height="48" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1" />
+  <text x="1016" y="215" text-anchor="middle" class="font chip-title">General OCR</text>
+  <text x="1016" y="231" text-anchor="middle" class="font chip-sub">행사 포스터 인식</text>
+
+  <rect x="810" y="251" width="132" height="48" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1" />
+  <text x="876" y="271" text-anchor="middle" class="font chip-title">네이버 로그인</text>
+  <text x="876" y="287" text-anchor="middle" class="font chip-sub">OAuth 2.0 계정 연결</text>
+
+  <rect x="950" y="251" width="132" height="48" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.1" />
+  <text x="1016" y="271" text-anchor="middle" class="font chip-title">지역·블로그 검색</text>
+  <text x="1016" y="287" text-anchor="middle" class="font chip-sub">시·군 맛집·메뉴 조회</text>
+
+  <!-- Key note inside NAVER card -->
+  <rect x="810" y="310" width="272" height="27" rx="7" fill="#ecfdf5" />
+  <text x="946" y="327.5" text-anchor="middle" class="font badge" fill="#065f46">서버 비밀 키 전용 호출 · 미설정 시 데모/안내 폴백</text>
+
+  <!-- 3B. Open-Meteo -->
+  <g filter="url(#card-shadow)">
+    <rect x="796" y="366" width="300" height="76" rx="14" fill="#ffffff" stroke="#38bdf8" stroke-width="1.6" />
+  </g>
+  <!-- Sun + Cloud Icon -->
+  <g transform="translate(814, 386)">
+    <circle cx="14" cy="11" r="6.5" fill="#fde047" stroke="#eab308" stroke-width="1.3" />
+    <path d="M 10 27 A 5.5 5.5 0 0 1 11 16.2 A 7.5 7.5 0 0 1 25 15.5 A 5.5 5.5 0 0 1 26.5 27 Z" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.6" />
+  </g>
+  <text x="858" y="399" class="font zone-title" fill="#0369a1">Open-Meteo 기상 API</text>
+  <text x="858" y="420" class="font card-sub">경기도 31개 시·군 실시간 날씨 · 5일 예보</text>
+
+  <!-- 3C. TourAPI (Build/Dev-time only) -->
+  <rect x="796" y="456" width="300" height="44" rx="11" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1.3" stroke-dasharray="5 3" />
+  <text x="814" y="476" class="font card-title" fill="#334155">한국관광공사 TourAPI</text>
+  <text x="814" y="491" class="font chip-sub">개발 시 places.json 정적 수집 (런타임 미호출)</text>
+
+  <!-- ==================== FLOW CONNECTORS ==================== -->
+
+  <!-- 1. Browser <-> Reverse Proxy -->
+  <line x1="231" y1="162" x2="311" y2="162" stroke="#2563eb" stroke-width="2" marker-start="url(#arr-blue)" marker-end="url(#arr-blue)" />
+  <rect x="232" y="139" width="48" height="17" rx="8.5" fill="#eff6ff" />
+  <text x="256" y="151" text-anchor="middle" class="font edge-label" fill="#1d4ed8">HTTP/S</text>
+  <text x="256" y="177" text-anchor="middle" class="font edge-sub">/api/*</text>
+
+  <!-- 2. Adapters -> NAVER Cloud AI (Clean upward elbow) -->
+  <path d="M 674 318 L 736 318 L 736 218 L 793 218" fill="none" stroke="#059669" stroke-width="2" marker-end="url(#arr-green)" />
+  <rect x="742" y="196" width="46" height="17" rx="8.5" fill="#ecfdf5" />
+  <text x="765" y="208" text-anchor="middle" class="font edge-label" fill="#047857">HTTPS</text>
+  <text x="765" y="233" text-anchor="middle" class="font edge-sub">비밀 키</text>
+
+  <!-- 3. Adapters -> Open-Meteo (Clean downward elbow) -->
+  <path d="M 674 330 L 736 330 L 736 404 L 793 404" fill="none" stroke="#0284c7" stroke-width="2" marker-end="url(#arr-sky)" />
+  <rect x="742" y="382" width="46" height="17" rx="8.5" fill="#e0f2fe" />
+  <text x="765" y="394" text-anchor="middle" class="font edge-label" fill="#0369a1">HTTPS</text>
+
+  <!-- ==================== 4. BOTTOM OPS STRIP ==================== -->
+
+  <!-- CI/CD Card -->
+  <g filter="url(#card-shadow)">
+    <rect x="24" y="530" width="520" height="76" rx="13" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4" />
+  </g>
+  <!-- Deploy / Workflow Icon -->
+  <g transform="translate(42, 550)">
+    <circle cx="18" cy="18" r="17" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.3" />
+    <path d="M 11 18 L 16 23 L 25 13" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <text x="92" y="559" class="font zone-title">GitHub Actions CI / CD</text>
+  <text x="92" y="579" class="font card-sub">자동 검증(테스트·빌드·문서) → main 푸시 시 ACG SSH 임시 개방</text>
+  <text x="92" y="595" class="font card-sub">서버 Docker 빌드·교체 및 헬스체크 실패 시 자동 롤백</text>
+
+  <!-- Monitoring Card -->
+  <g filter="url(#card-shadow)">
+    <rect x="576" y="530" width="520" height="76" rx="13" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.4" />
+  </g>
+  <!-- Pulse / Activity Icon -->
+  <g transform="translate(594, 550)">
+    <circle cx="18" cy="18" r="17" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.3" />
+    <path d="M 8 19 L 13 19 L 16 11 L 20 25 L 23 19 L 28 19" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  <text x="644" y="559" class="font zone-title">운영 모니터링 (로컬 루프백 Docker)</text>
+  <text x="644" y="579" class="font card-sub">Prometheus · Grafana · Node Exporter · Blackbox Exporter</text>
+  <text x="644" y="595" class="font card-sub">외부 포트 미개방 · SSH 터널(3001·9090)로 호스트·앱·Apache 점검</text>
+
+  <!-- Dashed Ops Arrows -> NCP VPC -->
+  <line x1="392" y1="530" x2="392" y2="503" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr-slate)" />
+  <text x="402" y="520" class="font edge-sub">SSH 자동 배포</text>
+
+  <line x1="608" y1="530" x2="608" y2="503" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arr-slate)" />
+  <text x="618" y="520" class="font edge-sub">메트릭 · 헬스 수집</text>
+</svg>

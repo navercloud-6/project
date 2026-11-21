@@ -4,6 +4,8 @@
 
 ## 아키텍처와 경계
 
+![시스템 아키텍처](system-architecture.svg)
+
 Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영속 데이터는 외부 PostgreSQL(운영은 NCP Cloud DB for PostgreSQL)에 저장한다. [기술 스택](../../README.md#기술-스택)과 [요구사항](../01-func/01-requirements.md)을 따른다.
 
 헥사고날 아키텍처를 적용한다. 도메인이 모델·검증·편집 규칙을 소유하고 애플리케이션이 포트로 저장소·AI·날씨를 호출한다. 안쪽 계층은 Next.js·PostgreSQL·환경 변수·네트워크에 의존하지 않으며, 브라우저는 내부 `/api/*`만 호출하고 비밀 키는 서버에만 둔다.
@@ -23,9 +25,11 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 
 통합 안내는 [briefing.ts](../../lib/domain/briefing.ts)가 원고 재료·규칙 원고·음성용 문장 정리(영하·단위·끝인사)를 소유하고, [operations.ts](../../lib/application/operations.ts)의 도우미 `briefing` action이 주입된 날씨·맛집 유스케이스 → 원고 앞부분(HCX, 숫자 검증) + 명소·맛집 뒷부분(코드) → Papago → Voice 순서로 처리해 원고와 base64 MP3를 함께 반환한다.
 
-맛집은 [restaurants.ts](../../lib/domain/restaurants.ts)가 술집·지역 제외와 후기 한 건 기준 메뉴 검증을 소유하고, [application/restaurants.ts](../../lib/application/restaurants.ts)가 `RestaurantSearchPort`([naver-search.ts](../../lib/adapters/naver-search.ts), NAVER API HUB 지역·블로그 검색)로 지역별 10분 캐시·동시 요청 병합을 적용한다. 메뉴 후보는 CLOVA 키가 있을 때만 HCX가 후기에서 뽑고 같은 검증을 다시 거친다.
+맛집은 [restaurants.ts](../../lib/domain/restaurants.ts)가 술집·지역 제외와 후기 한 건 기준 메뉴 검증을 소유하고, [application/restaurants.ts](../../lib/application/restaurants.ts)가 `RestaurantSearchPort`([naver-search.ts](../../lib/adapters/naver-search.ts), NAVER API HUB 지역·블로그 검색)로 맛집·명소 블로그 후기 모두 10분 TTL·LRU 캐시와 동시 요청 병합을 적용한다. 메뉴 후보는 CLOVA 키가 있을 때만 HCX가 후기에서 뽑고 같은 검증을 다시 거친다.
 
-안전 안내는 [alerts.ts](../../lib/domain/alerts.ts)가 특보 구역 판정·지진 선별·안내 문장을 소유하고, [application/alerts.ts](../../lib/application/alerts.ts)가 `AlertPort`([kma-alerts.ts](../../lib/adapters/kma-alerts.ts), 공공데이터포털 기상청 `getPwnStatus`·`getEqkMsg`)의 전국 자료를 10분간 공유한다. 통합 안내는 [application/briefing.ts](../../lib/application/briefing.ts)가 원고·음성을 시·군·언어별 10분 캐시·동시 요청 병합으로 만들고, 원고 직후 음성을 미리 만든다.
+안전 안내는 [alerts.ts](../../lib/domain/alerts.ts)가 특보 구역 판정·지진 선별·안내 문장을 소유하고, [application/alerts.ts](../../lib/application/alerts.ts)가 `AlertPort`([kma-alerts.ts](../../lib/adapters/kma-alerts.ts), 공공데이터포털 기상청 `getPwnStatus`·`getEqkMsg`)의 전국 자료를 10분간 공유하며 동시 요청을 합친다. 통합 안내는 [application/briefing.ts](../../lib/application/briefing.ts)가 원고·음성을 시·군·언어별 10분 TTL·LRU 캐시와 동시 요청 병합으로 만들고, 원고 직후 음성을 미리 만든다. [WeatherBriefing](../../components/weather-briefing.tsx)은 시·군·언어 전환 시 350ms 디바운스와 `AbortController`로 불필요한 연속 호출을 줄인다.
+
+공용 인메모리 캐시(TTL·최대 개수 LRU·동시 요청 병합)는 [cache.ts](../../lib/application/cache.ts)가 제공하며, [server.ts](../../lib/server.ts)는 조립된 서비스 싱글톤을 `globalThis`에 고정해 라우트 청크·HMR 간 캐시를 공유한다. [operations.ts](../../lib/application/operations.ts)는 정적 카탈로그 기반 장소 번역(24시간·최대 500건)·음성(24시간·최대 100건)을, [recommendation.ts](../../lib/application/recommendation.ts)는 과거 만족도가 없는 동일 조건 CLOVA 추천(10분·최대 200건)을 캐시·병합하고 캐시 히트 시 사용 한도를 차감하지 않는다.
 
 날씨 옷차림은 [outfit.ts](../../lib/domain/outfit.ts)의 순수 함수가 구간표·준비물 기준을 소유하고, [weather.ts](../../lib/domain/weather.ts)의 `buildWeatherOutfit`이 실시간·데모 응답에 같은 규칙으로 `outfit`을 붙인다.
 
@@ -40,7 +44,7 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 
 ## 날씨 연동
 
-[weather.ts](../../lib/domain/weather.ts)의 `WEATHER_REGIONS`가 두 화면의 기상 조회 좌표를 관리한다. 날씨 탭은 `/api/weather?region=...`의 현재 기상·5일 예보를 사용하고, 지도는 `/api/weather/current?cityId=...`의 현재 날씨를 사용한다. 지도 전용 [유스케이스](../../lib/application/city-weather.ts)와 [브라우저 클라이언트](../../lib/adapters/city-weather-client.ts)는 도시별 성공 응답을 10분간 캐시하고 동시 요청을 합친다. 두 화면은 도시 변경 후 도착한 이전 응답을 무시하며 실패·시연 정책은 [요구사항](../01-func/01-requirements.md#탐색추천날씨)을 따른다.
+[weather.ts](../../lib/domain/weather.ts)의 `WEATHER_REGIONS`가 두 화면의 기상 조회 좌표를 관리한다. 날씨 탭과 통합 안내는 `/api/weather?region=...`([application/weather.ts](../../lib/application/weather.ts))의 현재 기상·5일 예보를, 지도는 `/api/weather/current?cityId=...`([application/city-weather.ts](../../lib/application/city-weather.ts)·[city-weather-client.ts](../../lib/adapters/city-weather-client.ts))의 현재 날씨를 사용한다. 두 유스케이스 모두 실시간 성공 응답을 도시별 10분간 캐시하고 동시 요청을 합친다. 두 화면은 도시 변경 후 도착한 이전 응답을 무시하며 실패·시연 정책은 [요구사항](../01-func/01-requirements.md#탐색추천날씨)을 따른다.
 
 ## 네이버 지도와 관광 데이터
 
@@ -62,7 +66,7 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 
 [postgres.ts](../../lib/adapters/postgres.ts)는 `pg` 풀(`DATABASE_URL`)을 사용하고 첫 요청 시 `pg_advisory_xact_lock` 안에서 6개 테이블(`sessions`, `journeys`, `limits`, `photos`, `account_sessions`, `oauth_states`)을 멱등 초기화한다.
 
-기록·편집·사진·로그인 이전은 `AsyncLocalStorage` 트랜잭션과 `FOR UPDATE` 행 잠금으로 소유권·리비전·보호 정책을 검사하고 새 UUID 리비전을 발급한다. 사진은 `(journey, place)` 고유 제약을 두고, 요청 한도는 `INSERT ... ON CONFLICT DO UPDATE RETURNING`으로 원자 증가한다.
+기록·편집·사진·로그인 이전은 `AsyncLocalStorage` 트랜잭션과 `FOR UPDATE` 행 잠금으로 소유권·리비전·보호 정책을 검사하고 새 UUID 리비전을 발급한다. 사진은 `(journey, place)` 고유 제약을 두고, 요청 한도는 `INSERT ... ON CONFLICT DO UPDATE RETURNING`으로 원자 증가하며 시간 버킷이 바뀔 때 만료된 이전 버킷 행을 비동기 정리한다.
 
 ## 운영 모니터링
 

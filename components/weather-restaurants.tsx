@@ -29,17 +29,25 @@ export function WeatherRestaurants({
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setState({ region });
-    api(`/api/restaurants?region=${encodeURIComponent(region)}`)
+    api(
+      `/api/restaurants?region=${encodeURIComponent(region)}`,
+      'GET',
+      undefined,
+      controller.signal,
+    )
       .then((r) => {
         const data = restaurantsResponseSchema.parse(r);
         if (active && data.region === region) setState({ region, data });
       })
-      .catch(
-        (e) => active && setState({ region, error: (e as Error).message }),
-      );
+      .catch((e) => {
+        if (!active || (e instanceof Error && e.name === 'AbortError')) return;
+        setState({ region, error: (e as Error).message });
+      });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [region]);
 

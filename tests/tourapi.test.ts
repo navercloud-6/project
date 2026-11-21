@@ -175,5 +175,8 @@ test('대규모 카탈로그의 AI 후보는 40곳 이내이며 전달하지 않
   const result = await recommend('자라섬 여행', '전체', []);
   assert.ok(recommendationOutput.safeParse(result).success);
   returnOutsideCandidate = true;
-  await assert.rejects(recommend('자라섬 여행', '전체', []), /유효한/);
+  await assert.rejects(
+    createRecommendation(ai)('자라섬 여행', '전체', []),
+    /유효한/,
+  );
 });

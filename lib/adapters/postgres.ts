@@ -14,6 +14,7 @@ type StoredPool = {
   sslMode: string;
   pool: Pool;
   initialized?: Promise<void>;
+  lastLimitPruneHour?: number;
 };
 
 const globalPg = globalThis as unknown as {
@@ -283,7 +284,8 @@ export const authRepository: AuthRepository = {
 export const limits: LimitPort = { consume: consumeLimit };
 
 export async function consumeLimit(key: string, maximum: number) {
-  const bucket = `${key}:${Math.floor(Date.now() / 3600000)}`;
+  const hour = Math.floor(Date.now() / 3600000);
+  const bucket = `${key}:${hour}`;
   const { rows } = await query<{ count: number }>(
     `INSERT INTO limits (key, count)
      VALUES ($1, 1)
@@ -291,5 +293,15 @@ export async function consumeLimit(key: string, maximum: number) {
      RETURNING count`,
     [bucket],
   );
+  const store = getStore();
+  if (store.lastLimitPruneHour !== hour) {
+    store.lastLimitPruneHour = hour;
+    await query(
+      `DELETE FROM limits
+       WHERE key ~ ':[0-9]+$'
+         AND substring(key from ':([0-9]+)$')::bigint < $1`,
+      [hour - 1],
+    ).catch(() => {});
+  }
   return rows[0].count <= maximum;
 }
