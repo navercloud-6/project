@@ -279,6 +279,8 @@ test('경기 날씨 API는 실시간 Open-Meteo 파싱, 오프라인 데모 폴�
     assert.equal(live.region, '수원시');
     assert.equal(live.current.condition, '맑음');
     assert.equal(live.daily.length, 5);
+    assert.equal(live.outfit.band, '17~19°C');
+    assert.ok(live.outfit.extras.includes('얇은 겉옷'));
     assert.ok(live.recommendedPlaceIds.every((id) => placeIds.has(id)));
     assert.ok(
       live.recommendedPlaceIds.every(

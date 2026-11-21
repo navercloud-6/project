@@ -15,13 +15,14 @@
 
 ## 최신 판정
 
-2026-11-21(Asia/Seoul), Windows 로컬에서 `main` 통합 후 확인한 최신 결과다. 이전 PR에서 수행한 운영·DB·화면 검증은 이번 실행에서 재검증하지 않았다.
+2026-11-21(Asia/Seoul), Windows 11(Node.js 26·PostgreSQL 17)에서 `main`(지도 날씨 PR #12 포함)과 옷차림 기능을 통합한 뒤 확인한 최신 결과다. 이전 PR에서 수행한 운영·DB·화면 검증은 이번 실행에서 재검증하지 않았다.
 
 | 검사 | 최신 결과 |
 | --- | --- |
-| 단위·모의 연동 | 58개 중 DB 독립 검사 34개가 통과했다. DB 의존 검사 24개는 로컬 PostgreSQL 연결 거부(`127.0.0.1:5432`, `ECONNREFUSED`)로 초기화 단계에서 중단됐다. DB 실행·접속 정보 설정 후 전체 검사를 재실행한다. |
-| 서식·타입·빌드·문서 | `format:check -- --end-of-line auto`, `typecheck`, `build`, Windows 경로를 정규화한 문서 검사와 `git diff --check`를 통과했다. 원본 문서 검사기의 Windows 경로 구분자 제약은 남아 있다. |
-| 날씨 프로덕션 HTTP | `tests/city-weather-http.mjs`로 수원·시흥·가평의 현재 날씨와 5일 예보가 실제 `live` 응답임을 확인했다. 기본 도시·10분 캐시·잘못된 ID·메타데이터·OpenAPI 검사도 통과했다. |
+| 단위·모의 연동 65개 | 로컬 PostgreSQL 17의 임시 스키마(`test_*`) 격리 환경에서 모두 통과했다. 옷차림 검사 7개는 8개 구간의 경계 양쪽, 준비물 기준(강수 60%·풍속 8m/s·체감 0°C·최저 -5°C·일교차 8°C·28°C 맑음)의 등호 양쪽, 해안 시·군 문장, 같은 입력의 같은 결과, 전체 지역 데모 응답을 확인한다. |
+| 서식·타입·빌드·문서 | `format:check`, `typecheck`, `build`, `git diff --check`를 통과했다. `check_docs.py`는 Windows 경로 구분자 제약으로 로컬에서 판정하지 않았고, PR CI(Linux)의 문서 검사로 확인한다. |
+| 날씨 프로덕션 HTTP | `tests/city-weather-http.mjs`로 수원·시흥·가평의 현재 날씨와 5일 예보가 실제 `live` 응답임을 확인했다(PR #12 작성 시). 기본 도시·10분 캐시·잘못된 ID·메타데이터·OpenAPI 검사도 통과했다. |
+| 옷차림 실데이터 | 실제 Open-Meteo 응답으로 수원·시흥·가평(최고 0.4~1.7°C, 최저 -7.6~-5.6°C)의 옷차림·준비물 문장을 확인했다. 영상 이상 기온·비·눈의 실데이터는 미확인이며 모의 입력으로만 검사했다. |
 | 프로덕션 HTTP (이전 검증) | `tests/http.mjs`, `tests/extensions-http.mjs`, `tests/auth-http.mjs`를 테스트 PostgreSQL 서버에서 통과했다(실제 네이버 로그인 미호출). |
 | 배포 스크립트 (이전 검증) | `tests/acg_test.py`, `tests/deploy_test.py`(6개)와 `deploy/deploy-container.sh` 문법 검사를 통과했다. |
 | 운영 이관·모니터링 (이전 검증) | NCP Cloud DB for PostgreSQL 17.11 이관(데이터 SHA-256 일치), `223.130.161.104` 외부 응답 200, Prometheus 5개 대상 UP·Blackbox `probe_success=1`을 확인했다. |
