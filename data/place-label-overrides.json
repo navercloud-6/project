@@ -1,0 +1,330 @@
+{
+  "PLACE_REAL_001": {
+    "setting": "야외",
+    "themes": ["공원·숲", "바다", "체험·테마"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["갯골생태공원", "염전", "생태", "습지"],
+    "source": "manual"
+  },
+  "PLACE_REAL_004": {
+    "setting": "야외",
+    "themes": ["공원·숲", "호수", "체험·테마"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["연꽃", "테마파크", "수련"],
+    "source": "manual"
+  },
+  "PLACE_REAL_005": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲", "역사·유적"],
+    "companions": ["가족", "부모님", "혼자·힐링"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["관곡지", "연꽃", "역사", "연못"],
+    "source": "manual"
+  },
+  "PLACE_REAL_006": {
+    "setting": "실내·야외",
+    "themes": ["바다", "체험·테마", "캠핑·레저"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["액티비티"],
+    "keywords": ["웨이브파크", "서핑", "인공 파도", "거북섬"],
+    "source": "manual"
+  },
+  "PLACE_REAL_007": {
+    "setting": "야외",
+    "themes": ["바다", "공원·숲", "전망·야경"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["배곧한울공원", "해안 산책", "서해", "노을 감상"],
+    "source": "manual"
+  },
+  "PLACE_REAL_008": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["은계호수공원", "호수공원", "산책"],
+    "source": "manual"
+  },
+  "PLACE_REAL_010": {
+    "setting": "야외",
+    "themes": ["공원·숲", "호수"],
+    "companions": ["가족", "혼자·힐링"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["호조벌", "간척지", "수로"],
+    "source": "manual"
+  },
+  "PLACE_REAL_016": {
+    "setting": "야외",
+    "themes": ["바다", "전망·야경"],
+    "companions": ["연인·데이트", "가족"],
+    "styles": ["사진명소", "산책", "드라이브"],
+    "keywords": ["빨강등대", "오이도", "서해 풍경"],
+    "source": "manual"
+  },
+  "PLACE_REAL_018": {
+    "setting": "실내·야외",
+    "themes": ["바다", "전망·야경", "박물관·전시"],
+    "companions": ["연인·데이트", "가족", "혼자·힐링"],
+    "styles": ["사진명소", "비오는날", "드라이브"],
+    "keywords": ["함상전망대", "복합문화공간", "오이도"],
+    "source": "manual"
+  },
+  "PLACE_REAL_019": {
+    "setting": "실내",
+    "themes": ["예술·공연", "박물관·전시"],
+    "companions": ["가족", "연인·데이트", "혼자·힐링"],
+    "styles": ["비오는날", "교육·학습"],
+    "keywords": ["시흥아트센터", "전문공연장", "전시실"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_1932056": {
+    "setting": "야외",
+    "themes": ["바다"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["사진명소", "산책", "휴식"],
+    "keywords": ["제부도해수욕장", "백사장", "기암절벽", "서해"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2761552": {
+    "setting": "야외",
+    "themes": ["바다", "캠핑·레저"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["사진명소", "휴식", "액티비티"],
+    "keywords": ["구봉솔숲해수욕장", "갯벌 체험", "낙조", "대부도"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_126844": {
+    "setting": "야외",
+    "themes": ["바다"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["드라이브", "사진명소", "산책"],
+    "keywords": ["대부도", "섬여행", "시화방조제", "서해"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_129008": {
+    "setting": "야외",
+    "themes": ["바다", "공원·숲"],
+    "companions": ["혼자·힐링", "연인·데이트", "가족"],
+    "styles": ["산책", "사진명소"],
+    "keywords": ["제부도 해안산책로", "제비꼬리길", "해안 데크"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2733830": {
+    "setting": "야외",
+    "themes": ["바다", "공원·숲"],
+    "companions": ["아이동반", "가족", "부모님"],
+    "styles": ["산책", "휴식"],
+    "keywords": ["궁평항", "해송군락지", "갯벌체험", "바닷바람"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2633912": {
+    "setting": "야외",
+    "themes": ["공원·숲", "바다"],
+    "companions": ["아이동반", "가족", "부모님"],
+    "styles": ["산책", "휴식", "교육·학습"],
+    "keywords": ["바다향기수목원", "수목원", "선감도"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2656733": {
+    "setting": "야외",
+    "themes": ["공원·숲", "바다", "체험·테마"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["대부바다향기테마파크", "갈대", "수변공원", "대부도"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2945376": {
+    "setting": "실내·야외",
+    "themes": ["바다", "체험·테마", "전망·야경"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["액티비티", "사진명소"],
+    "keywords": ["서해랑 제부도 해상케이블카", "해상 케이블카", "갯벌"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2743344": {
+    "setting": "야외",
+    "themes": ["바다", "전망·야경"],
+    "companions": ["연인·데이트", "가족"],
+    "styles": ["사진명소", "산책"],
+    "keywords": ["제부도등대", "빨간 등대", "포토존", "해안"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2761255": {
+    "setting": "야외",
+    "themes": ["바다", "체험·테마"],
+    "companions": ["아이동반", "가족"],
+    "styles": ["액티비티", "산책", "드라이브"],
+    "keywords": ["어촌체험", "갯벌체험", "대부도"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2717411": {
+    "setting": "야외",
+    "themes": ["바다", "체험·테마"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "교육·학습", "사진명소"],
+    "keywords": ["고랫부리", "대부도", "생태관광"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_611549": {
+    "setting": "야외",
+    "themes": ["바다", "체험·테마"],
+    "companions": ["혼자·힐링", "연인·데이트", "가족"],
+    "styles": ["사진명소", "산책"],
+    "keywords": ["제부도 모세거리", "바닷길", "제부도"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2743841": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "드라이브"],
+    "keywords": ["당남리섬", "남한강", "봄꽃", "핑크뮬리"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2998758": {
+    "setting": "야외",
+    "themes": ["호수", "전망·야경"],
+    "companions": ["아이동반", "가족"],
+    "styles": ["산책", "사진명소", "드라이브"],
+    "keywords": ["이포보", "남한강", "백로"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2736408": {
+    "setting": "야외",
+    "themes": ["공원·숲"],
+    "companions": ["아이동반", "가족", "혼자·힐링"],
+    "styles": ["산책", "휴식"],
+    "keywords": ["생태공원", "잔디광장", "물놀이장"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2764942": {
+    "setting": "야외",
+    "themes": ["공원·숲"],
+    "companions": ["가족", "혼자·힐링"],
+    "styles": ["산책", "휴식"],
+    "keywords": ["생태공원", "체육시설", "쉼터"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_128284": {
+    "setting": "야외",
+    "themes": ["예술·공연", "역사·유적"],
+    "companions": ["혼자·힐링", "가족"],
+    "styles": ["산책", "휴식"],
+    "keywords": ["박두진 시비", "시비 광장", "문학길"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2662855": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["광교호수공원", "원천저수지", "수변공원"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2739469": {
+    "setting": "야외",
+    "themes": ["공원·숲", "체험·테마"],
+    "companions": ["아이동반", "가족"],
+    "styles": ["산책", "휴식"],
+    "keywords": ["광교중앙공원", "유아숲체험원"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2872885": {
+    "setting": "야외",
+    "themes": ["공원·숲"],
+    "companions": ["아이동반", "가족"],
+    "styles": ["산책", "휴식"],
+    "keywords": ["글빛누리공원", "데크길", "잔디광장"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_3351831": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲"],
+    "companions": ["아이동반", "가족", "부모님"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["만석공원", "만석거", "저수지"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_128040": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "휴식"],
+    "keywords": ["율동공원", "자연호수공원", "잔디밭"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2759981": {
+    "setting": "야외",
+    "themes": ["공원·숲"],
+    "companions": ["아이동반", "가족", "혼자·힐링"],
+    "styles": ["산책", "휴식"],
+    "keywords": ["낙생대공원", "판교", "숲"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_921096": {
+    "setting": "야외",
+    "themes": ["역사·유적", "사찰·전통"],
+    "companions": ["혼자·힐링", "부모님"],
+    "styles": ["산책", "휴식", "교육·학습"],
+    "keywords": ["가평향교", "전통", "대성전"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_3586768": {
+    "setting": "야외",
+    "themes": ["시장·거리"],
+    "companions": ["가족", "연인·데이트"],
+    "styles": ["산책"],
+    "keywords": ["가구전문 거리", "광명사거리역", "브랜드매장"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_127197": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["일산호수공원", "인공호수", "자전거길"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2602619": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["물의 정원", "북한강", "강변 산책"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_2914808": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소"],
+    "keywords": ["고모호수", "고모저수지", "둘레길"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_603727": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲", "산·계곡"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "휴식", "사진명소"],
+    "keywords": ["호명호수", "호명산", "저수지"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_4062815": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲", "전망·야경"],
+    "companions": ["혼자·힐링", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소", "휴식"],
+    "keywords": ["금광호수", "하늘전망대", "단풍"],
+    "source": "manual"
+  },
+  "PLACE_TOURAPI_4139468": {
+    "setting": "야외",
+    "themes": ["호수", "공원·숲", "예술·공연"],
+    "companions": ["아이동반", "가족", "연인·데이트"],
+    "styles": ["산책", "사진명소"],
+    "keywords": ["산정호수", "조각공원", "산책"],
+    "source": "manual"
+  }
+}
