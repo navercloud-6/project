@@ -4,7 +4,11 @@ import { PlaceCard } from './place-card';
 import { WeatherSymbol } from './weather-symbol';
 import { api } from '@/lib/adapters/client-api';
 import type { Place } from '@/lib/domain/catalog';
-import { WEATHER_REGIONS, type WeatherResponse } from '@/lib/domain/weather';
+import {
+  WEATHER_REGIONS,
+  weatherResponseSchema,
+  type WeatherResponse,
+} from '@/lib/domain/weather';
 
 const REGION_LIST = Object.keys(WEATHER_REGIONS);
 const QUICK_REGIONS = [
@@ -42,39 +46,90 @@ const SUITABILITY_LABEL: Record<
   indoor: '실내 관람 추천',
 };
 
-export function WeatherPanel({
-  places,
-  selection,
-  onTogglePlace,
-  onDetailPlace,
-  onExploreRegion,
-}: {
+type WeatherPanelProps = {
+  selectedCityId: string | null;
+  onSelectCity: (cityId: string | null) => void;
   places: Place[];
   selection: string[];
   onTogglePlace: (placeId: string) => void;
   onDetailPlace: (place: Place) => void;
   onExploreRegion: (region: string) => void;
-}) {
-  const [selectedRegion, setSelectedRegion] = useState('전체');
-  const [weather, setWeather] = useState<WeatherResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+};
+
+export type WeatherPanelState =
+  | { region: string; status: 'loading' }
+  | { region: string; status: 'error'; error: string }
+  | { region: string; status: 'ready'; data: WeatherResponse };
+
+function regionForCity(cityId: string | null) {
+  return (
+    REGION_LIST.find((name) => WEATHER_REGIONS[name].cityId === cityId) ??
+    '전체'
+  );
+}
+
+export function WeatherPanel(props: WeatherPanelProps) {
+  const selectedRegion = regionForCity(props.selectedCityId);
+  const [state, setState] = useState<WeatherPanelState>({
+    region: selectedRegion,
+    status: 'loading',
+  });
   const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
-    setError('');
+    setState({ region: selectedRegion, status: 'loading' });
     api<WeatherResponse>(
       `/api/weather?region=${encodeURIComponent(selectedRegion)}`,
     )
-      .then((d) => active && setWeather(d))
-      .catch((e) => active && setError((e as Error).message))
-      .finally(() => active && setLoading(false));
+      .then((response) => {
+        const data = weatherResponseSchema.parse(response);
+        if (data.region !== selectedRegion)
+          throw new Error('선택한 도시의 날씨를 확인하지 못했어요.');
+        if (active) setState({ region: selectedRegion, status: 'ready', data });
+      })
+      .catch((e) => {
+        if (active)
+          setState({
+            region: selectedRegion,
+            status: 'error',
+            error: (e as Error).message,
+          });
+      });
     return () => {
       active = false;
     };
   }, [selectedRegion, retryKey]);
+
+  return (
+    <WeatherPanelView
+      {...props}
+      state={state}
+      onRetry={() => setRetryKey((key) => key + 1)}
+    />
+  );
+}
+
+export function WeatherPanelView({
+  selectedCityId,
+  onSelectCity,
+  places,
+  selection,
+  onTogglePlace,
+  onDetailPlace,
+  onExploreRegion,
+  state,
+  onRetry,
+}: WeatherPanelProps & { state: WeatherPanelState; onRetry: () => void }) {
+  const selectedRegion = regionForCity(selectedCityId);
+  const loading = state.region !== selectedRegion || state.status === 'loading';
+  const error = !loading && state.status === 'error' ? state.error : '';
+  const weather =
+    !loading && state.status === 'ready' && state.data.region === selectedRegion
+      ? state.data
+      : null;
+  const selectRegion = (name: string) =>
+    onSelectCity(WEATHER_REGIONS[name].cityId);
 
   const recommendedPlaces = (weather?.recommendedPlaceIds ?? [])
     .map((id) => places.find((p) => p.id === id))
@@ -98,7 +153,7 @@ export function WeatherPanel({
           <span>시·군 선택</span>
           <select
             value={selectedRegion}
-            onChange={(e) => setSelectedRegion(e.target.value)}
+            onChange={(e) => selectRegion(e.target.value)}
             aria-label="경기도 시·군 선택"
           >
             {REGION_LIST.map((r) => (
@@ -123,7 +178,7 @@ export function WeatherPanel({
                   : 'weather-region-chip'
               }
               aria-pressed={selectedRegion === r}
-              onClick={() => setSelectedRegion(r)}
+              onClick={() => selectRegion(r)}
             >
               {r === '전체' ? '경기도 전체' : r}
             </button>
@@ -134,25 +189,19 @@ export function WeatherPanel({
       {error && (
         <div role="alert" className="tool-error">
           <span>{error}</span>
-          <button
-            type="button"
-            className="secondary compact"
-            onClick={() => setRetryKey((k) => k + 1)}
-          >
+          <button type="button" className="secondary compact" onClick={onRetry}>
             다시 시도
           </button>
         </div>
       )}
 
-      {loading && !weather ? (
-        <div className="empty">날씨 정보를 불러오고 있어요…</div>
+      {loading ? (
+        <div className="empty" role="status">
+          날씨 정보를 불러오고 있어요…
+        </div>
       ) : (
         weather && (
-          <div
-            className={
-              loading ? 'weather-content is-loading' : 'weather-content'
-            }
-          >
+          <div className="weather-content">
             <section
               className="weather-hero-card"
               aria-labelledby="weather-current-title"
@@ -165,7 +214,7 @@ export function WeatherPanel({
                       : '데모 기상 안내'}
                   </span>
                   <span className="weather-observed">
-                    {loading ? '업데이트 중…' : `기준: ${weather.observedAt}`}
+                    {`기준: ${weather.observedAt}`}
                   </span>
                 </div>
                 <h2 id="weather-current-title">
