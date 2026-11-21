@@ -127,6 +127,9 @@ export interface AIPort {
       description: string;
       tags: string[];
       reviews: string[];
+      // 맛집이면 'restaurant'와 후기로 검증된 메뉴
+      kind?: 'place' | 'restaurant';
+      menus?: string[];
     }[],
     weather: BriefingHeadFacts['weather'],
   ): Promise<string[]>;
