@@ -15,14 +15,15 @@ import { PlaceDetail } from './place-detail';
 import { VisitRecord } from './visit-record';
 import { PlaceCatalog } from './place-catalog';
 import { TripBuilder } from './trip-builder';
-import { RecommendationPanel } from './recommendation-panel';
+import { AiTravelSearch } from './ai-travel-search';
 import { WeatherPanel } from './weather-panel';
 import { GyeonggiCityExplorer } from './gyeonggi-city-explorer';
 import { gyeonggiCities } from '@/lib/domain/gyeonggi';
+import { searchPlaces } from '@/lib/domain/place-labels';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey, Recommendation } from '@/lib/domain/contracts';
 
-type ExploreTask = 'browse' | 'recommend' | 'review';
+type ExploreTask = 'browse' | 'review';
 
 const today = () =>
   new Intl.DateTimeFormat('en-CA', {
@@ -39,12 +40,7 @@ const EXPLORE_COPY: Record<
   browse: {
     pill: (n) => `경기 31개 시·군 · 관광지 ${n}곳`,
     title: '경기 둘러보기',
-    body: '지도에서 도시를 고르거나 검색해서 최대 8곳까지 나만의 하루에 담아 보세요.',
-  },
-  recommend: {
-    pill: () => '맞춤 코스 추천',
-    title: '취향에 맞는 여행 추천',
-    body: '원하는 지역과 여행 취향을 알려주시면 어울리는 코스를 제안해 드려요.',
+    body: '원하는 여행 방식을 AI로 검색하거나 지도에서 도시를 골라 최대 8곳까지 담아 보세요.',
   },
   review: {
     pill: () => '여행 코스 완성',
@@ -65,15 +61,17 @@ export default function Tourpass({
   const [tab, setTab] = useState<Tab>('explore');
   const [exploreTask, setExploreTask] = useState<ExploreTask>('browse');
   const mainRef = useRef<HTMLElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const resultRef = useRef<HTMLElement>(null);
   const scrollToCatalogRef = useRef(false);
+  const focusSearchRef = useRef(false);
+  const recommendationRequestRef = useRef(0);
   const [sessionError, setSessionError] = useState('');
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
   const [query, setQuery] = useState('');
   const [region, setRegion] = useState('전체');
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState('');
   const [preferences, setPreferences] = useState<TravelPreferences>({
     region: '전체',
     prompt: '',
@@ -97,13 +95,11 @@ export default function Tourpass({
 
   const regions = ['전체', ...new Set(places.map((p) => p.region))];
   const byId = new Map(places.map((p) => [p.id, p]));
-  const filtered = places.filter(
-    (p) =>
-      (region === '전체' || p.region === region) &&
-      [p.name, p.region, p.description, ...p.tags]
-        .join(' ')
-        .includes(query.trim()),
-  );
+  const filtered = searchPlaces(places, query, region);
+  function clearRecommendation() {
+    recommendationRequestRef.current++;
+    setResult(null);
+  }
   const selected = selection.map((id) => byId.get(id)!);
   const goExplore = (task: ExploreTask = 'browse') => {
     if (tab === 'explore' && exploreTask === task) {
@@ -170,7 +166,6 @@ export default function Tourpass({
       const loaded = loadPreferences(localStorage, regions);
       if (loaded) {
         setPreferences(loaded);
-        setPrompt(loaded.prompt);
         setRegion(loaded.region);
       }
     } catch {
@@ -181,6 +176,16 @@ export default function Tourpass({
   }, []);
 
   useEffect(() => {
+    if (
+      focusSearchRef.current &&
+      tab === 'explore' &&
+      exploreTask === 'browse'
+    ) {
+      focusSearchRef.current = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      searchInputRef.current?.focus({ preventScroll: true });
+      return;
+    }
     if (
       scrollToCatalogRef.current &&
       tab === 'explore' &&
@@ -224,10 +229,11 @@ export default function Tourpass({
     try {
       storePreferences(localStorage, next);
       setPreferences(next);
-      setPrompt(next.prompt);
       setRegion(next.region);
-      setResult(null);
-      setNotice('여행 취향을 저장했어요. 다음 추천에 기본값으로 채워져요.');
+      clearRecommendation();
+      setNotice(
+        '여행 취향을 저장했어요. 상단 AI 검색에서 바로 불러올 수 있어요.',
+      );
     } catch {
       setError(
         '여행 취향을 저장하지 못했어요. 브라우저의 사이트 저장 설정을 확인한 뒤 다시 시도해 주세요.',
@@ -257,19 +263,48 @@ export default function Tourpass({
   }
 
   async function generate() {
+    const trimmed = query.trim();
+    if (trimmed.length < 2 || busy || !ready || !filtered.length) return;
+    const requestId = ++recommendationRequestRef.current;
+    setResult(null);
     setBusy(true);
     setError('');
     setLimitReached(false);
     setNotice('');
     try {
-      setResult(
-        await api<Recommendation>('/api/recommend', 'POST', { prompt, region }),
+      const recommendation = await api<Recommendation>(
+        '/api/recommend',
+        'POST',
+        {
+          prompt: trimmed,
+          region,
+        },
       );
+      if (recommendationRequestRef.current === requestId)
+        setResult(recommendation);
     } catch (e) {
-      setError((e as Error).message);
+      if (recommendationRequestRef.current === requestId)
+        setError((e as Error).message);
     } finally {
       setBusy(false);
     }
+  }
+
+  function focusAiSearch(draft?: TravelPreferences) {
+    if (draft) {
+      setQuery(draft.prompt);
+      setRegion(draft.region);
+      clearRecommendation();
+    }
+    focusSearchRef.current = true;
+    if (tab === 'explore' && exploreTask === 'browse') {
+      focusSearchRef.current = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      searchInputRef.current?.focus({ preventScroll: true });
+      return;
+    }
+    setTab('explore');
+    setExploreTask('browse');
   }
 
   async function save() {
@@ -397,6 +432,67 @@ export default function Tourpass({
               <h1>{heading.title}</h1>
               <p>{heading.body}</p>
             </div>
+            {exploreTask === 'browse' && (
+              <>
+                <AiTravelSearch
+                  aiEnabled={capabilities.clova}
+                  regions={regions}
+                  region={region}
+                  query={query}
+                  filtered={filtered}
+                  selection={selection}
+                  savedPrompt={preferences.prompt}
+                  busy={busy}
+                  ready={ready}
+                  loading={loading}
+                  result={result}
+                  places={places}
+                  inputRef={searchInputRef}
+                  resultRef={resultRef}
+                  onQuery={(nextQuery) => {
+                    setQuery(nextQuery);
+                    clearRecommendation();
+                  }}
+                  onRegion={(nextRegion) => {
+                    setRegion(nextRegion);
+                    clearRecommendation();
+                  }}
+                  onSearch={() => void generate()}
+                  onReset={() => {
+                    setQuery('');
+                    setRegion('전체');
+                    clearRecommendation();
+                  }}
+                  onClearResult={clearRecommendation}
+                  onToggle={toggle}
+                  onDetail={setDetail}
+                  onScrollCatalog={() => {
+                    document
+                      .getElementById('places')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  onRetrySession={() => void loadSession()}
+                  onApply={(recommendation) => {
+                    setSelection(
+                      recommendation.stops.map((stop) => stop.placeId),
+                    );
+                    setName(recommendation.title.slice(0, 60));
+                    goExplore('review');
+                    setNotice(
+                      '추천 장소를 담았어요. 순서와 날짜를 확인한 뒤 저장해 보세요.',
+                    );
+                  }}
+                />
+                <GyeonggiCityExplorer
+                  places={places}
+                  selectedCityId={selectedCityId}
+                  selection={selection}
+                  onSelectCity={setSelectedCityId}
+                  onDetail={setDetail}
+                  onToggle={toggle}
+                />
+              </>
+            )}
             <div
               className="task-switch"
               role="group"
@@ -405,7 +501,6 @@ export default function Tourpass({
               {(
                 [
                   ['browse', '장소 찾기'],
-                  ['recommend', '추천받기'],
                   ['review', `담은 여행 ${selection.length}`],
                 ] as const
               ).map(([task, label]) => (
@@ -419,44 +514,6 @@ export default function Tourpass({
                 </button>
               ))}
             </div>
-            {exploreTask === 'browse' && (
-              <GyeonggiCityExplorer
-                places={places}
-                selectedCityId={selectedCityId}
-                selection={selection}
-                onSelectCity={setSelectedCityId}
-                onDetail={setDetail}
-                onToggle={toggle}
-              />
-            )}
-            <RecommendationPanel
-              active={exploreTask === 'recommend'}
-              aiEnabled={capabilities.clova}
-              regions={regions}
-              region={region}
-              prompt={prompt}
-              busy={busy}
-              ready={ready}
-              loading={loading}
-              result={result}
-              places={places}
-              selectionCount={selection.length}
-              resultRef={resultRef}
-              onGenerate={() => void generate()}
-              onRegion={setRegion}
-              onPrompt={setPrompt}
-              onDetail={setDetail}
-              onBrowse={() => goExplore('browse')}
-              onRetrySession={() => void loadSession()}
-              onApply={(recommendation) => {
-                setSelection(recommendation.stops.map((stop) => stop.placeId));
-                setName(recommendation.title.slice(0, 60));
-                goExplore('review');
-                setNotice(
-                  '추천 장소를 담았어요. 순서와 날짜를 확인한 뒤 저장해 보세요.',
-                );
-              }}
-            />
             <div className="explore-workspace">
               <PlaceCatalog
                 places={places}
@@ -467,6 +524,7 @@ export default function Tourpass({
                 region={region}
                 viewMode={viewMode}
                 hidden={exploreTask !== 'browse'}
+                hideFilters
                 naverMapClientId={naverMapClientId}
                 onQuery={setQuery}
                 onRegion={setRegion}
@@ -483,7 +541,7 @@ export default function Tourpass({
                 busy={busy}
                 hidden={exploreTask !== 'review'}
                 onBrowse={() => setExploreTask('browse')}
-                onRecommend={() => setExploreTask('recommend')}
+                onRecommend={() => focusAiSearch()}
                 onRetrySession={() => void loadSession()}
                 onDetail={setDetail}
                 onMoveUp={(index) => moveStop(index, index - 1)}
@@ -581,12 +639,7 @@ export default function Tourpass({
             onRetrySession={() => void loadSession()}
             onJourneys={() => setTab('journeys')}
             onExplore={() => goExplore()}
-            onRecommend={(draft) => {
-              setPrompt(draft?.prompt ?? preferences.prompt);
-              setRegion(draft?.region ?? preferences.region);
-              setResult(null);
-              goExplore('recommend');
-            }}
+            onRecommend={(draft) => focusAiSearch(draft ?? preferences)}
           />
         ) : (
           <MyJourneys
@@ -599,7 +652,7 @@ export default function Tourpass({
             naverMapClientId={naverMapClientId}
             onRetrySession={() => void loadSession()}
             onExplore={() => goExplore()}
-            onRecommend={() => goExplore('recommend')}
+            onRecommend={() => focusAiSearch()}
             onProfile={() => setTab('profile')}
             onRecord={(journey, place) => setRecord({ journey, place })}
             onDetail={setDetail}

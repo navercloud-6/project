@@ -96,11 +96,14 @@ test('키 없는 데모는 지역을 제한하고 만족도를 반영한다', as
   const key = process.env.CLOVA_STUDIO_API_KEY;
   delete process.env.CLOVA_STUDIO_API_KEY;
   try {
-    const r = await recommend('조용한 여행', places[5].region, [
-      { placeId: places[5].id, rating: 5 },
+    const preferred = places.find((place) =>
+      place.labels.styles.includes('휴식'),
+    )!;
+    const r = await recommend('조용한 여행', preferred.region, [
+      { placeId: preferred.id, rating: 5 },
     ]);
     assert.equal(r.mode, 'demo');
-    assert.equal(r.stops[0].placeId, places[5].id);
+    assert.equal(r.stops[0].placeId, preferred.id);
     const scoped = await recommend('여행', places[0].region, []);
     assert.ok(
       scoped.stops.every(
@@ -116,14 +119,15 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
   const oldFetch = globalThis.fetch,
     oldKey = process.env.CLOVA_STUDIO_API_KEY;
   process.env.CLOVA_STUDIO_API_KEY = 'test-key';
-  const output = {
+  let output = {
     title: '추천 여행',
     summary: '자연 탐색',
     stops: [{ placeId: places[0].id, reason: '갯골' }],
   };
   try {
+    let rerankCalled = false;
+    let firstCandidateId = places[0].id;
     globalThis.fetch = async (url, options) => {
-      assert.match(String(url), /\/v3\/chat-completions\/HCX-/);
       assert.equal(
         (options?.headers as Record<string, string>).Authorization,
         'Bearer test-key',
@@ -131,6 +135,25 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
       assert.equal(options?.redirect, 'error');
       assert.equal(options?.cache, 'no-store');
       const body = JSON.parse(options?.body as string);
+      if (String(url).includes('/v1/api-tools/reranker')) {
+        rerankCalled = true;
+        assert.equal(body.query, '자연 여행');
+        assert.ok(Array.isArray(body.documents) && body.documents.length <= 20);
+        firstCandidateId = body.documents[0].id;
+        output = {
+          title: '추천 여행',
+          summary: '자연 탐색',
+          stops: [{ placeId: firstCandidateId, reason: '자연' }],
+        };
+        return Response.json({
+          status: { code: '20000' },
+          result: {
+            result: '자연 여행 추천 근거 요약',
+            citedDocuments: [{ id: firstCandidateId, doc: '자연' }],
+          },
+        });
+      }
+      assert.match(String(url), /\/v3\/chat-completions\/HCX-/);
       assert.equal(body.maxTokens, 1200);
       assert.equal(body.temperature, 0.3);
       assert.equal(body.topP, 0.8);
@@ -138,15 +161,27 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
       assert.equal(body.repetitionPenalty, 1.1);
       assert.equal(body.includeAiFilters, true);
       assert.equal(body.messages[1].content, '자연 여행');
+      assert.deepEqual(body.toolChoice, {
+        type: 'function',
+        function: { name: 'recommend_itinerary' },
+      });
       return Response.json({
         status: { code: '20000' },
         result: {
-          finishReason: 'stop',
-          message: { content: JSON.stringify(output) },
+          finishReason: 'tool_calls',
+          message: {
+            toolCalls: [
+              { function: { name: 'recommend_itinerary', arguments: output } },
+            ],
+          },
         },
       });
     };
-    assert.equal((await recommend('자연 여행', '전체', [])).mode, 'clova');
+    const clovaResult = await recommend('자연 여행', '전체', []);
+    assert.equal(clovaResult.mode, 'clova');
+    assert.equal(rerankCalled, true);
+    assert.equal(clovaResult.reranked, true);
+    assert.ok(clovaResult.relatedPlaceIds?.includes(firstCandidateId));
     globalThis.fetch = async () =>
       Response.json({
         status: { code: '20000' },
@@ -191,7 +226,13 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
     globalThis.fetch = async () =>
       Response.json({
         status: { code: '20000' },
-        result: { message: { content: JSON.stringify(output) } },
+        result: {
+          message: {
+            toolCalls: [
+              { function: { name: 'recommend_itinerary', arguments: output } },
+            ],
+          },
+        },
       });
     await assert.rejects(recommend('여행', places[1].region, []), /유효한/);
     globalThis.fetch = async () => {
