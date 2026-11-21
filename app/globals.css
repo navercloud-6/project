@@ -2143,15 +2143,78 @@ summary {
 .today-guide > .section-heading {
   margin-bottom: 0;
 }
-.today-guide .gyeonggi-map-panel {
-  width: 100%;
-  max-width: 760px;
-  justify-self: center;
+/* 제목 영역은 한 줄로 줄여 첫 화면을 지도·날씨·안전 안내에 쓴다 */
+.today-guide > .section-heading > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.today-guide > .section-heading h1 {
+  margin: 0;
+  font-size: 26px;
+}
+.today-guide > .section-heading p {
+  margin: 0;
+  font-size: 14px;
 }
 .today-guide .weather-briefing,
 .today-guide .weather-restaurants,
 .today-guide .weather-outfit-section {
   margin-bottom: 0;
+}
+/* 홈 지도와 같은 크기·모양(.city-explorer의 --city-map-height 사용), 가로 전체.
+   아래 칸과의 간격은 다른 칸 사이(24px)와 같게 .city-explorer의 아래 여백을 없앤다. */
+.today-guide .today-main {
+  margin-bottom: 0;
+  padding-top: 0;
+}
+.today-main .gyeonggi-map-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-surface);
+  overflow: hidden;
+}
+/* 홈 패널과 같은 카드 모양·글꼴로 통일 */
+.today-guide .weather-briefing,
+.today-guide .weather-restaurants,
+.today-guide .weather-outfit-section,
+.today-guide .safety-alerts,
+.today-guide .safety-clear,
+.today-guide .today-spots {
+  margin: 0;
+  padding: var(--panel-padding);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-surface);
+}
+.today-guide .safety-alerts {
+  border-left: 5px solid #d93025;
+}
+.today-guide .weather-briefing h2,
+.today-guide .weather-restaurants h2,
+.today-guide .weather-outfit-section h2,
+.today-guide .safety-alerts h2,
+.today-guide .today-spots h2 {
+  margin: 0;
+  font-size: clamp(18px, 2vw, 22px);
+  color: var(--ink);
+}
+.today-guide .fine,
+.today-guide .city-explorer-heading p {
+  color: var(--muted);
+}
+/* 재난·안전 안내: 지도 아래 가로로 넓은 칸(음성 안내와 같은 모양) */
+/* 넓은 칸에서는 특보 이름과 설명을 한 줄로 이어서 보여 준다 */
+.today-guide > .safety-alerts li {
+  display: block;
+  line-height: 1.7;
+}
+.today-guide > .safety-alerts li strong::after {
+  content: ' · ';
+  font-weight: 400;
+  color: var(--muted, #6b7a72);
 }
 .today-weather {
   display: grid;
@@ -2160,22 +2223,6 @@ summary {
 .today-weather h2,
 .today-spots h2 {
   margin: 0;
-}
-.today-weather-summary {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 18px;
-  padding: 16px 20px;
-  border-radius: 12px;
-  background: #fff;
-  border: 1px solid #dcebe1;
-}
-.today-weather-summary strong {
-  font-size: 28px;
-}
-.today-weather-icon {
-  display: inline-flex;
 }
 .today-spot {
   display: grid;
