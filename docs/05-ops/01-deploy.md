@@ -12,6 +12,7 @@
 | CLOVA Studio | API 키 및 추천·Function Calling·Vision 모델명 |
 | CLOVA Voice | Voice 활성화 앱 ID·Secret |
 | Papago | 별도 Translation 앱 ID·Secret |
+| 검색(지역·블로그) | NAVER API HUB 검색 앱 ID·Secret(`NAVER_SEARCH_ID`·`NAVER_SEARCH_SECRET`, 맛집) |
 | General OCR | `/general`로 끝나는 HTTPS Invoke URL(`*.apigw.ntruss.com`)·Secret |
 | Maps (Web Dynamic Map) | `NAVER_MAP_CLIENT_ID` 및 콘솔 Web 서비스 URL(`APP_ORIGIN`) 등록 |
 

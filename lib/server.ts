@@ -8,6 +8,8 @@ import { identity } from './adapters/identity';
 import { naver } from './adapters/naver';
 import { liveWeather, liveCityWeather } from './adapters/open-meteo';
 import { createCityWeather } from './application/city-weather';
+import { createRestaurants } from './application/restaurants';
+import { naverSearch } from './adapters/naver-search';
 import { createJourneys } from './application/journeys';
 import { createSession } from './application/session';
 import { createAssistant } from './application/assistant';
@@ -37,12 +39,19 @@ export const auth = createAuth(
 );
 export const { guide, proposeEdit } = createAssistant(naver);
 export const recommend = createRecommendation(naver);
-export const operations = createOperations(journeyService, naver, limits);
 export const fetchWeather = createWeather({
   now: identity.now,
   demo: () => process.env.WEATHER_MODE === 'demo',
   current: liveWeather,
 });
+export const fetchRestaurants = createRestaurants(naverSearch, naver);
+export const operations = createOperations(
+  journeyService,
+  naver,
+  limits,
+  fetchWeather,
+  fetchRestaurants,
+);
 export const fetchCityWeather = createCityWeather({
   now: identity.now,
   demo: () => process.env.WEATHER_MODE === 'demo',

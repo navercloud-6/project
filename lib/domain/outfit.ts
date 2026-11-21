@@ -126,6 +126,35 @@ const RAIN_CODES = new Set([
 const HEAVY_RAIN_CODES = new Set([65, 67, 82, 95, 96, 99]);
 const SUNNY_CODES = new Set([0, 1]);
 
+// 추가 준비물로 권할 수 있는 이름 전체('물'은 다른 낱말에 섞여 검사에서 뺀다).
+const EXTRA_ITEMS = [
+  '우산',
+  '방수 신발',
+  '우비',
+  '여벌 양말',
+  '미끄럼 방지 신발',
+  '방수 장갑',
+  '귀마개',
+  '핫팩',
+  '바람막이',
+  '끈 있는 모자',
+  '얇은 겉옷',
+  '선글라스',
+  '선크림',
+];
+/** 옷차림 표와 준비물 규칙에 나오는 모든 옷·준비물 이름. */
+export const OUTFIT_VOCABULARY: readonly string[] = [
+  ...new Set([
+    ...BANDS.flatMap((b) => [
+      ...b.outer,
+      ...b.top,
+      ...b.bottom,
+      ...b.accessories,
+    ]),
+    ...EXTRA_ITEMS,
+  ]),
+];
+
 export function outfitBand(tempMax: number): Band {
   return BANDS.find((band) => tempMax <= band.max) ?? BANDS[BANDS.length - 1];
 }
