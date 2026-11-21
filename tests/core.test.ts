@@ -116,13 +116,14 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
   const oldFetch = globalThis.fetch,
     oldKey = process.env.CLOVA_STUDIO_API_KEY;
   process.env.CLOVA_STUDIO_API_KEY = 'test-key';
-  const output = {
+  let output = {
     title: '추천 여행',
     summary: '자연 탐색',
     stops: [{ placeId: places[0].id, reason: '갯골' }],
   };
   try {
     let rerankCalled = false;
+    let firstCandidateId = places[0].id;
     globalThis.fetch = async (url, options) => {
       assert.equal(
         (options?.headers as Record<string, string>).Authorization,
@@ -135,11 +136,17 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
         rerankCalled = true;
         assert.equal(body.query, '자연 여행');
         assert.ok(Array.isArray(body.documents) && body.documents.length <= 20);
+        firstCandidateId = body.documents[0].id;
+        output = {
+          title: '추천 여행',
+          summary: '자연 탐색',
+          stops: [{ placeId: firstCandidateId, reason: '자연' }],
+        };
         return Response.json({
           status: { code: '20000' },
           result: {
             result: '자연 여행 추천 근거 요약',
-            citedDocuments: [{ id: places[0].id, doc: '갯골' }],
+            citedDocuments: [{ id: firstCandidateId, doc: '자연' }],
           },
         });
       }
@@ -163,7 +170,7 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
     assert.equal(clovaResult.mode, 'clova');
     assert.equal(rerankCalled, true);
     assert.equal(clovaResult.reranked, true);
-    assert.ok(clovaResult.relatedPlaceIds?.includes(places[0].id));
+    assert.ok(clovaResult.relatedPlaceIds?.includes(firstCandidateId));
     globalThis.fetch = async () =>
       Response.json({
         status: { code: '20000' },
