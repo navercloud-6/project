@@ -1,6 +1,9 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { PlaceCard } from './place-card';
+import { WeatherBriefing } from './weather-briefing';
+import { WeatherRestaurants } from './weather-restaurants';
+import type { Capabilities } from './assistant/shared';
 import { WeatherSymbol } from './weather-symbol';
 import { api } from '@/lib/adapters/client-api';
 import type { Place } from '@/lib/domain/catalog';
@@ -54,6 +57,7 @@ type WeatherPanelProps = {
   onTogglePlace: (placeId: string) => void;
   onDetailPlace: (place: Place) => void;
   onExploreRegion: (region: string) => void;
+  capabilities?: Capabilities;
 };
 
 export type WeatherPanelState =
@@ -118,6 +122,7 @@ export function WeatherPanelView({
   onTogglePlace,
   onDetailPlace,
   onExploreRegion,
+  capabilities,
   state,
   onRetry,
 }: WeatherPanelProps & { state: WeatherPanelState; onRetry: () => void }) {
@@ -317,6 +322,13 @@ export function WeatherPanelView({
                 </div>
               )}
             </section>
+
+            <WeatherBriefing
+              region={weather.region}
+              capabilities={capabilities}
+            />
+
+            <WeatherRestaurants region={weather.region} />
 
             <section
               className="weather-forecast-section"
