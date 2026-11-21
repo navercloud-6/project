@@ -47,7 +47,7 @@ export const clovaPlaceLabelSchema = z.object({
 });
 
 export const placeLabelSchema = clovaPlaceLabelSchema.extend({
-  source: z.enum(['clova', 'heuristic']),
+  source: z.enum(['clova', 'heuristic', 'manual']),
 });
 
 export type PlaceLabel = z.infer<typeof placeLabelSchema>;
@@ -528,21 +528,38 @@ export function scorePlaceMatch(
   }
 
   for (const token of tokens) {
-    if (nameLower.includes(token)) score += 32;
-    if (regionLower.includes(token)) score += 12;
-    if (place.tags.some((t) => t.toLowerCase().includes(token))) score += 8;
+    if (token.length >= 2 && nameLower.includes(token)) score += 32;
+    if (token.length >= 2 && regionLower.includes(token)) score += 12;
+    if (
+      token.length >= 2 &&
+      place.tags.some((t) => t.toLowerCase().includes(token))
+    )
+      score += 8;
     if (labels) {
-      if (labels.setting.toLowerCase().includes(token)) score += 14;
-      if (labels.themes.some((t) => t.toLowerCase().includes(token)))
+      if (token.length >= 2 && labels.setting.toLowerCase().includes(token))
         score += 14;
-      if (labels.companions.some((c) => c.toLowerCase().includes(token)))
+      if (
+        token.length >= 2 &&
+        labels.themes.some((t) => t.toLowerCase().includes(token))
+      )
+        score += 14;
+      if (
+        token.length >= 2 &&
+        labels.companions.some((c) => c.toLowerCase().includes(token))
+      )
         score += 10;
-      if (labels.styles.some((s) => s.toLowerCase().includes(token)))
+      if (
+        token.length >= 2 &&
+        labels.styles.some((s) => s.toLowerCase().includes(token))
+      )
         score += 10;
-      if (labels.keywords.some((k) => k.toLowerCase().includes(token)))
+      if (
+        token.length >= 2 &&
+        labels.keywords.some((k) => k.toLowerCase().includes(token))
+      )
         score += 10;
     }
-    if (descLower.includes(token)) score += 4;
+    if (token.length >= 2 && descLower.includes(token)) score += 4;
   }
 
   return score;

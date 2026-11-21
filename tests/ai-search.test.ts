@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import labelData from '../data/place-labels.json';
+import overrideData from '../data/place-label-overrides.json';
 import { places } from '../lib/domain/catalog';
 import {
   expandQueryTerms,
@@ -13,7 +14,11 @@ import {
 } from '../lib/domain/place-labels';
 import { createRecommendation } from '../lib/application/recommendation';
 import { naver, rerank } from '../lib/adapters/naver';
-import { parseBatchLabels } from '../scripts/label-places';
+import {
+  applyOverrides,
+  loadOverrides,
+  parseBatchLabels,
+} from '../scripts/label-places';
 import { AiTravelSearch } from '../components/ai-travel-search';
 import type { AIPort } from '../lib/application/ports';
 
@@ -516,4 +521,83 @@ test('최상단 AI 통합 검색창은 테마 칩·즉시 검색 미리보기·R
   assert.equal((resultMarkup.match(/class="ai-place-item"/g) ?? []).length, 1);
   assert.doesNotMatch(resultMarkup, /함께 둘러볼 연관 관광지/);
   assert.match(resultMarkup, /이 코스로 담기/);
+});
+
+test('수동 라벨 보정은 재라벨링해도 유지되고 대표 검색어 누락·오분류를 방지한다', () => {
+  const placeById = new Map(places.map((p) => [p.id, p]));
+  const overrides = loadOverrides();
+  assert.equal(Object.keys(overrides).length, Object.keys(overrideData).length);
+  for (const [id, label] of Object.entries(overrides)) {
+    assert.ok(placeById.has(id), `미등록 보정 ID: ${id}`);
+    assert.equal(placeLabelSchema.safeParse(label).success, true);
+    assert.equal(label.source, 'manual');
+  }
+
+  // CLOVA 재라벨링 맵에 잘못된 라벨이 들어와도 applyOverrides가 수동 보정을 유지한다
+  const overwritten = applyOverrides(
+    places,
+    {
+      PLACE_REAL_001: {
+        setting: '야외',
+        themes: ['산·계곡'],
+        companions: ['가족'],
+        styles: ['액티비티'],
+        keywords: ['갯골생태공원'],
+        source: 'clova',
+      },
+    },
+    overrides,
+  );
+  assert.equal(overwritten.PLACE_REAL_001.source, 'manual');
+  assert.ok(overwritten.PLACE_REAL_001.themes.includes('공원·숲'));
+  assert.ok(overwritten.PLACE_REAL_001.styles.includes('산책'));
+
+  // 대표 검색어 회귀 검사
+  const siheungNature = searchPlaces(places, '시흥 자연 산책');
+  assert.ok(
+    siheungNature.some((p) => p.id === 'PLACE_REAL_001'),
+    '시흥 자연 산책에 시흥 갯골생태공원이 포함돼야 한다',
+  );
+  assert.ok(siheungNature.length >= 5);
+
+  const sea = searchPlaces(places, '바다');
+  for (const id of [
+    'PLACE_REAL_001',
+    'PLACE_REAL_007',
+    'PLACE_REAL_016',
+    'PLACE_TOURAPI_1932056',
+    'PLACE_TOURAPI_2761552',
+    'PLACE_TOURAPI_126844',
+  ]) {
+    assert.ok(
+      sea.some((p) => p.id === id),
+      `바다 검색에 ${id}가 포함돼야 한다`,
+    );
+  }
+
+  const lake = searchPlaces(places, '호수');
+  for (const id of [
+    'PLACE_TOURAPI_1932056',
+    'PLACE_TOURAPI_2761552',
+    'PLACE_TOURAPI_126844',
+  ]) {
+    assert.ok(
+      !lake.some((p) => p.id === id),
+      `호수 검색에서 해수욕장·섬(${id})이 제외돼야 한다`,
+    );
+  }
+
+  const rainyIndoor = searchPlaces(places, '비 오는 날 실내');
+  for (const id of [
+    'PLACE_TOURAPI_128284',
+    'PLACE_REAL_005',
+    'PLACE_REAL_008',
+    'PLACE_REAL_010',
+    'PLACE_TOURAPI_2662855',
+  ]) {
+    assert.ok(
+      !rainyIndoor.some((p) => p.id === id),
+      `비 오는 날 실내 검색에서 야외 명소(${id})가 제외돼야 한다`,
+    );
+  }
 });
