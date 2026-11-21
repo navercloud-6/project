@@ -7,6 +7,10 @@ import type {
 import type { Place } from '@/lib/domain/catalog';
 import type { History, editOutput, posterOutput } from '@/lib/domain/assistant';
 import type { WeatherResponse } from '@/lib/domain/weather';
+import type {
+  CityWeatherLocation,
+  CityWeatherObservation,
+} from '@/lib/domain/city-weather';
 
 export type JourneyDraft = Pick<
   Journey,
@@ -110,4 +114,9 @@ export interface WeatherPort {
   now(): number;
   demo(): boolean;
   current(region: string): Promise<WeatherResponse>;
+}
+export interface CityWeatherPort {
+  now(): number;
+  demo(): boolean;
+  current(city: CityWeatherLocation): Promise<CityWeatherObservation>;
 }
