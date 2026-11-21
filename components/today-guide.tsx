@@ -14,7 +14,6 @@ import { OutfitCard } from './outfit-card';
 import { PlaceCard } from './place-card';
 import { WeatherBriefing } from './weather-briefing';
 import { WeatherRestaurants } from './weather-restaurants';
-import { WeatherSymbol } from './weather-symbol';
 import { SafetyAlerts } from './safety-alerts';
 
 const regionForCity = (cityId: string | null) =>
@@ -70,7 +69,6 @@ export function TodayGuide({
   }, [region]);
 
   const weather = state.region === region ? state.data : undefined;
-  const today = weather?.daily[0];
   const spoken = briefing?.region === region ? briefing : null;
   // 원고가 오면 원고가 말한 순서·이유로, 오기 전에는 날씨 추천 순서(최대 3곳)로 보여 준다.
   const spots = (
@@ -88,65 +86,46 @@ export function TodayGuide({
 
   return (
     <div className="today-guide">
-      <div className="section-heading">
-        <div>
-          <span className="pill">지도로 고르는 오늘의 여행 안내</span>
-          <h1>여행 도우미</h1>
-          <p>
-            지도에서 시·군을 고르면 날씨·옷차림·추천 명소·맛집을 정리하고 1분
-            음성 안내로 들려드려요.
-          </p>
+      {/* 홈(경기 둘러보기)과 같은 제목·지도 구성 */}
+      <section
+        className="city-explorer today-main"
+        aria-labelledby="today-title"
+      >
+        <div className="city-explorer-heading">
+          <div>
+            <span className="city-explorer-eyebrow">여행 도우미</span>
+            <h2 id="today-title">
+              지도에서 도시를 골라 오늘의 안내를 받아 보세요
+            </h2>
+            <p>
+              안전 안내·날씨·옷차림·추천 명소·맛집을 정리하고 1분 음성으로
+              들려드려요.
+            </p>
+          </div>
+          <span className="city-explorer-region-count">
+            경기도 31개 시·군 안내
+          </span>
         </div>
-      </div>
+        {/* 홈과 같은 지도(날씨 카드는 지도 안 오른쪽 위, 선택 상자는 아래) */}
+        <GyeonggiMapPanel
+          selectedCityId={selectedCityId}
+          onSelectCity={onSelectCity}
+        />
+      </section>
 
-      <GyeonggiMapPanel
-        selectedCityId={selectedCityId}
-        onSelectCity={onSelectCity}
-      />
-
+      {/* 지도 아래 가로로 넓게: 재난·안전 안내 */}
       <SafetyAlerts region={region} />
 
+      {/* 지도 아래 가로로 넓게: 오늘의 안내(원고·음성) */}
       <WeatherBriefing
         region={region}
         capabilities={capabilities}
         onLoaded={setBriefing}
       />
 
-      <section
-        className="today-weather"
-        aria-labelledby="today-weather-title"
-        aria-busy={!weather && !state.error}
-      >
-        <h2 id="today-weather-title">{place} 오늘 날씨</h2>
-        {state.region === region && state.error && (
-          <p role="alert" className="tool-error">
-            {state.error}
-          </p>
-        )}
-        {!weather && !state.error && (
-          <p className="fine">날씨를 불러오고 있어요…</p>
-        )}
-        {weather && today && (
-          <>
-            <div className="today-weather-summary">
-              <span className="today-weather-icon">
-                <WeatherSymbol icon={weather.current.icon} size={40} />
-              </span>
-              <strong>{weather.current.temperature.toFixed(1)}°C</strong>
-              <span>{weather.current.condition}</span>
-              <span>
-                최저 {today.tempMin.toFixed(1)}° · 최고{' '}
-                {today.tempMax.toFixed(1)}°
-              </span>
-              <span>비 올 확률 {today.precipitationProbability}%</span>
-            </div>
-            <OutfitCard
-              outfit={weather.outfit}
-              demo={weather.mode === 'demo'}
-            />
-          </>
-        )}
-      </section>
+      {weather && (
+        <OutfitCard outfit={weather.outfit} demo={weather.mode === 'demo'} />
+      )}
 
       <section className="today-spots" aria-labelledby="today-spots-title">
         <div className="weather-outfit-heading">
