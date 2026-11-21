@@ -2079,6 +2079,65 @@ summary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+.weather-briefing {
+  margin-bottom: 42px;
+  padding: 22px;
+  border-radius: 12px;
+  background: #f6faf7;
+  border: 1px solid #dcebe1;
+}
+.weather-briefing-heading h2 {
+  margin: 0 0 4px;
+}
+.weather-briefing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+.weather-briefing-result audio {
+  width: 100%;
+  margin: 8px 0;
+}
+.weather-briefing-script {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink);
+  background: #fff;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 8px 0;
+  white-space: pre-wrap;
+}
+.weather-restaurants {
+  margin-bottom: 42px;
+  padding: 22px;
+  border-radius: 12px;
+  background: #fbf8f3;
+  border: 1px solid #efe3d2;
+}
+.weather-restaurant-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 10px;
+}
+.weather-restaurant-list > li {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.weather-restaurant-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: baseline;
+}
+.weather-restaurant-list p {
+  margin: 4px 0 8px;
+}
 .weather-forecast-section {
   margin-bottom: 42px;
 }
