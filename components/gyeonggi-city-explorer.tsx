@@ -3,25 +3,13 @@
 import Image from 'next/image';
 import { useId } from 'react';
 import type { Place } from '@/lib/domain/catalog';
-import type { WeatherIcon } from '@/lib/domain/weather';
-import { WeatherSymbol, weatherIconLabels } from './weather-symbol';
+import { CityWeatherBadge } from './city-weather-badge';
+import { DEFAULT_WEATHER_CITY_ID } from '@/lib/domain/city-weather';
 import {
   gyeonggiCities,
   gyeonggiMap,
   placesInCity,
 } from '@/lib/domain/gyeonggi';
-
-export type CityMapWeather = {
-  icon: WeatherIcon;
-  temperature: number;
-  mode: 'demo' | 'live';
-};
-
-const previewWeather: CityMapWeather = {
-  icon: 'sun',
-  temperature: 10,
-  mode: 'demo',
-};
 
 function LocationIcon({ className = '' }: { className?: string }) {
   return (
@@ -46,7 +34,6 @@ export function GyeonggiCityExplorer({
   places,
   selectedCityId,
   selection,
-  weather = previewWeather,
   onSelectCity,
   onDetail,
   onToggle,
@@ -54,7 +41,6 @@ export function GyeonggiCityExplorer({
   places: Place[];
   selectedCityId: string | null;
   selection: string[];
-  weather?: CityMapWeather;
   onSelectCity: (cityId: string | null) => void;
   onDetail: (place: Place) => void;
   onToggle: (placeId: string) => void;
@@ -85,22 +71,9 @@ export function GyeonggiCityExplorer({
             <span>
               <span className="map-status-dot" /> 경기도 여행 지도
             </span>
-            <div
-              className="gyeonggi-map-weather"
-              role="img"
-              aria-label={`${weather.mode === 'demo' ? '예시 날씨' : '날씨'}: ${weatherIconLabels[weather.icon]}, ${weather.temperature}도`}
-            >
-              <WeatherSymbol
-                icon={weather.icon}
-                size={40}
-                className={`gyeonggi-map-weather-icon ${weather.icon}`}
-              />
-              <strong>
-                {weather.temperature}
-                <span>°C</span>
-              </strong>
-              {weather.mode === 'demo' && <small>예시 날씨</small>}
-            </div>
+            <CityWeatherBadge
+              cityId={selectedCityId ?? DEFAULT_WEATHER_CITY_ID}
+            />
           </div>
           <svg
             className="gyeonggi-map-svg"

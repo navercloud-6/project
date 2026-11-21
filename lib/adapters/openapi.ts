@@ -11,6 +11,11 @@ import {
   posterOutput,
 } from '@/lib/domain/assistant';
 import { weatherResponseSchema } from '@/lib/domain/weather';
+import {
+  cityWeatherResponseSchema,
+  cityWeatherLocations,
+  DEFAULT_WEATHER_CITY_ID,
+} from '@/lib/domain/city-weather';
 
 function toSchema(schema: z.ZodType): Record<string, unknown> {
   const { $schema: _schema, ...rest } = z.toJSONSchema(schema, {
@@ -116,6 +121,7 @@ export const openApiDocument = {
       EditOutput: toSchema(editOutput),
       PosterOutput: toSchema(posterOutput),
       WeatherResponse: toSchema(weatherResponseSchema),
+      CityWeatherResponse: toSchema(cityWeatherResponseSchema),
       AssistantRequest: {
         oneOf: [
           {
@@ -705,6 +711,70 @@ export const openApiDocument = {
           },
           '503': {
             description: 'CLOVA OCR 설정 누락',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/api/weather/current': {
+      get: {
+        tags: ['Weather'],
+        summary: '경기도 시·군 대표 지점의 현재 날씨 조회',
+        description:
+          '선택한 시·군의 대표 좌표로 Open-Meteo 현재 날씨를 조회합니다. 미지정 시 수원시 기준이며 성공 결과는 지역별 10분간 공유합니다. 실제 조회 실패는 오류로 반환하고 WEATHER_MODE=demo를 명시한 경우에만 예시 자료를 제공합니다.',
+        parameters: [
+          {
+            name: 'cityId',
+            in: 'query',
+            required: false,
+            description: '경기도 시·군 식별자',
+            schema: {
+              type: 'string',
+              enum: cityWeatherLocations.map((city) => city.id),
+              default: DEFAULT_WEATHER_CITY_ID,
+            },
+          },
+        ],
+        responses: {
+          '200': {
+            description:
+              '지역·좌표·현재 날씨·기준/조회/만료 시각·출처·실제/예시 구분',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/CityWeatherResponse' },
+              },
+            },
+          },
+          '400': {
+            description: '지원하지 않는 시·군',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+          '502': {
+            description: '날씨 응답·자료 시각 확인 실패',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+          '503': {
+            description: '날씨 제공 서비스 연결 실패',
+            content: {
+              'application/json': {
+                schema: { $ref: '#/components/schemas/ErrorResponse' },
+              },
+            },
+          },
+          '504': {
+            description: '날씨 제공 서비스 시간 초과',
             content: {
               'application/json': {
                 schema: { $ref: '#/components/schemas/ErrorResponse' },

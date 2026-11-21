@@ -4,7 +4,7 @@
 
 경기도 31개 시·군의 관광지를 탐색하고 AI 여행 추천·패스 구성·방문 기록을 제공하는 Next.js MVP다. 범위와 정책은 [요구사항](docs/01-func/01-requirements.md)을 따른다.
 
-탐색 화면 상단에서 경기도 시·군을 선택하면 오른쪽에 등록 관광지가 표시된다. 기존 시흥 자료와 한국관광공사 TourAPI 수집 자료를 함께 제공한다. 이후 목표와 남은 작업은 [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)에서 구분한다.
+탐색 화면 상단에서 경기도 시·군을 선택하면 오른쪽에 등록 관광지가 표시되고 지도 상단의 현재 날씨도 해당 지역으로 바뀐다. 미선택 시 수원시 대표 지점 기준이다. 기존 시흥 자료와 한국관광공사 TourAPI 수집 자료를 함께 제공한다. 이후 목표와 남은 작업은 [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md)에서 구분한다.
 
 ### 주요 화면
 
@@ -49,6 +49,8 @@ npm run data:tourapi
 
 API 문서는 실행 서버의 `/api/docs` 또는 `/scalar`, JSON 명세는 `/api/openapi`에서 제공한다. 계약과 보안 경계는 [기술 구조](docs/03-tech/01-architecture.md#http-api-계약)를 따른다.
 
+지도 현재 날씨는 별도 인증키 없이 서버에서 Open-Meteo를 조회하며 지역별 10분 캐시를 사용한다. 외부 조회 실패 시 상태와 재시도를 표시한다. `WEATHER_MODE=demo`를 명시하면 예시 날씨로 구분한다. 기존 날씨 탭은 시흥권 예보를 유지한다.
+
 서버 자원과 앱 응답 상태는 [Prometheus·Grafana 운영 모니터링](docs/05-ops/01-deploy.md#운영-모니터링)에서 확인한다.
 
 ## 테스트
@@ -72,6 +74,8 @@ TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs
 ```
 
 로그인 HTTP 검사는 별도 테스트 DB 서버에 `NAVER_LOGIN_CLIENT_ID`·`NAVER_LOGIN_CLIENT_SECRET`을 더미 값으로 설정한 뒤 `node tests/auth-http.mjs`로 실행한다. 실제 네이버 요청 없이 리다이렉트·취소·state·로그아웃을 확인한다.
+
+지도 날씨 HTTP 검사는 실행 서버를 대상으로 `node tests/city-weather-http.mjs`를 사용한다. `TEST_BASE_URL`로 주소를 바꿀 수 있고 `EXPECT_LIVE_WEATHER=true`를 더하면 실제 외부 날씨 조회 모드를 확인한다. 이 검사는 DB에 접근하지 않는다.
 
 문서 링크·분류 검사는 `python3 .github/scripts/check_docs.py`로 실행한다.
 
