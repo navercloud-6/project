@@ -9,6 +9,12 @@
   --brand-border: #aeead8;
   --brand-gradient: linear-gradient(135deg, #03c75a 0%, #04d1c9 100%);
   --brand-gradient-hover: linear-gradient(135deg, #02b14f 0%, #03bcb5 100%);
+  --brand-gradient-action: linear-gradient(135deg, #02823a 0%, #027974 100%);
+  --brand-gradient-action-hover: linear-gradient(
+    135deg,
+    #026b30 0%,
+    #02635f 100%
+  );
   --brand-gradient-soft: linear-gradient(135deg, #eafbf2 0%, #e6faf9 100%);
   --control-border: #bed8cf;
   --muted: #4b645c;
@@ -396,15 +402,14 @@ main {
 }
 .primary {
   width: 100%;
-  background: var(--brand-gradient);
+  background: var(--brand-gradient-action);
   color: white;
   font-weight: 700;
-  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.2);
-  box-shadow: 0 2px 10px rgba(3, 199, 90, 0.22);
+  box-shadow: 0 2px 10px rgba(2, 130, 58, 0.2);
 }
 .primary:hover:not(:disabled) {
-  background: var(--brand-gradient-hover);
-  box-shadow: 0 4px 14px rgba(3, 199, 90, 0.28);
+  background: var(--brand-gradient-action-hover);
+  box-shadow: 0 4px 14px rgba(2, 130, 58, 0.28);
 }
 .secondary {
   background: var(--surface);
@@ -592,7 +597,7 @@ main {
   overflow: hidden;
 }
 .ticket-top {
-  background: var(--brand-gradient);
+  background: var(--brand-gradient-action);
   color: white;
   padding: 25px 25px 10px;
   position: relative;
@@ -1439,9 +1444,8 @@ summary {
   color: var(--muted);
 }
 .view-button.active {
-  background: var(--brand-gradient);
+  background: var(--brand-gradient-action);
   color: #fff;
-  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.18);
 }
 .place-map-wrap {
   display: flex;
@@ -1588,7 +1592,7 @@ summary {
 .nm-pin.is-route .nm-dot {
   width: 28px;
   height: 28px;
-  background: var(--brand-gradient);
+  background: var(--brand-gradient-action);
   border-color: #fff;
   color: #fff;
 }
@@ -1717,7 +1721,7 @@ summary {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  background: var(--brand-gradient);
+  background: var(--brand-gradient-action);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -1902,10 +1906,9 @@ summary {
   color: var(--brand-ink);
 }
 .weather-region-chip.active {
-  background: var(--brand-gradient);
+  background: var(--brand-gradient-action);
   border-color: transparent;
   color: #fff;
-  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.18);
 }
 .weather-content {
   transition: opacity var(--dur-short) var(--ease-out);
@@ -2544,9 +2547,8 @@ main:focus {
   position: absolute;
   top: 12px;
   right: 12px;
-  background: var(--brand-gradient);
+  background: var(--brand-gradient-action);
   color: #fff;
-  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.18);
   border-radius: var(--radius-pill);
   padding: 3px 10px;
   font-size: 11px;
@@ -2563,9 +2565,8 @@ main:focus {
 }
 .add:hover {
   border-color: transparent;
-  background: var(--brand-gradient);
+  background: var(--brand-gradient-action);
   color: #fff;
-  text-shadow: 0 1px 2px rgba(6, 56, 36, 0.18);
 }
 .add.selected {
   border-color: var(--control-border);
@@ -2721,7 +2722,7 @@ dialog {
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  width: 132px;
+  width: 144px;
   padding: 10px 8px;
   border: 1px solid #dce8e2;
   border-radius: 14px;
@@ -2742,16 +2743,16 @@ dialog {
 }
 .city-weather-condition {
   color: #526c60;
-  font-size: 11px;
+  font-size: 12px;
 }
 .city-weather-meta {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  color: #71847b;
-  font-size: 9px;
+  color: var(--muted);
+  font-size: 12px;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 .city-weather-unknown {
   display: grid;
@@ -2762,8 +2763,8 @@ dialog {
   font-size: 27px;
 }
 .city-weather-message {
-  color: #71847b;
-  font-size: 11px;
+  color: var(--muted);
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.5;
   word-break: keep-all;
@@ -2775,7 +2776,7 @@ dialog {
   border-radius: 8px;
   background: #fff;
   color: #34564b;
-  font-size: 11px;
+  font-size: 12px;
 }
 .gyeonggi-map-weather-icon {
   color: #e3a126;
@@ -2805,7 +2806,7 @@ dialog {
 }
 .gyeonggi-map-weather small {
   color: #537067;
-  font-size: 10px;
+  font-size: 12px;
 }
 .gyeonggi-map-guidance {
   display: flex;
@@ -3361,8 +3362,8 @@ form > .label-row:first-child {
   .gyeonggi-map-weather {
     top: 48px;
     right: 16px;
-    width: 112px;
-    padding: 8px 6px;
+    width: 128px;
+    padding: 8px 8px;
   }
   .gyeonggi-map-weather-icon {
     width: 32px;
