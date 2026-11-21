@@ -6,18 +6,36 @@ import { revisionOf } from '@/lib/domain/journey';
 import type { JourneyService } from './journeys';
 import type { AIPort, LimitPort, JourneyDraft } from './ports';
 import { createAssistant } from './assistant';
+import { createCache } from './cache';
 import { createRecommendation } from './recommendation';
 import type { BriefingService } from './briefing';
+
+const PLACE_TRANSLATE_CACHE_MS = 24 * 60 * 60 * 1000;
+const PLACE_TRANSLATE_CACHE_MAX = 500;
+const PLACE_VOICE_CACHE_MS = 24 * 60 * 60 * 1000;
+const PLACE_VOICE_CACHE_MAX = 100;
 
 export function createOperations(
   journeys: JourneyService,
   ai: AIPort,
   limits: LimitPort,
   briefing?: BriefingService,
+  now: () => number = () => 0,
 ) {
   const { getJourney, applyEdit, photoFor } = journeys;
   const { guide, proposeEdit } = createAssistant(ai);
-  const recommend = createRecommendation(ai);
+  const recommend = createRecommendation(ai, now);
+  // 정적 카탈로그 문구 기반 장소 번역·음성은 모든 사용자에게 동일하므로 서버에서 캐시·병합한다.
+  const placeTranslations = createCache<string>({
+    now,
+    ttlMs: PLACE_TRANSLATE_CACHE_MS,
+    maxEntries: PLACE_TRANSLATE_CACHE_MAX,
+  });
+  const placeVoices = createCache<Uint8Array>({
+    now,
+    ttlMs: PLACE_VOICE_CACHE_MS,
+    maxEntries: PLACE_VOICE_CACHE_MAX,
+  });
   async function limit(
     key: string,
     maximum: number,
@@ -43,12 +61,6 @@ export function createOperations(
     owner: string,
     input: { prompt: string; region: string },
   ) {
-    await limit(
-      'ai:' + owner,
-      10,
-      '시간당 추천 한도에 도달했습니다. 직접 장소를 담거나 한 시간 후 다시 시도해 주세요.',
-      100,
-    );
     const feedback = (await journeys.journeys(owner))
       .slice(0, 10)
       .flatMap((j) =>
@@ -57,13 +69,22 @@ export function createOperations(
           rating: r.rating,
         })),
       );
+    // 이미 캐시됐거나 생성 중인 일반 질의 추천은 외부 호출이 없으므로 한도를 차감하지 않는다.
+    if (recommend.hasCached(input.prompt, input.region, feedback))
+      return recommend(input.prompt, input.region, feedback);
+    await limit(
+      'ai:' + owner,
+      10,
+      '시간당 추천 한도에 도달했습니다. 직접 장소를 담거나 한 시간 후 다시 시도해 주세요.',
+      100,
+    );
     return recommend(input.prompt, input.region, feedback);
   }
   async function assistant(
     owner: string,
     data: z.infer<typeof assistantInput>,
   ) {
-    // 이미 만들어 둔 통합 안내 원고·음성은 외부 호출이 없으므로 한도를 차감하지 않는다.
+    // 이미 만들어 둔 통합 안내·정적 장소 번역/음성은 외부 호출이 없으므로 한도를 차감하지 않는다.
     if (data.action === 'briefing' || data.action === 'briefingVoice') {
       if (!briefing)
         throw new ApplicationError(
@@ -79,6 +100,20 @@ export function createOperations(
           ? briefing.text(data.region, data.lang)
           : briefing.audio(data.region, data.lang);
     }
+    if (data.action === 'translate' && data.placeId) {
+      const key = `${data.placeId}:${data.target}`;
+      if (placeTranslations.has(key))
+        return {
+          text: await placeTranslations.getOrLoad(key, () =>
+            ai.translate(placeText(data.placeId!), data.target),
+          ),
+          mode: 'papago',
+        };
+    }
+    if (data.action === 'voice' && placeVoices.has(data.placeId))
+      return await placeVoices.getOrLoad(data.placeId, () =>
+        ai.voice(placeText(data.placeId)),
+      );
     await limit(
       'assistant:' + owner,
       30,
@@ -103,15 +138,25 @@ export function createOperations(
         }),
       };
     if (data.action === 'translate') {
-      const text = data.placeId
-        ? placeText(data.placeId)
-        : await journeyText(owner, data.journeyId!);
+      if (data.placeId) {
+        const key = `${data.placeId}:${data.target}`;
+        return {
+          text: await placeTranslations.getOrLoad(key, () =>
+            ai.translate(placeText(data.placeId!), data.target),
+          ),
+          mode: 'papago',
+        };
+      }
+      const text = await journeyText(owner, data.journeyId!);
       return {
         text: await ai.translate(text, data.target),
         mode: 'papago',
       };
     }
-    if (data.action === 'voice') return await ai.voice(placeText(data.placeId));
+    if (data.action === 'voice')
+      return await placeVoices.getOrLoad(data.placeId, () =>
+        ai.voice(placeText(data.placeId)),
+      );
     if (data.action === 'briefing')
       return briefing!.text(data.region, data.lang);
     if (data.action === 'briefingVoice')

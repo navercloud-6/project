@@ -87,8 +87,16 @@ test('날씨 API는 경기도 31개 시·군의 좌표로 5일 예보와 같은 
     globalThis.fetch = async () => {
       throw new Error('offline');
     };
-    const fallback = await GET(
+    const cached = await GET(
       new Request('http://localhost/api/weather?region=가평군'),
+    );
+    assert.equal(
+      (await cached.json()).mode,
+      'live',
+      '최근 성공한 지역은 10분 캐시를 반환한다',
+    );
+    const fallback = await GET(
+      new Request('http://localhost/api/weather?region=전체'),
     );
     assert.equal((await fallback.json()).mode, 'demo');
     const invalid = await GET(

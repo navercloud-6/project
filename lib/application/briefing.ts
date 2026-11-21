@@ -21,7 +21,10 @@ import {
 import type { RestaurantsResponse } from '@/lib/domain/restaurants';
 import { alertsSpeech, type AlertsResponse } from '@/lib/domain/alerts';
 import type { WeatherResponse } from '@/lib/domain/weather';
+import { createCache } from './cache';
 import type { AIPort } from './ports';
+
+const BRIEFING_CACHE_MAX = 64;
 
 export type BriefingDeps = {
   ai: AIPort;
@@ -31,8 +34,6 @@ export type BriefingDeps = {
   placeReviews?: (name: string, region: string) => Promise<string[]>;
   alerts?: (region: string) => Promise<AlertsResponse>;
 };
-
-type Entry<T> = { at: number; value: T };
 
 /**
  * 시·군 통합 안내. 원고(텍스트)와 음성을 따로 만든다.
@@ -49,13 +50,17 @@ export function createBriefing({
   placeReviews,
   alerts,
 }: BriefingDeps) {
-  const texts = new Map<string, Entry<BriefingOutput>>();
-  const audios = new Map<string, Entry<Uint8Array>>();
-  const pending = new Map<string, Promise<BriefingOutput>>();
-  const audioPending = new Map<string, Promise<Uint8Array>>();
+  const texts = createCache<BriefingOutput>({
+    now,
+    ttlMs: BRIEFING_CACHE_MS,
+    maxEntries: BRIEFING_CACHE_MAX,
+  });
+  const audios = createCache<Uint8Array>({
+    now,
+    ttlMs: BRIEFING_CACHE_MS,
+    maxEntries: BRIEFING_CACHE_MAX,
+  });
   const key = (region: string, lang: BriefingLanguage) => `${region}:${lang}`;
-  const fresh = <T>(entry: Entry<T> | undefined) =>
-    entry && now() - entry.at < BRIEFING_CACHE_MS ? entry.value : undefined;
 
   async function korean(region: string): Promise<BriefingOutput> {
     const caps = ai.capabilities();
@@ -148,12 +153,10 @@ export function createBriefing({
 
   /** 이미 만들어 두었거나 만드는 중인 원고·음성인지(그렇다면 새 외부 호출이 없다). */
   function hasText(region: string, lang: BriefingLanguage) {
-    const k = key(region, lang);
-    return Boolean(fresh(texts.get(k)) || pending.has(k));
+    return texts.has(key(region, lang));
   }
   function hasAudio(region: string, lang: BriefingLanguage) {
-    const k = key(region, lang);
-    return Boolean(fresh(audios.get(k)) || audioPending.has(k));
+    return audios.has(key(region, lang));
   }
 
   async function text(
@@ -166,48 +169,33 @@ export function createBriefing({
         'Papago API 키 설정이 필요합니다.',
       );
     const k = key(region, lang);
-    const cached = fresh(texts.get(k));
-    if (cached) return cached;
-    const running = pending.get(k);
-    if (running) return running;
-    const request = (async () => {
+    const value = await texts.getOrLoad(k, async () =>
       // 영어는 같은 한국어 원고를 번역한다(한국어 원고도 함께 저장된다).
-      const value =
-        lang === 'ko'
-          ? await korean(region)
-          : await text(region, 'ko').then(async (ko) =>
-              briefingOutput.parse({
-                ...ko,
-                lang: 'en',
-                script: shorten(
-                  await ai.translate(ko.script, 'en'),
-                  BRIEFING_EN_LIMIT,
-                ),
-              }),
-            );
-      texts.set(k, { at: now(), value });
-      // 듣기를 누르기 전에 음성을 미리 만들어 둔다(실패해도 원고는 그대로 보여 준다).
-      if (ai.capabilities().voice) audio(region, lang).catch(() => undefined);
-      return value;
-    })().finally(() => pending.delete(k));
-    pending.set(k, request);
-    return request;
+      lang === 'ko'
+        ? await korean(region)
+        : await text(region, 'ko').then(async (ko) =>
+            briefingOutput.parse({
+              ...ko,
+              lang: 'en',
+              script: shorten(
+                await ai.translate(ko.script, 'en'),
+                BRIEFING_EN_LIMIT,
+              ),
+            }),
+          ),
+    );
+    // 듣기를 누르기 전에 음성을 미리 만들어 둔다(실패해도 원고는 그대로 보여 준다).
+    if (ai.capabilities().voice && !audios.has(k))
+      audio(region, lang).catch(() => undefined);
+    return value;
   }
 
   async function audio(region: string, lang: BriefingLanguage) {
     const k = key(region, lang);
-    const cached = fresh(audios.get(k));
-    if (cached) return cached;
-    const running = audioPending.get(k);
-    if (running) return running;
-    const request = (async () => {
+    return audios.getOrLoad(k, async () => {
       const { script } = await text(region, lang);
-      const value = await ai.voice(script, lang === 'en' ? 'clara' : 'nara');
-      audios.set(k, { at: now(), value });
-      return value;
-    })().finally(() => audioPending.delete(k));
-    audioPending.set(k, request);
-    return request;
+      return ai.voice(script, lang === 'en' ? 'clara' : 'nara');
+    });
   }
 
   return { text, audio, hasText, hasAudio };
