@@ -12,8 +12,14 @@ export function SafetyAlerts({ region }: { region: string }) {
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setState({ region });
-    api(`/api/alerts?region=${encodeURIComponent(region)}`)
+    api(
+      `/api/alerts?region=${encodeURIComponent(region)}`,
+      'GET',
+      undefined,
+      controller.signal,
+    )
       .then((r) => {
         const data = alertsResponseSchema.parse(r);
         if (active && data.region === region) setState({ region, data });
@@ -23,6 +29,7 @@ export function SafetyAlerts({ region }: { region: string }) {
       });
     return () => {
       active = false;
+      controller.abort();
     };
   }, [region]);
 

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { api, request } from '@/lib/adapters/client-api';
 import { ErrorText, type Capabilities } from './shared';
 export function LanguageTools({
@@ -17,13 +17,41 @@ export function LanguageTools({
   const [audio, setAudio] = useState('');
   const [busyKind, setBusyKind] = useState<'voice' | 'translate' | null>(null);
   const [error, setError] = useState('');
-  useEffect(
-    () => () => {
-      if (audio) URL.revokeObjectURL(audio);
-    },
-    [audio],
-  );
+  // 정적 장소 설명의 음성·번역은 같은 화면 안에서 다시 요청하지 않고 재사용한다.
+  const voiceCache = useRef(new Map<string, string>());
+  const translationCache = useRef(new Map<string, string>());
+  useEffect(() => {
+    const savedVoices = voiceCache.current;
+    return () => {
+      for (const url of savedVoices.values()) URL.revokeObjectURL(url);
+    };
+  }, []);
+  useEffect(() => {
+    setText(
+      placeId
+        ? (translationCache.current.get(`${placeId}:${target}`) ?? '')
+        : '',
+    );
+    setAudio(placeId ? (voiceCache.current.get(placeId) ?? '') : '');
+    setError('');
+  }, [placeId, journeyId]);
   async function run(kind: 'voice' | 'translate') {
+    if (kind === 'voice' && placeId) {
+      const cached = voiceCache.current.get(placeId);
+      if (cached) {
+        setAudio(cached);
+        setError('');
+        return;
+      }
+    }
+    if (kind === 'translate' && placeId) {
+      const cached = translationCache.current.get(`${placeId}:${target}`);
+      if (cached) {
+        setText(cached);
+        setError('');
+        return;
+      }
+    }
     setBusyKind(kind);
     setError('');
     try {
@@ -33,7 +61,9 @@ export function LanguageTools({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action: 'voice', placeId }),
         });
-        setAudio(URL.createObjectURL(await r.blob()));
+        const url = URL.createObjectURL(await r.blob());
+        if (placeId) voiceCache.current.set(placeId, url);
+        setAudio(url);
       } else {
         const res = await api<{ text: string }>('/api/assistant', 'POST', {
           action: 'translate',
@@ -41,6 +71,8 @@ export function LanguageTools({
           journeyId,
           target,
         });
+        if (placeId)
+          translationCache.current.set(`${placeId}:${target}`, res.text);
         setText(res.text);
       }
     } catch (e) {
@@ -68,8 +100,13 @@ export function LanguageTools({
           id={id}
           value={target}
           onChange={(e) => {
-            setTarget(e.target.value);
-            setText('');
+            const next = e.target.value;
+            setTarget(next);
+            setText(
+              placeId
+                ? (translationCache.current.get(`${placeId}:${next}`) ?? '')
+                : '',
+            );
           }}
         >
           <option value="en">English</option>

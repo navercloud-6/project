@@ -1,6 +1,6 @@
 import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { db, transaction } from '../lib/adapters/postgres';
+import { consumeLimit, db, transaction } from '../lib/adapters/postgres';
 import { jsonBody, readBody } from '../lib/adapters/http';
 import { ApplicationError } from '../lib/domain/errors';
 import { api, request } from '../lib/adapters/client-api';
@@ -160,4 +160,28 @@ test('브라우저 요청은 JSON·바이너리 응답과 서버·비 JSON 오�
   } finally {
     globalThis.fetch = original;
   }
+});
+
+test('요청 한도 버킷은 시간당 한도를 지키면서 지난 시간 버킷 행을 정리한다', async () => {
+  const pool = await db();
+  await pool.query('INSERT INTO limits (key, count) VALUES ($1, $2)', [
+    'stale:owner:100',
+    5,
+  ]);
+  assert.equal(await consumeLimit('prune:owner', 2), true);
+  assert.equal(await consumeLimit('prune:owner', 2), true);
+  assert.equal(await consumeLimit('prune:owner', 2), false);
+  const { rows } = await pool.query<{ key: string }>(
+    "SELECT key FROM limits WHERE key LIKE 'stale:%' OR key LIKE 'prune:%'",
+  );
+  assert.equal(
+    rows.some((r) => r.key === 'stale:owner:100'),
+    false,
+    '지난 시간 버킷은 정리된다',
+  );
+  assert.equal(
+    rows.some((r) => r.key.startsWith('prune:owner:')),
+    true,
+    '현재 시간 버킷은 유지된다',
+  );
 });

@@ -2,11 +2,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { api, request } from '@/lib/adapters/client-api';
 import {
+  BRIEFING_CACHE_MS,
   briefingOutput,
   type BriefingLanguage,
   type BriefingOutput,
 } from '@/lib/domain/briefing';
 import { ErrorText, type Capabilities } from './assistant/shared';
+
+const BRIEFING_DEBOUNCE_MS = 350;
 
 type TextState = {
   key: string;
@@ -35,31 +38,59 @@ export function WeatherBriefing({
   const [audio, setAudio] = useState<{ key: string; url: string } | null>(null);
   const [voiceBusy, setVoiceBusy] = useState(false);
   const [voiceError, setVoiceError] = useState('');
-  // 시·군·언어별로 미리 받아 둔 음성(받는 중이면 Promise)
+  // 시·군·언어별로 미리 받아 둔 원고(10분)·음성(받는 중이면 Promise)
+  const cachedTexts = useRef(
+    new Map<string, { at: number; data: BriefingOutput }>(),
+  );
   const voices = useRef(new Map<string, Promise<string>>());
+  const firstLoad = useRef(true);
 
   const englishOff = capabilities ? !capabilities.translate : false;
   const voiceOff = capabilities ? !capabilities.voice : false;
   const place = region === '전체' ? '경기도' : region;
 
-  // 시·군·언어가 바뀌면 원고를 자동으로 불러온다(이전 요청 결과는 무시).
+  // 시·군·언어가 바뀌면 원고를 자동으로 불러온다(연속 전환 시 350ms 디바운스·이전 요청 취소).
   useEffect(() => {
     let active = true;
+    const saved = cachedTexts.current.get(key);
+    if (saved && Date.now() - saved.at < BRIEFING_CACHE_MS) {
+      firstLoad.current = false;
+      setText({ key, data: saved.data });
+      setVoiceError('');
+      onLoaded?.(saved.data);
+      if (!voiceOff) prefetch(region, lang).catch(() => undefined);
+      return;
+    }
     setText({ key });
     setVoiceError('');
-    api('/api/assistant', 'POST', { action: 'briefing', region, lang })
-      .then((r) => {
-        if (!active) return;
-        const data = briefingOutput.parse(r);
-        setText({ key, data });
-        onLoaded?.(data);
-        if (!voiceOff) prefetch(region, lang).catch(() => undefined);
-      })
-      .catch((e) => {
-        if (active) setText({ key, error: (e as Error).message });
-      });
+    const controller = new AbortController();
+    const delay = firstLoad.current ? 0 : BRIEFING_DEBOUNCE_MS;
+    firstLoad.current = false;
+    const timer = setTimeout(() => {
+      api(
+        '/api/assistant',
+        'POST',
+        { action: 'briefing', region, lang },
+        controller.signal,
+      )
+        .then((r) => {
+          if (!active) return;
+          const data = briefingOutput.parse(r);
+          cachedTexts.current.set(key, { at: Date.now(), data });
+          setText({ key, data });
+          onLoaded?.(data);
+          if (!voiceOff) prefetch(region, lang).catch(() => undefined);
+        })
+        .catch((e) => {
+          if (!active || (e instanceof Error && e.name === 'AbortError'))
+            return;
+          setText({ key, error: (e as Error).message });
+        });
+    }, delay);
     return () => {
       active = false;
+      clearTimeout(timer);
+      controller.abort();
     };
   }, [key, region, lang]);
 
