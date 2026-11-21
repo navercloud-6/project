@@ -122,8 +122,8 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
     stops: [{ placeId: places[0].id, reason: '갯골' }],
   };
   try {
+    let rerankCalled = false;
     globalThis.fetch = async (url, options) => {
-      assert.match(String(url), /\/v3\/chat-completions\/HCX-/);
       assert.equal(
         (options?.headers as Record<string, string>).Authorization,
         'Bearer test-key',
@@ -131,6 +131,19 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
       assert.equal(options?.redirect, 'error');
       assert.equal(options?.cache, 'no-store');
       const body = JSON.parse(options?.body as string);
+      if (String(url).includes('/v1/api-tools/reranker')) {
+        rerankCalled = true;
+        assert.equal(body.query, '자연 여행');
+        assert.ok(Array.isArray(body.documents) && body.documents.length <= 20);
+        return Response.json({
+          status: { code: '20000' },
+          result: {
+            result: '자연 여행 추천 근거 요약',
+            citedDocuments: [{ id: places[0].id, doc: '갯골' }],
+          },
+        });
+      }
+      assert.match(String(url), /\/v3\/chat-completions\/HCX-/);
       assert.equal(body.maxTokens, 1200);
       assert.equal(body.temperature, 0.3);
       assert.equal(body.topP, 0.8);
@@ -146,7 +159,11 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
         },
       });
     };
-    assert.equal((await recommend('자연 여행', '전체', [])).mode, 'clova');
+    const clovaResult = await recommend('자연 여행', '전체', []);
+    assert.equal(clovaResult.mode, 'clova');
+    assert.equal(rerankCalled, true);
+    assert.equal(clovaResult.reranked, true);
+    assert.ok(clovaResult.relatedPlaceIds?.includes(places[0].id));
     globalThis.fetch = async () =>
       Response.json({
         status: { code: '20000' },

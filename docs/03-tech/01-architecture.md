@@ -37,7 +37,8 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 ## 네이버 지도와 관광 데이터
 
 - [PlaceMap](../../components/place-map.tsx)은 [naver-map.ts](../../lib/adapters/naver-map.ts)로 Web Dynamic Map v3 SDK를 1회 로드하고 `navermap_authFailure`를 감지한다. `NAVER_MAP_CLIENT_ID`는 `force-dynamic` 홈에서 런타임 주입하며, 미설정·실패 시 경기도 투영 SVG로 폴백한다.
-- [import-tourapi.ts](../../scripts/import-tourapi.ts)는 한국관광공사 `KorService2`를 수집해 시흥 20곳을 유지하고 타 시·군 관광지를 갱신한다. 공공누리 제1유형·`tong.visitkorea.or.kr` 사진만 허용하며, AI 추천 후보는 지역 필터 후 최대 40곳만 전달한다. 공개 사진은 Next.js Image로 WebP 최적화·지연 로딩한다.
+- [import-tourapi.ts](../../scripts/import-tourapi.ts)는 한국관광공사 `KorService2`를 수집해 시흥 20곳을 유지하고 타 시·군 관광지를 갱신한다. 공공누리 제1유형·`tong.visitkorea.or.kr` 사진만 허용하며 공개 사진은 Next.js Image로 WebP 최적화·지연 로딩한다.
+- [label-places.ts](../../scripts/label-places.ts)는 609곳 관광지에 CLOVA Studio(및 `--bootstrap` 초기 규칙 추론)로 실내·야외·테마·동행·여행 방식·키워드 라벨을 생성해 [place-labels.json](../../data/place-labels.json)에 저장한다. [recommendation.ts](../../lib/application/recommendation.ts)는 라벨·동의어·만족도로 1차 후보(최대 20곳)를 추출한 뒤 [naver.ts](../../lib/adapters/naver.ts)의 CLOVA Studio Reranker(`/v1/api-tools/reranker`)로 연관 관광지를 선별하고 `HCX-005`로 맞춤 코스를 생성한다.
 
 ## HTTP API 계약
 

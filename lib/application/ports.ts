@@ -76,8 +76,16 @@ export type Capabilities = {
 };
 export type AICandidate = Pick<
   Place,
-  'id' | 'name' | 'region' | 'description' | 'tags'
+  'id' | 'name' | 'region' | 'description' | 'tags' | 'labels'
 >;
+export type RerankDocument = {
+  id: string;
+  doc: string;
+};
+export type RerankResult = {
+  citedIds: string[];
+  summary: string;
+};
 export type GuideSource = {
   id: string;
   title: string;
@@ -88,6 +96,7 @@ export type GuideSource = {
 };
 export interface AIPort {
   capabilities(): Capabilities;
+  rerank?(query: string, documents: RerankDocument[]): Promise<RerankResult>;
   recommend(
     prompt: string,
     candidates: AICandidate[],

@@ -122,7 +122,21 @@ export const openApiDocument = {
       Recommendation: {
         allOf: [
           ref('RecommendationOutput'),
-          obj({ mode: { type: 'string', enum: ['demo', 'clova'] } }),
+          obj(
+            {
+              mode: { type: 'string', enum: ['demo', 'clova'] },
+              relatedPlaceIds: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Reranker·라벨 매칭 기반 연관 관광지 ID 목록',
+              },
+              reranked: {
+                type: 'boolean',
+                description: 'CLOVA Studio Reranker 선별 적용 여부',
+              },
+            },
+            ['mode'],
+          ),
         ],
       },
       History: toSchema(historySchema),

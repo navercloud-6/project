@@ -53,6 +53,8 @@ export const recommendationOutput = z
   );
 export type Recommendation = z.infer<typeof recommendationOutput> & {
   mode: 'demo' | 'clova';
+  relatedPlaceIds?: string[];
+  reranked?: boolean;
 };
 export type Journey = z.infer<typeof journeyInput> & {
   id: string;

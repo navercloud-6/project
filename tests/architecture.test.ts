@@ -44,6 +44,7 @@ test('안쪽 계층은 프레임워크·어댑터·I/O에 의존하지 않고 �
           (layer === 'application' &&
             target.startsWith(resolve(root, 'lib/application') + sep)) ||
           target === resolve(root, 'data/places.json') ||
+          target === resolve(root, 'data/place-labels.json') ||
           target === resolve(root, 'data/gyeonggi-map.json');
         assert.ok(allowed, `${relative(root, file)} -> ${name}`);
       }
