@@ -20,7 +20,7 @@ import { AiTravelSearch } from './ai-travel-search';
 import { WeatherPanel } from './weather-panel';
 import { GyeonggiCityExplorer } from './gyeonggi-city-explorer';
 import { gyeonggiCities } from '@/lib/domain/gyeonggi';
-import { matchesPlaceQuery, scorePlaceMatch } from '@/lib/domain/place-labels';
+import { searchPlaces } from '@/lib/domain/place-labels';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey, Recommendation } from '@/lib/domain/contracts';
 
@@ -69,6 +69,7 @@ export default function Tourpass({
   const resultRef = useRef<HTMLElement>(null);
   const scrollToCatalogRef = useRef(false);
   const focusSearchRef = useRef(false);
+  const recommendationRequestRef = useRef(0);
   const [sessionError, setSessionError] = useState('');
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
@@ -98,19 +99,11 @@ export default function Tourpass({
 
   const regions = ['전체', ...new Set(places.map((p) => p.region))];
   const byId = new Map(places.map((p) => [p.id, p]));
-  const trimmedQuery = query.trim();
-  const filtered = (() => {
-    const scoped = places.filter(
-      (p) =>
-        (region === '전체' || p.region === region) &&
-        matchesPlaceQuery(p, trimmedQuery),
-    );
-    if (!trimmedQuery) return scoped;
-    return [...scoped].sort(
-      (a, b) =>
-        scorePlaceMatch(b, trimmedQuery) - scorePlaceMatch(a, trimmedQuery),
-    );
-  })();
+  const filtered = searchPlaces(places, query, region);
+  function clearRecommendation() {
+    recommendationRequestRef.current++;
+    setResult(null);
+  }
   const selected = selection.map((id) => byId.get(id)!);
   const goExplore = (task: ExploreTask = 'browse') => {
     if (tab === 'explore' && exploreTask === task) {
@@ -241,7 +234,7 @@ export default function Tourpass({
       storePreferences(localStorage, next);
       setPreferences(next);
       setRegion(next.region);
-      setResult(null);
+      clearRecommendation();
       setNotice(
         '여행 취향을 저장했어요. 상단 AI 검색에서 바로 불러올 수 있어요.',
       );
@@ -275,20 +268,27 @@ export default function Tourpass({
 
   async function generate() {
     const trimmed = query.trim();
-    if (trimmed.length < 2) return;
+    if (trimmed.length < 2 || busy || !ready || !filtered.length) return;
+    const requestId = ++recommendationRequestRef.current;
+    setResult(null);
     setBusy(true);
     setError('');
     setLimitReached(false);
     setNotice('');
     try {
-      setResult(
-        await api<Recommendation>('/api/recommend', 'POST', {
+      const recommendation = await api<Recommendation>(
+        '/api/recommend',
+        'POST',
+        {
           prompt: trimmed,
           region,
-        }),
+        },
       );
+      if (recommendationRequestRef.current === requestId)
+        setResult(recommendation);
     } catch (e) {
-      setError((e as Error).message);
+      if (recommendationRequestRef.current === requestId)
+        setError((e as Error).message);
     } finally {
       setBusy(false);
     }
@@ -298,7 +298,7 @@ export default function Tourpass({
     if (draft) {
       setQuery(draft.prompt);
       setRegion(draft.region);
-      setResult(null);
+      clearRecommendation();
     }
     focusSearchRef.current = true;
     if (tab === 'explore' && exploreTask === 'browse') {
@@ -436,27 +436,6 @@ export default function Tourpass({
               <h1>{heading.title}</h1>
               <p>{heading.body}</p>
             </div>
-            <div
-              className="task-switch"
-              role="group"
-              aria-label="경기 둘러보기 작업"
-            >
-              {(
-                [
-                  ['browse', '장소 찾기'],
-                  ['review', `담은 여행 ${selection.length}`],
-                ] as const
-              ).map(([task, label]) => (
-                <button
-                  key={task}
-                  type="button"
-                  aria-pressed={exploreTask === task}
-                  onClick={() => setExploreTask(task)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
             {exploreTask === 'browse' && (
               <>
                 <AiTravelSearch
@@ -476,19 +455,19 @@ export default function Tourpass({
                   resultRef={resultRef}
                   onQuery={(nextQuery) => {
                     setQuery(nextQuery);
-                    if (!nextQuery.trim()) setResult(null);
+                    clearRecommendation();
                   }}
                   onRegion={(nextRegion) => {
                     setRegion(nextRegion);
-                    setResult(null);
+                    clearRecommendation();
                   }}
                   onSearch={() => void generate()}
                   onReset={() => {
                     setQuery('');
                     setRegion('전체');
-                    setResult(null);
+                    clearRecommendation();
                   }}
-                  onClearResult={() => setResult(null)}
+                  onClearResult={clearRecommendation}
                   onToggle={toggle}
                   onDetail={setDetail}
                   onScrollCatalog={() => {
@@ -518,6 +497,27 @@ export default function Tourpass({
                 />
               </>
             )}
+            <div
+              className="task-switch"
+              role="group"
+              aria-label="경기 둘러보기 작업"
+            >
+              {(
+                [
+                  ['browse', '장소 찾기'],
+                  ['review', `담은 여행 ${selection.length}`],
+                ] as const
+              ).map(([task, label]) => (
+                <button
+                  key={task}
+                  type="button"
+                  aria-pressed={exploreTask === task}
+                  onClick={() => setExploreTask(task)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             <div className="explore-workspace">
               <PlaceCatalog
                 places={places}

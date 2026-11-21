@@ -1,8 +1,12 @@
 import { places } from '@/lib/domain/catalog';
-import type { Recommendation } from '@/lib/domain/contracts';
+import {
+  RECOMMENDATION_STOP_LIMIT,
+  type Recommendation,
+} from '@/lib/domain/contracts';
 import { ApplicationError } from '@/lib/domain/errors';
 import {
   formatPlaceForReranker,
+  searchPlaces,
   scorePlaceMatch,
 } from '@/lib/domain/place-labels';
 import type { AIPort } from './ports';
@@ -20,13 +24,11 @@ export function createRecommendation(
     region: string,
     feedback: { placeId: string; rating: number }[],
   ): Promise<Recommendation> {
-    const candidates = places.filter(
-      (p) => region === '전체' || p.region === region,
-    );
+    const candidates = searchPlaces(places, prompt, region);
     if (!candidates.length)
       throw new ApplicationError(
         'INVALID_INPUT',
-        '선택한 지역의 장소가 없습니다.',
+        '지역과 여행 조건에 맞는 장소가 없어요. 지역이나 검색어를 바꿔 주세요.',
       );
     const cityRanks = new Map<string, number>();
     const ranked = candidates
@@ -46,7 +48,7 @@ export function createRecommendation(
       .sort((a, b) => b.score - a.score || a.cityRank - b.cityRank);
 
     if (!capabilities().clova) {
-      const top = ranked.slice(0, 3);
+      const top = ranked.slice(0, RECOMMENDATION_STOP_LIMIT);
       return {
         mode: 'demo',
         reranked: false,

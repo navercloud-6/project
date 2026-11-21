@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { gyeonggiCities } from './gyeonggi';
 
 export const SETTING_LABELS = ['실내', '야외', '실내·야외'] as const;
 export const THEME_LABELS = [
@@ -56,6 +57,7 @@ export type LabelablePlace = {
   id: string;
   name: string;
   region: string;
+  cityId?: string;
   description: string;
   tags: readonly string[];
   labels?: PlaceLabel;
@@ -291,48 +293,137 @@ export function inferHeuristicLabels(place: LabelablePlace): PlaceLabel {
   });
 }
 
-const QUERY_EXPANSIONS: readonly [RegExp, readonly string[]][] = [
-  [/호수|저수지|호반|수변|강변/, ['호수', '저수지', '수변']],
+type LabelField = 'setting' | 'themes' | 'companions' | 'styles';
+
+// 단어와 조사 경계를 구분해 '산책'·'안산시'를 '산'으로 해석하지 않는다.
+function queryWord(source: string): RegExp {
+  return new RegExp(
+    `(?<![\\p{L}\\p{N}])(?:${source})(?=$|[^\\p{L}\\p{N}]|에서|으로|이랑|하고|부터|까지|처럼|보다|랑|와|과|에|의|을|를|은|는|이|가|도|만|하기|할|하기에)`,
+    'u',
+  );
+}
+
+const QUERY_INTENTS: readonly [LabelField, RegExp, readonly string[]][] = (
   [
-    /실내|안에서|내부|추울|더울|폭염|한파/,
-    ['실내', '실내·야외', '비오는날', '박물관·전시'],
-  ],
-  [
-    /비\s*오는|우천|장마|비올|비오는/,
-    ['비오는날', '실내', '실내·야외', '박물관·전시'],
-  ],
-  [/야외|밖에서|탁\s*트인|날씨\s*좋/, ['야외', '실내·야외']],
-  [
-    /아이|어린이|키즈|초등|유아|아기/,
-    ['아이동반', '가족', '체험·테마', '교육·학습'],
-  ],
-  [/가족|부모|효도|어르신/, ['가족', '부모님', '산책', '휴식']],
-  [/데이트|연인|커플|로맨틱/, ['연인·데이트', '사진명소', '전망·야경']],
-  [
-    /혼자|혼행|조용|힐링|쉬기|휴식|사색/,
-    ['혼자·힐링', '휴식', '산책', '공원·숲'],
-  ],
-  [/바다|해변|갯벌|해수욕|항구|포구|서해|해양|(?:\s|^)섬(?:\s|$)/, ['바다']],
-  [/산|등산|계곡|폭포|트레킹/, ['산·계곡', '공원·숲']],
-  [/공원|숲|수목원|식물원|정원|꽃|자연/, ['공원·숲', '산책']],
-  [
-    /박물관|미술관|전시|과학관|도서관|갤러리/,
-    ['박물관·전시', '실내', '교육·학습'],
-  ],
-  [
-    /역사|유적|문화재|성곽|한옥|전통|왕릉/,
-    ['역사·유적', '사찰·전통', '교육·학습'],
-  ],
-  [/체험|놀이|테마|동물|목장|농장|공방/, ['체험·테마', '액티비티']],
-  [/야경|노을|일몰|전망|뷰/, ['전망·야경', '사진명소']],
-  [/사찰|절|템플/, ['사찰·전통', '휴식']],
-  [/시장|거리|골목|벽화/, ['시장·거리']],
-  [/예술|공연|음악|문화|도자기/, ['예술·공연', '박물관·전시']],
-  [/캠핑|글램핑|레저|자전거|액티비티/, ['캠핑·레저', '액티비티']],
-  [/드라이브|근교|차로/, ['드라이브']],
-  [/사진|인생샷|포토|출사/, ['사진명소']],
-  [/산책|걷기|둘레길|트레일/, ['산책']],
-];
+    ['themes', '호수|저수지|호반|수변|강변', ['호수']],
+    ['setting', '실내|안에서|내부|폭염|한파|추울|더울', ['실내', '실내·야외']],
+    [
+      'setting',
+      '비\\s*오는(?:\\s*날)?|비오는날|우천|장마|비올|비',
+      ['실내', '실내·야외'],
+    ],
+    ['setting', '야외|밖에서|탁\\s*트인', ['야외', '실내·야외']],
+    ['companions', '아이(?:동반)?|어린이|키즈|초등|유아|아기', ['아이동반']],
+    ['companions', '가족', ['가족']],
+    [
+      'companions',
+      '부모님?|효도|어르신|할머니|할아버지|조부모|어머니|아버지|엄마|아빠',
+      ['부모님'],
+    ],
+    ['companions', '데이트|연인|커플|로맨틱', ['연인·데이트']],
+    ['companions', '혼자|혼행', ['혼자·힐링']],
+    ['styles', '조용(?:한|하게)?|힐링|쉬기|휴식|사색', ['휴식']],
+    ['themes', '바다|해변|갯벌|해수욕|항구|포구|서해|해양|섬', ['바다']],
+    ['themes', '산|등산|계곡|폭포|트레킹', ['산·계곡']],
+    ['themes', '공원|숲|수목원|식물원|정원|꽃|자연', ['공원·숲']],
+    ['themes', '박물관|미술관|전시|과학관|도서관|갤러리', ['박물관·전시']],
+    ['themes', '역사|유적|문화재|성곽|왕릉', ['역사·유적']],
+    ['themes', '체험|놀이|테마|동물|목장|농장|공방', ['체험·테마']],
+    ['themes', '야경|노을|일몰|전망|뷰', ['전망·야경']],
+    ['themes', '사찰|절|템플|한옥|전통', ['사찰·전통']],
+    ['themes', '시장|거리|골목|벽화', ['시장·거리']],
+    ['themes', '예술|공연|음악|문화|도자기', ['예술·공연']],
+    ['themes', '캠핑|글램핑|레저|자전거', ['캠핑·레저']],
+    ['styles', '액티비티', ['액티비티']],
+    ['styles', '드라이브|차로', ['드라이브']],
+    ['styles', '사진|인생샷|포토|출사', ['사진명소']],
+    ['styles', '산책|걷기|둘레길|트레일', ['산책']],
+  ] satisfies [LabelField, string, string[]][]
+).map(([field, source, labels]) => [field, queryWord(source), labels]);
+
+const QUERY_FILLERS = new Set([
+  '여행',
+  '추천',
+  '관광',
+  '관광지',
+  '장소',
+  '곳',
+  '코스',
+  '함께',
+  '같이',
+  '근처',
+  '주변',
+  '근교',
+  '가까운',
+  '가볼',
+  '가볼만한',
+  '가기',
+  '좋은',
+  '좋을',
+  '하기',
+  '할만한',
+  '찾아줘',
+  '알려줘',
+  '추천해줘',
+  '추천해주세요',
+  '가고',
+  '싶어',
+  '싶어요',
+  '경기도',
+  '경기',
+  '전체',
+  '에서',
+  '으로',
+  '이랑',
+  '하고',
+  '와',
+  '과',
+  '에',
+  '의',
+  '을',
+  '를',
+  '은',
+  '는',
+  '이',
+  '가',
+  '도',
+  '만',
+  '랑',
+  '로',
+  '할',
+]);
+
+function parsePlaceQuery(query: string) {
+  const normalized = query
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s·]/gu, ' ')
+    .trim();
+  let remainder = normalized;
+  const cities = gyeonggiCities.filter((city) => {
+    const pattern = queryWord(`${city.name}|${city.name.slice(0, -1)}`);
+    if (!pattern.test(normalized)) return false;
+    remainder = remainder.replace(new RegExp(pattern.source, 'gu'), ' ');
+    return true;
+  });
+  const groups = QUERY_INTENTS.filter(([, pattern]) => {
+    if (!pattern.test(normalized)) return false;
+    remainder = remainder.replace(new RegExp(pattern.source, 'gu'), ' ');
+    return true;
+  });
+  const textGroups = remainder
+    .split(/[\s·]+/)
+    .map((word) => {
+      if (!word || QUERY_FILLERS.has(word)) return [];
+      const terms = tokenizeQuery(word);
+      return terms.some((term) => QUERY_FILLERS.has(term))
+        ? []
+        : terms.length
+          ? terms
+          : [word];
+    })
+    .filter((terms) => terms.length > 0);
+  return { cities, groups, textGroups };
+}
 
 const PARTICLE_RE =
   /(?:에서|으로|이랑|하고|부터|까지|처럼|보다|로|랑|와|과|에|의|을|를|은|는|이|가|도|만)$/;
@@ -362,14 +453,9 @@ export function tokenizeQuery(query: string): string[] {
 }
 
 export function expandQueryTerms(query: string): string[] {
-  const expanded = new Set<string>();
-  const trimmed = query.trim();
-  for (const [re, terms] of QUERY_EXPANSIONS) {
-    if (re.test(trimmed)) {
-      for (const t of terms) expanded.add(t);
-    }
-  }
-  return [...expanded];
+  return [
+    ...new Set(parsePlaceQuery(query).groups.flatMap(([, , terms]) => terms)),
+  ];
 }
 
 export function placeLabelBadges(place: LabelablePlace): string[] {
@@ -399,12 +485,16 @@ export function formatPlaceForReranker(place: LabelablePlace): string {
   return `${place.name} (${place.region}) | ${labelPart} | 소개:${place.description.slice(0, 220)}`;
 }
 
-export function scorePlaceMatch(place: LabelablePlace, query: string): number {
+export function scorePlaceMatch(
+  place: LabelablePlace,
+  query: string,
+  parsed = parsePlaceQuery(query),
+): number {
   const trimmed = query.trim();
   if (!trimmed) return 0;
   const lower = trimmed.toLowerCase();
   const tokens = tokenizeQuery(trimmed);
-  const expanded = expandQueryTerms(trimmed);
+  const expanded = new Set(parsed.groups.flatMap(([, , terms]) => terms));
   const labels = place.labels;
 
   let score = 0;
@@ -462,12 +552,54 @@ export function matchesPlaceQuery(
   place: LabelablePlace,
   query: string,
 ): boolean {
-  const trimmed = query.trim();
-  if (!trimmed) return true;
-  if (placeSearchText(place).toLowerCase().includes(trimmed.toLowerCase())) {
-    return true;
-  }
-  return scorePlaceMatch(place, trimmed) >= 10;
+  return matchesParsedQuery(place, parsePlaceQuery(query));
+}
+
+function matchesParsedQuery(
+  place: LabelablePlace,
+  parsed: ReturnType<typeof parsePlaceQuery>,
+): boolean {
+  if (
+    parsed.cities.length &&
+    !parsed.cities.some((city) =>
+      place.cityId ? place.cityId === city.id : place.region === city.name,
+    )
+  )
+    return false;
+  const labels = place.labels ?? inferHeuristicLabels(place);
+  if (
+    !parsed.groups.every(([field, , values]) => {
+      const actual = labels[field];
+      return values.some((value) =>
+        typeof actual === 'string'
+          ? actual === value
+          : actual.some((label) => label === value),
+      );
+    })
+  )
+    return false;
+  const text = placeSearchText(place).toLowerCase();
+  return parsed.textGroups.every((terms) =>
+    terms.some((term) => text.includes(term)),
+  );
+}
+
+export function searchPlaces<T extends LabelablePlace>(
+  places: readonly T[],
+  query: string,
+  region = '전체',
+): T[] {
+  const parsed = parsePlaceQuery(query);
+  const matched = places.filter(
+    (place) =>
+      (region === '전체' || place.region === region) &&
+      matchesParsedQuery(place, parsed),
+  );
+  if (!query.trim()) return matched;
+  return matched
+    .map((place) => ({ place, score: scorePlaceMatch(place, query, parsed) }))
+    .sort((a, b) => b.score - a.score)
+    .map(({ place }) => place);
 }
 
 export const QUICK_SEARCH_CHIPS = [

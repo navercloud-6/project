@@ -1,11 +1,66 @@
 'use client';
+import Image from 'next/image';
 import type { RefObject } from 'react';
 import type { Place } from '@/lib/domain/catalog';
-import type { Recommendation } from '@/lib/domain/contracts';
+import {
+  RECOMMENDATION_STOP_LIMIT,
+  type Recommendation,
+} from '@/lib/domain/contracts';
 import {
   QUICK_SEARCH_CHIPS,
   placeLabelBadges,
 } from '@/lib/domain/place-labels';
+
+function SearchPlaceItem({
+  place,
+  selected,
+  order,
+  reason,
+  onDetail,
+  onToggle,
+}: {
+  place: Place;
+  selected: boolean;
+  order?: number;
+  reason?: string;
+  onDetail: (place: Place) => void;
+  onToggle: (id: string) => void;
+}) {
+  return (
+    <li className="ai-place-item">
+      <button
+        type="button"
+        className="ai-place-link"
+        aria-label={`${place.name} 상세 보기`}
+        onClick={() => onDetail(place)}
+      >
+        {order !== undefined && (
+          <span className="ai-place-order" aria-hidden="true">
+            {order}
+          </span>
+        )}
+        <span className="ai-place-copy">
+          <strong>{place.name}</strong>
+          <span className="ai-place-meta">
+            {place.region} · {placeLabelBadges(place).join(' · ')}
+          </span>
+          {reason && <span className="ai-place-reason">{reason}</span>}
+        </span>
+        <span className="ai-place-detail" aria-hidden="true">
+          <span>장소 상세</span> ›
+        </span>
+      </button>
+      <button
+        type="button"
+        className={selected ? 'add selected' : 'add'}
+        aria-pressed={selected}
+        onClick={() => onToggle(place.id)}
+      >
+        {selected ? '담기 취소' : '여행에 담기'}
+      </button>
+    </li>
+  );
+}
 
 export function AiTravelSearch({
   aiEnabled,
@@ -61,13 +116,8 @@ export function AiTravelSearch({
   const trimmed = query.trim();
   const hasFilter = trimmed !== '' || region !== '전체' || result !== null;
   const byId = new Map(places.map((p) => [p.id, p]));
-  const stopIds = new Set(result?.stops.map((s) => s.placeId) ?? []);
-  const extraRelated = (result?.relatedPlaceIds ?? [])
-    .filter((id) => !stopIds.has(id))
-    .map((id) => byId.get(id))
-    .filter((p): p is Place => Boolean(p))
-    .slice(0, 6);
-  const quickPreview = trimmed && !result ? filtered.slice(0, 6) : [];
+  const quickPreview =
+    trimmed && !result ? filtered.slice(0, RECOMMENDATION_STOP_LIMIT) : [];
 
   return (
     <section className="ai-search-section" aria-labelledby="ai-search-heading">
@@ -75,28 +125,29 @@ export function AiTravelSearch({
         className="ai-search-panel"
         onSubmit={(e) => {
           e.preventDefault();
-          if (trimmed.length >= 2) onSearch();
+          if (trimmed.length >= 2 && !busy && ready && filtered.length)
+            onSearch();
         }}
       >
         <div className="ai-search-header">
           <div className="planner-heading">
-            <span className="ai-icon" aria-hidden="true">
-              ✳
-            </span>
-            <span>
-              <strong id="ai-search-heading">
-                {aiEnabled ? 'AI 여행 검색·추천' : '여행 테마 검색·추천'}
-              </strong>
-              <small>
-                {aiEnabled
-                  ? 'NAVER Cloud · CLOVA 라벨링 + Reranker + HyperCLOVA X'
-                  : '609곳 사전 라벨 기반으로 연관 관광지와 맞춤 코스를 찾아 드려요'}
-              </small>
-            </span>
+            <Image
+              className="ai-search-service-icon"
+              src="/icons/naver-cloud/clova-studio.png"
+              alt=""
+              width={24}
+              height={24}
+              unoptimized
+            />
+            <strong id="ai-search-heading">
+              {aiEnabled ? 'AI 여행 검색·추천' : '여행 테마 검색·추천'}
+            </strong>
           </div>
           <div className="ai-search-meta">
             <span className="total">
-              {region === '전체' ? '경기도 전체' : region} {filtered.length}곳
+              {result
+                ? `추천 ${result.stops.length}곳`
+                : `${trimmed ? '검색 ' : ''}${filtered.length}곳`}
             </span>
             {hasFilter && (
               <button type="button" className="detail-link" onClick={onReset}>
@@ -117,11 +168,18 @@ export function AiTravelSearch({
               id="ai-travel-query"
               type="search"
               maxLength={500}
-              placeholder="예: 호수, 실내, 비 오는 날 아이와 함께, 조용한 산책"
+              placeholder="예: 아이와 함께 호수 산책"
               value={query}
               onChange={(e) => onQuery(e.target.value)}
             />
-            <span aria-hidden="true">⌕</span>
+            <Image
+              className="ai-search-input-icon"
+              src="/icons/naver-cloud/cloud-search.png"
+              alt=""
+              width={24}
+              height={24}
+              unoptimized
+            />
           </label>
           <label className="ai-search-region-wrap">
             <span className="sr-only">지역 선택</span>
@@ -140,7 +198,7 @@ export function AiTravelSearch({
           <button
             type="submit"
             className="primary ai-search-submit"
-            disabled={busy || !ready || trimmed.length < 2}
+            disabled={busy || !ready || trimmed.length < 2 || !filtered.length}
           >
             {busy ? 'AI가 찾는 중…' : 'AI 검색·추천'}
           </button>
@@ -194,12 +252,6 @@ export function AiTravelSearch({
             )}
           </div>
         )}
-
-        <p className="fine ai-search-hint">
-          {aiEnabled
-            ? '입력하면 609곳 라벨로 즉시 찾고, "AI 검색·추천"을 누르면 NAVER Cloud Reranker·CLOVA가 맞춤 코스를 제안해요. 개인정보는 입력하지 마세요.'
-            : '입력하면 609곳 사전 라벨로 즉시 찾고, "AI 검색·추천"을 누르면 라벨 기반 데모 추천 코스를 만들어 드려요.'}
-        </p>
       </form>
 
       {trimmed && !result && (
@@ -207,12 +259,14 @@ export function AiTravelSearch({
           <div className="ai-instant-header">
             <div>
               <strong>
-                &ldquo;{trimmed}&rdquo; 연관 관광지 {filtered.length}곳
+                &ldquo;{trimmed}&rdquo; 조건에 맞는 관광지 {filtered.length}곳
               </strong>
               <span>
                 {filtered.length > 0
-                  ? '사전 라벨·키워드로 먼저 찾았어요. "AI 검색·추천"을 누르면 맞춤 코스와 이유까지 정리해 드려요.'
-                  : '일치하는 라벨·장소가 없어요. 다른 키워드나 지역을 선택해 보세요.'}
+                  ? busy
+                    ? '입력한 조건에 맞는 장소에서 추천 코스를 고르고 있어요.'
+                    : `먼저 ${quickPreview.length}곳을 보여드려요. "AI 검색·추천"을 누르면 최대 ${RECOMMENDATION_STOP_LIMIT}곳의 코스를 제안해요.`
+                  : '조건에 맞는 장소가 없어요. 검색어나 지역을 바꿔 보세요.'}
               </span>
             </div>
             {filtered.length > 0 && (
@@ -226,45 +280,16 @@ export function AiTravelSearch({
             )}
           </div>
           {quickPreview.length > 0 && (
-            <ul className="ai-preview-grid">
-              {quickPreview.map((place) => {
-                const isSelected = selection.includes(place.id);
-                return (
-                  <li key={place.id} className="ai-preview-card">
-                    <div className="ai-preview-meta">
-                      <span className="ai-preview-region">{place.region}</span>
-                      <span className="ai-preview-badges">
-                        {placeLabelBadges(place).join(' · ')}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      className="text-button ai-preview-title"
-                      onClick={() => onDetail(place)}
-                    >
-                      {place.name}
-                    </button>
-                    <p>{place.description}</p>
-                    <div className="ai-preview-actions">
-                      <button
-                        type="button"
-                        className="detail-link"
-                        onClick={() => onDetail(place)}
-                      >
-                        장소 상세
-                      </button>
-                      <button
-                        type="button"
-                        className={isSelected ? 'add selected' : 'add'}
-                        aria-pressed={isSelected}
-                        onClick={() => onToggle(place.id)}
-                      >
-                        {isSelected ? '담기 취소' : '여행에 담기'}
-                      </button>
-                    </div>
-                  </li>
-                );
-              })}
+            <ul className="ai-place-list">
+              {quickPreview.map((place) => (
+                <SearchPlaceItem
+                  key={place.id}
+                  place={place}
+                  selected={selection.includes(place.id)}
+                  onDetail={onDetail}
+                  onToggle={onToggle}
+                />
+              ))}
             </ul>
           )}
         </div>
@@ -302,44 +327,21 @@ export function AiTravelSearch({
               ? `이 코스를 한 번에 담으면 현재 담은 장소 ${selection.length}곳이 추천 장소로 교체돼요.`
               : '추천 코스를 한 번에 담거나, 마음에 드는 장소만 골라 담을 수 있어요.'}
           </p>
-          <ol className="recommend-stops">
-            {result.stops.map((s) => {
+          <ol className="ai-place-list">
+            {result.stops.map((s, index) => {
               const place = byId.get(s.placeId);
-              const isSelected = selection.includes(s.placeId);
-              return (
-                <li key={s.placeId}>
-                  <div className="recommend-stop-head">
-                    <div>
-                      {place ? (
-                        <button
-                          type="button"
-                          className="text-button"
-                          onClick={() => onDetail(place)}
-                        >
-                          {place.name}
-                        </button>
-                      ) : (
-                        <strong>{s.placeId}</strong>
-                      )}
-                      {place && (
-                        <small>
-                          {place.region} · {placeLabelBadges(place).join(' · ')}
-                        </small>
-                      )}
-                    </div>
-                    {place && (
-                      <button
-                        type="button"
-                        className={isSelected ? 'add selected' : 'add'}
-                        aria-pressed={isSelected}
-                        onClick={() => onToggle(place.id)}
-                      >
-                        {isSelected ? '담기 취소' : '여행에 담기'}
-                      </button>
-                    )}
-                  </div>
-                  <p>{s.reason}</p>
-                </li>
+              return place ? (
+                <SearchPlaceItem
+                  key={place.id}
+                  place={place}
+                  selected={selection.includes(place.id)}
+                  onDetail={onDetail}
+                  onToggle={onToggle}
+                  order={index + 1}
+                  reason={s.reason}
+                />
+              ) : (
+                <li key={s.placeId}>장소 정보를 불러올 수 없어요.</li>
               );
             })}
           </ol>
@@ -359,53 +361,6 @@ export function AiTravelSearch({
               전체 검색 결과 보기 ({filtered.length}곳)
             </button>
           </div>
-
-          {extraRelated.length > 0 && (
-            <div className="ai-related-shelf">
-              <h3>함께 둘러볼 연관 관광지</h3>
-              <ul className="ai-preview-grid">
-                {extraRelated.map((place) => {
-                  const isSelected = selection.includes(place.id);
-                  return (
-                    <li key={place.id} className="ai-preview-card">
-                      <div className="ai-preview-meta">
-                        <span className="ai-preview-region">
-                          {place.region}
-                        </span>
-                        <span className="ai-preview-badges">
-                          {placeLabelBadges(place).join(' · ')}
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        className="text-button ai-preview-title"
-                        onClick={() => onDetail(place)}
-                      >
-                        {place.name}
-                      </button>
-                      <div className="ai-preview-actions">
-                        <button
-                          type="button"
-                          className="detail-link"
-                          onClick={() => onDetail(place)}
-                        >
-                          장소 상세
-                        </button>
-                        <button
-                          type="button"
-                          className={isSelected ? 'add selected' : 'add'}
-                          aria-pressed={isSelected}
-                          onClick={() => onToggle(place.id)}
-                        >
-                          {isSelected ? '담기 취소' : '여행에 담기'}
-                        </button>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
 
           <p className="fine">
             검토 전 자료를 활용한 시연 제안입니다. 방문 순서·이동시간·운영

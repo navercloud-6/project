@@ -21,7 +21,7 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 | [deploy/](../../deploy/) · [.github/workflows/](../../.github/workflows/) | 배포·모니터링·CI/CD를 구성한다. |
 | [tests/](../../tests/) | 경계·단위·모의 연동·HTTP 검사를 제공한다. |
 
-탭 전환 뒤 유지할 상태는 [Tourpass](../../components/tourpass.tsx)가 소유하고, 탐색·날씨는 같은 장소 카드를 재사용하며 브라우저 취향은 [preferences.ts](../../lib/adapters/preferences.ts)가 검증·저장한다.
+탭 전환 뒤 유지할 상태는 [Tourpass](../../components/tourpass.tsx)가 소유하고, 탐색·날씨는 같은 장소 카드를 재사용한다. AI 검색 목록도 같은 장소 상세 상태를 사용하며 브라우저 취향은 [preferences.ts](../../lib/adapters/preferences.ts)가 검증·저장한다.
 
 ## 경기도 지역 선택 지도
 
@@ -39,6 +39,8 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 - [PlaceMap](../../components/place-map.tsx)은 [naver-map.ts](../../lib/adapters/naver-map.ts)로 Web Dynamic Map v3 SDK를 1회 로드하고 `navermap_authFailure`를 감지한다. `NAVER_MAP_CLIENT_ID`는 `force-dynamic` 홈에서 런타임 주입하며, 미설정·실패 시 경기도 투영 SVG로 폴백한다.
 - [import-tourapi.ts](../../scripts/import-tourapi.ts)는 한국관광공사 `KorService2`를 수집해 시흥 20곳을 유지하고 타 시·군 관광지를 갱신한다. 공공누리 제1유형·`tong.visitkorea.or.kr` 사진만 허용하며 공개 사진은 Next.js Image로 WebP 최적화·지연 로딩한다.
 - [label-places.ts](../../scripts/label-places.ts)는 609곳 관광지에 CLOVA Studio(및 `--bootstrap` 초기 규칙 추론)로 실내·야외·테마·동행·여행 방식·키워드 라벨을 생성해 [place-labels.json](../../data/place-labels.json)에 저장한다. [recommendation.ts](../../lib/application/recommendation.ts)는 라벨·동의어·만족도로 1차 후보(최대 20곳)를 추출한 뒤 [naver.ts](../../lib/adapters/naver.ts)의 CLOVA Studio Reranker(`/v1/api-tools/reranker`)로 연관 관광지를 선별하고 `HCX-005`로 맞춤 코스를 생성한다.
+- 추천은 공통 추천 스키마에서 도출한 `recommend_itinerary` Function calling을 지정하고 반환 인수를 검증한다. 일반 설명문을 JSON으로 해석하지 않으며 도구명·장소 ID·중복·개수·지역 검증은 유지한다.
+- [place-labels.ts](../../lib/domain/place-labels.ts)는 시·군명과 동행·장소 구분·테마·활동을 검색 조건으로 해석한다. 브라우저 검색과 추천 유스케이스는 같은 조건 필터를 통과한 장소만 순위화하며, 점수나 만족도로 지역·조건 제약을 우회하지 않는다. 화면은 검색 조건 변경으로 무효가 된 요청의 응답을 버린다.
 
 ## HTTP API 계약
 
@@ -62,7 +64,7 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 
 | 항목 | 대기 이유 | 재개 조건·작업 |
 | --- | --- | --- |
-| NAVER 실키 검증 | 실키가 없어 모의 계약만 검증했다. | 키 주입 후 권한·품질·지연·과금을 실측한다. |
+| NAVER 실키 검증 | CLOVA 추천·Reranker의 기본 질의만 실키로 확인했다. | Maps·로그인·Voice·Papago·OCR·이미지 기능과 반복 요청의 품질·지연·과금을 검증한다. |
 | HTTPS | 도메인 없이 HTTP 공개 접속만 확인했다. | 도메인 확보 후 [배포 가이드](../05-ops/01-deploy.md)에 따라 HTTPS를 적용한다. |
 | 관광 자료·사진 | 검토 전(`DRAFT`) 스냅샷이다. | 외부 배포 전 운영 정보와 사진 라이선스를 재검토한다. |
 | 상용·수평 확장 | 사진은 DB `BYTEA`에 저장하고 단일 서버로 운영한다. | 전환 시 Object Storage·계정 삭제·다중 인스턴스 로드밸런싱을 도입한다. |

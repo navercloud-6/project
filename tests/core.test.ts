@@ -96,11 +96,14 @@ test('키 없는 데모는 지역을 제한하고 만족도를 반영한다', as
   const key = process.env.CLOVA_STUDIO_API_KEY;
   delete process.env.CLOVA_STUDIO_API_KEY;
   try {
-    const r = await recommend('조용한 여행', places[5].region, [
-      { placeId: places[5].id, rating: 5 },
+    const preferred = places.find((place) =>
+      place.labels.styles.includes('휴식'),
+    )!;
+    const r = await recommend('조용한 여행', preferred.region, [
+      { placeId: preferred.id, rating: 5 },
     ]);
     assert.equal(r.mode, 'demo');
-    assert.equal(r.stops[0].placeId, places[5].id);
+    assert.equal(r.stops[0].placeId, preferred.id);
     const scoped = await recommend('여행', places[0].region, []);
     assert.ok(
       scoped.stops.every(
@@ -158,11 +161,19 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
       assert.equal(body.repetitionPenalty, 1.1);
       assert.equal(body.includeAiFilters, true);
       assert.equal(body.messages[1].content, '자연 여행');
+      assert.deepEqual(body.toolChoice, {
+        type: 'function',
+        function: { name: 'recommend_itinerary' },
+      });
       return Response.json({
         status: { code: '20000' },
         result: {
-          finishReason: 'stop',
-          message: { content: JSON.stringify(output) },
+          finishReason: 'tool_calls',
+          message: {
+            toolCalls: [
+              { function: { name: 'recommend_itinerary', arguments: output } },
+            ],
+          },
         },
       });
     };
@@ -215,7 +226,13 @@ test('CLOVA 요청 계약과 응답 오류를 모의 응답으로 검증한다',
     globalThis.fetch = async () =>
       Response.json({
         status: { code: '20000' },
-        result: { message: { content: JSON.stringify(output) } },
+        result: {
+          message: {
+            toolCalls: [
+              { function: { name: 'recommend_itinerary', arguments: output } },
+            ],
+          },
+        },
       });
     await assert.rejects(recommend('여행', places[1].region, []), /유효한/);
     globalThis.fetch = async () => {

@@ -6,25 +6,200 @@ import {
   SETTING_LABELS,
   STYLE_LABELS,
   THEME_LABELS,
-  clovaPlaceLabelSchema,
   inferHeuristicLabels,
   placeLabelSchema,
+  type CompanionLabel,
   type LabelablePlace,
   type PlaceLabel,
   type PlaceLabelMap,
+  type SettingLabel,
+  type StyleLabel,
+  type ThemeLabel,
 } from '../lib/domain/place-labels';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const PLACES_PATH = resolve(ROOT, 'data/places.json');
 const LABELS_PATH = resolve(ROOT, 'data/place-labels.json');
 
-const batchResponseSchema = z.object({
-  items: z.array(
-    clovaPlaceLabelSchema.extend({
-      id: z.string().min(1),
-    }),
-  ),
+const rawItemSchema = z.object({
+  id: z.string().min(1),
+  setting: z.string().default(''),
+  themes: z.array(z.string()).default([]),
+  companions: z.array(z.string()).default([]),
+  styles: z.array(z.string()).default([]),
+  keywords: z.array(z.string()).default([]),
 });
+
+type RawLabelItem = z.infer<typeof rawItemSchema>;
+
+function canonicalKey(value: string): string {
+  return value.trim().replace(/[\s/·ㆍ•,\-_]+/g, '');
+}
+
+const SETTING_LOOKUP = new Map<string, SettingLabel>([
+  ...SETTING_LABELS.map((v) => [canonicalKey(v), v] as const),
+  ['실내외', '실내·야외'],
+  ['야외실내', '실내·야외'],
+  ['복합', '실내·야외'],
+]);
+
+const THEME_LOOKUP = new Map<string, ThemeLabel>([
+  ...THEME_LABELS.map((v) => [canonicalKey(v), v] as const),
+  ['저수지', '호수'],
+  ['호반', '호수'],
+  ['수변', '호수'],
+  ['강변', '호수'],
+  ['해변', '바다'],
+  ['해양체험', '바다'],
+  ['해양', '바다'],
+  ['갯벌', '바다'],
+  ['포구', '바다'],
+  ['항구', '바다'],
+  ['산', '산·계곡'],
+  ['계곡', '산·계곡'],
+  ['등산', '산·계곡'],
+  ['자연생태', '공원·숲'],
+  ['자연', '공원·숲'],
+  ['생태', '공원·숲'],
+  ['공원', '공원·숲'],
+  ['숲', '공원·숲'],
+  ['정원', '공원·숲'],
+  ['수목원', '공원·숲'],
+  ['박물관', '박물관·전시'],
+  ['미술관', '박물관·전시'],
+  ['전시', '박물관·전시'],
+  ['문화시설', '박물관·전시'],
+  ['역사문화', '역사·유적'],
+  ['역사', '역사·유적'],
+  ['유적', '역사·유적'],
+  ['문화재', '역사·유적'],
+  ['체험', '체험·테마'],
+  ['테마', '체험·테마'],
+  ['테마파크', '체험·테마'],
+  ['경관감상', '전망·야경'],
+  ['경관', '전망·야경'],
+  ['전망', '전망·야경'],
+  ['야경', '전망·야경'],
+  ['일몰', '전망·야경'],
+  ['낙조', '전망·야경'],
+  ['사찰', '사찰·전통'],
+  ['전통', '사찰·전통'],
+  ['한옥', '사찰·전통'],
+  ['시장', '시장·거리'],
+  ['거리', '시장·거리'],
+  ['예술', '예술·공연'],
+  ['공연', '예술·공연'],
+  ['캠핑', '캠핑·레저'],
+  ['레저', '캠핑·레저'],
+  ['수상레저', '캠핑·레저'],
+  ['해양레저', '캠핑·레저'],
+]);
+
+const COMPANION_LOOKUP = new Map<string, CompanionLabel>([
+  ...COMPANION_LABELS.map((v) => [canonicalKey(v), v] as const),
+  ['아이', '아이동반'],
+  ['어린이', '아이동반'],
+  ['키즈', '아이동반'],
+  ['아이와함께', '아이동반'],
+  ['연인', '연인·데이트'],
+  ['데이트', '연인·데이트'],
+  ['커플', '연인·데이트'],
+  ['친구', '연인·데이트'],
+  ['혼자', '혼자·힐링'],
+  ['혼행', '혼자·힐링'],
+  ['힐링', '혼자·힐링'],
+  ['부모', '부모님'],
+  ['어르신', '부모님'],
+  ['효도', '부모님'],
+  ['전연령', '가족'],
+  ['누구나', '가족'],
+]);
+
+const STYLE_LOOKUP = new Map<string, StyleLabel>([
+  ...STYLE_LABELS.map((v) => [canonicalKey(v), v] as const),
+  ['우천', '비오는날'],
+  ['실내관람', '비오는날'],
+  ['사진', '사진명소'],
+  ['포토', '사진명소'],
+  ['경관감상', '사진명소'],
+  ['풍경감상', '사진명소'],
+  ['일몰감상', '사진명소'],
+  ['노을감상', '사진명소'],
+  ['일몰', '사진명소'],
+  ['낙조', '사진명소'],
+  ['야경감상', '사진명소'],
+  ['전망', '사진명소'],
+  ['교육', '교육·학습'],
+  ['학습', '교육·학습'],
+  ['역사탐방', '교육·학습'],
+  ['힐링', '휴식'],
+  ['여유', '휴식'],
+  ['체험', '액티비티'],
+  ['레저', '액티비티'],
+  ['수상레저', '액티비티'],
+  ['해양레저', '액티비티'],
+  ['활동', '액티비티'],
+  ['트레킹', '산책'],
+  ['걷기', '산책'],
+  ['둘레길', '산책'],
+]);
+
+const THEME_PATTERNS: readonly [RegExp, ThemeLabel][] = [
+  [/호수|저수지|호반|수변|강변/, '호수'],
+  [/바다|해변|갯벌|포구|항구|해양|등대|섬/, '바다'],
+  [/계곡|등산|폭포|산성/, '산·계곡'],
+  [/공원|숲|자연|생태|정원|수목원|습지/, '공원·숲'],
+  [/박물관|미술관|전시|과학관|도서관|기념관/, '박물관·전시'],
+  [/역사|유적|문화재|성곽|왕릉|행궁/, '역사·유적'],
+  [/체험|테마|동물|목장|농장|놀이/, '체험·테마'],
+  [/전망|야경|경관|일몰|낙조|노을/, '전망·야경'],
+  [/사찰|전통|한옥|서원|향교/, '사찰·전통'],
+  [/시장|거리|골목|상가|맛집|음식|먹거리|카페|특구/, '시장·거리'],
+  [/예술|공연|음악|미술|도예/, '예술·공연'],
+  [/캠핑|레저|자전거|서핑|카약|낚시/, '캠핑·레저'],
+];
+
+const COMPANION_PATTERNS: readonly [RegExp, CompanionLabel][] = [
+  [/아이|어린이|키즈|유아|초등/, '아이동반'],
+  [/가족|전연령|누구나|단체/, '가족'],
+  [/연인|데이트|커플|친구/, '연인·데이트'],
+  [/혼자|혼행|힐링|사색|조용/, '혼자·힐링'],
+  [/부모|효도|어르신|시니어/, '부모님'],
+];
+
+const STYLE_PATTERNS: readonly [RegExp, StyleLabel][] = [
+  [/비오는|비\s*오는|우천|실내/, '비오는날'],
+  [/산책|걷기|둘레길|트레킹/, '산책'],
+  [/사진|포토|경관|풍경|전망|일몰|낙조|노을|야경|출사/, '사진명소'],
+  [/드라이브|근교/, '드라이브'],
+  [/교육|학습|역사|관람|전시/, '교육·학습'],
+  [/휴식|힐링|여유|치유/, '휴식'],
+  [/액티비티|체험|레저|놀이|스포츠|낚시|서핑/, '액티비티'],
+];
+
+function mapValues<T extends string>(
+  raw: string[],
+  lookup: Map<string, T>,
+  patterns: readonly [RegExp, T][],
+  limit: number,
+): T[] {
+  const out: T[] = [];
+  for (const item of raw) {
+    const key = canonicalKey(item);
+    let matched = lookup.get(key);
+    if (!matched) {
+      for (const [re, target] of patterns) {
+        if (re.test(item)) {
+          matched = target;
+          break;
+        }
+      }
+    }
+    if (matched && !out.includes(matched)) out.push(matched);
+    if (out.length >= limit) break;
+  }
+  return out;
+}
 
 export function buildLabelPrompt(batch: LabelablePlace[]): string {
   const payload = batch.map((p) => ({
@@ -40,43 +215,138 @@ export function buildLabelPrompt(batch: LabelablePlace[]): string {
 export function buildLabelSystemPrompt(): string {
   return [
     '경기도 관광지 데이터에 여행 검색용 구조화 라벨을 부여하는 분류기다.',
-    '반드시 아래 허용된 라벨 목록만 사용하고, JSON 외의 텍스트나 코드블록을 출력하지 마라.',
-    `setting (1개): ${SETTING_LABELS.join(', ')}`,
+    '입력 배열의 모든 장소를 반드시 하나의 단일 JSON 객체 {"items":[...]} 안에 담아 출력하라. 여러 JSON 객체로 나누거나 설명 문장·코드블록을 붙이지 마라.',
+    '입력의 기존 tags("관광명소", "자연·생태", "경관 감상" 등)를 그대로 복사하지 말고 아래 허용 목록의 정확한 문자열만 선택하라.',
+    `setting (정확히 1개): ${SETTING_LABELS.join(', ')}`,
     `themes (1~4개): ${THEME_LABELS.join(', ')}`,
     `companions (1~4개): ${COMPANION_LABELS.join(', ')}`,
     `styles (1~4개): ${STYLE_LABELS.join(', ')}`,
-    'keywords: 장소 이름·특징에서 추출한 핵심 한국어 검색어 2~6개 (각 20자 이내).',
-    '박물관·미술관·전시관·과학관·도서관·기념관·실내 체험관은 setting을 "실내" 또는 "실내·야외"로, styles에 "비오는날"을 포함하라.',
-    '호수·저수지·강변·수변 공원은 themes에 "호수"를 포함하라.',
+    'keywords: 장소 이름·설명에서 추출한 핵심 한국어 검색어 2~6개 (각 20자 이내).',
+    '주의: 박물관·미술관·전시관·과학관·도서관·기념관·실내 체험관은 setting을 "실내" 또는 "실내·야외"로, styles에 "비오는날"을 포함하라. 단, 야외 공원 설명에 인근 박물관이 언급된 것만으로는 "실내"로 분류하지 마라.',
+    '주의: 호수·저수지·강변·수변 공원은 themes에 "호수"를 포함하라.',
     '출력 형식: {"items":[{"id":"장소ID","setting":"실내","themes":["박물관·전시"],"companions":["아이동반","가족"],"styles":["비오는날","교육·학습"],"keywords":["박물관","전시"]}]}',
   ].join('\n');
 }
 
-export function extractJson(raw: string): unknown {
-  const trimmed = raw.trim();
-  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const candidate = fenced ? fenced[1].trim() : trimmed;
-  const start = candidate.indexOf('{');
-  const end = candidate.lastIndexOf('}');
-  if (start === -1 || end === -1 || end <= start) {
+function collectRawItems(value: unknown, out: RawLabelItem[]) {
+  if (!value || typeof value !== 'object') return;
+  if (Array.isArray(value)) {
+    for (const entry of value) collectRawItems(entry, out);
+    return;
+  }
+  const record = value as Record<string, unknown>;
+  if (Array.isArray(record.items)) {
+    for (const entry of record.items) collectRawItems(entry, out);
+    return;
+  }
+  const parsed = rawItemSchema.safeParse(record);
+  if (parsed.success) out.push(parsed.data);
+}
+
+export function extractJsonBlocks(raw: string): unknown[] {
+  const cleaned = raw.replace(/```(?:json)?/gi, '').trim();
+  try {
+    return [JSON.parse(cleaned)];
+  } catch {
+    // 모델이 여러 JSON 객체를 줄바꿈으로 이어서 출력한 경우 균형 괄호 단위로 분리해 파싱한다.
+  }
+
+  const blocks: unknown[] = [];
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  let start = -1;
+
+  for (let i = 0; i < cleaned.length; i++) {
+    const ch = cleaned[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+      continue;
+    }
+    if (ch === '{' || ch === '[') {
+      if (depth === 0) start = i;
+      depth++;
+    } else if (ch === '}' || ch === ']') {
+      if (depth > 0) depth--;
+      if (depth === 0 && start !== -1) {
+        const slice = cleaned.slice(start, i + 1);
+        try {
+          blocks.push(JSON.parse(slice));
+        } catch {
+          // 깨진 조각은 건너뛰고 다음 JSON 블록을 계속 탐색한다.
+        }
+        start = -1;
+      }
+    }
+  }
+
+  if (!blocks.length) {
     throw new Error('JSON 객체를 찾지 못했습니다.');
   }
-  return JSON.parse(candidate.slice(start, end + 1));
+  return blocks;
 }
 
 export function parseBatchLabels(
   rawContent: string,
   expectedIds: Set<string>,
+  fallbacks?: Map<string, PlaceLabel>,
 ): Record<string, PlaceLabel> {
-  const parsed = batchResponseSchema.parse(extractJson(rawContent));
+  const rawItems: RawLabelItem[] = [];
+  for (const block of extractJsonBlocks(rawContent)) {
+    collectRawItems(block, rawItems);
+  }
   const result: Record<string, PlaceLabel> = {};
-  for (const item of parsed.items) {
+  for (const item of rawItems) {
     if (!expectedIds.has(item.id)) continue;
-    const { id, ...rest } = item;
-    result[id] = placeLabelSchema.parse({
-      ...rest,
+    const fb = fallbacks?.get(item.id);
+    const trimmedSetting = item.setting.trim();
+    const setting =
+      trimmedSetting === ''
+        ? fb?.setting
+        : SETTING_LOOKUP.get(canonicalKey(trimmedSetting));
+    let themes = mapValues(item.themes, THEME_LOOKUP, THEME_PATTERNS, 4);
+    if (!themes.length && fb) themes = fb.themes;
+    let companions = mapValues(
+      item.companions,
+      COMPANION_LOOKUP,
+      COMPANION_PATTERNS,
+      4,
+    );
+    let styles = mapValues(item.styles, STYLE_LOOKUP, STYLE_PATTERNS, 4);
+    const keywords = [
+      ...new Set(
+        item.keywords
+          .map((k) => k.trim().slice(0, 20))
+          .filter((k) => k.length > 0),
+      ),
+    ].slice(0, 6);
+
+    if (!setting || !themes.length) {
+      continue;
+    }
+    if (!companions.length && fb) companions = fb.companions;
+    if (!styles.length && fb) styles = fb.styles;
+    if (!companions.length || !styles.length) {
+      continue;
+    }
+
+    result[item.id] = placeLabelSchema.parse({
+      setting,
+      themes,
+      companions,
+      styles,
+      keywords,
       source: 'clova',
     });
+  }
+  if (!Object.keys(result).length) {
+    throw new Error('유효한 라벨 항목을 파싱하지 못했습니다.');
   }
   return result;
 }
@@ -87,6 +357,9 @@ async function callClovaLabelBatch(
   model: string,
 ): Promise<Record<string, PlaceLabel>> {
   const url = `https://clovastudio.stream.ntruss.com/v3/chat-completions/${encodeURIComponent(model)}`;
+  const fallbacks = new Map(
+    batch.map((p) => [p.id, inferHeuristicLabels(p)] as const),
+  );
   let lastError: unknown;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
@@ -103,7 +376,7 @@ async function callClovaLabelBatch(
             { role: 'system', content: buildLabelSystemPrompt() },
             { role: 'user', content: buildLabelPrompt(batch) },
           ],
-          maxTokens: 2048,
+          maxTokens: 2400,
           temperature: 0.1,
           topP: 0.8,
           includeAiFilters: false,
@@ -134,6 +407,7 @@ async function callClovaLabelBatch(
       return parseBatchLabels(
         json.result.message.content,
         new Set(batch.map((p) => p.id)),
+        fallbacks,
       );
     } catch (error) {
       lastError = error;
@@ -216,9 +490,8 @@ async function main() {
   }
   const model =
     process.env.CLOVA_LABEL_MODEL?.trim() ||
-    process.env.CLOVA_FUNCTION_MODEL?.trim() ||
     process.env.CLOVA_STUDIO_MODEL?.trim() ||
-    'HCX-DASH-002';
+    'HCX-005';
 
   const targets = places
     .filter((p) => force || map[p.id]?.source !== 'clova')
@@ -248,7 +521,6 @@ async function main() {
           map[place.id] = result[place.id];
           labeled++;
         } else {
-          // 누락된 단건 재시도
           try {
             const single = await callClovaLabelBatch([place], apiKey, model);
             if (single[place.id]) {
@@ -303,7 +575,9 @@ async function main() {
 }
 
 const isEntry =
-  process.argv[1] && resolve(process.argv[1]) === resolve(import.meta.filename);
+  process.argv[1] &&
+  resolve(process.argv[1]).toLowerCase() ===
+    resolve(import.meta.filename).toLowerCase();
 if (isEntry) {
   main().catch((error) => {
     console.error(error);

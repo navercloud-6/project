@@ -34,6 +34,7 @@ export const recommendationInput = z.object({
   prompt: z.string().trim().min(2).max(500),
   region: z.string().max(40).default('전체'),
 });
+export const RECOMMENDATION_STOP_LIMIT = 3;
 export const recommendationOutput = z
   .object({
     title: z.string().min(1).max(80),
@@ -46,7 +47,7 @@ export const recommendationOutput = z
         }),
       )
       .min(1)
-      .max(5),
+      .max(RECOMMENDATION_STOP_LIMIT),
   })
   .refine(
     (v) => new Set(v.stops.map((s) => s.placeId)).size === v.stops.length,
