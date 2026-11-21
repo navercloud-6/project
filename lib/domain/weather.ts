@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { places, placeIds } from '@/lib/domain/catalog';
+import { buildOutfit, outfitSchema, type Outfit } from '@/lib/domain/outfit';
 
 type RegionMeta = {
   cityId: string | null;
@@ -377,6 +378,7 @@ export const weatherResponseSchema = z.object({
     )
     .min(1)
     .max(7),
+  outfit: outfitSchema,
   recommendedPlaceIds: z
     .array(z.string().refine((v) => placeIds.has(v)))
     .min(1)
@@ -453,6 +455,36 @@ export function buildAdvisory(
   };
 }
 
+export function buildWeatherOutfit(
+  regionName: string,
+  meta: { coastal: boolean },
+  current: {
+    apparentTemperature: number;
+    windSpeed: number;
+    precipitation: number;
+    weatherCode: number;
+  },
+  today: {
+    tempMax: number;
+    tempMin: number;
+    precipitationProbability: number;
+    weatherCode: number;
+  },
+): Outfit {
+  return buildOutfit({
+    regionName: regionName === '전체' ? '경기도' : regionName,
+    coastal: meta.coastal,
+    tempMax: today.tempMax,
+    tempMin: today.tempMin,
+    precipitationProbability: today.precipitationProbability,
+    apparentTemperature: current.apparentTemperature,
+    windSpeed: current.windSpeed,
+    precipitation: current.precipitation,
+    currentWeatherCode: current.weatherCode,
+    todayWeatherCode: today.weatherCode,
+  });
+}
+
 export function pickRecommendedPlaces(
   regionName: string,
   suitability: 'outdoor' | 'mixed' | 'indoor',
@@ -527,6 +559,18 @@ export function buildDemoWeather(
     icon,
   };
   const advisory = buildAdvisory(regionName, meta, current);
+  const daily = [weatherCode, 1, 2, 0, 61].map((code, idx) => {
+    const d = describeWeatherCode(code, windSpeed);
+    return {
+      date: kstDate(now, idx),
+      weatherCode: code,
+      condition: d.condition,
+      icon: d.icon,
+      tempMax: round1(temperature + 3.2 - idx * 0.4),
+      tempMin: round1(temperature - 4.5 - idx * 0.3),
+      precipitationProbability: code === 61 ? 65 : idx === 2 ? 25 : 10,
+    };
+  });
 
   return weatherResponseSchema.parse({
     region: regionName,
@@ -536,18 +580,8 @@ export function buildDemoWeather(
     observedAt: `${kstDate(now)} 시연 기준`,
     current,
     advisory,
-    daily: [weatherCode, 1, 2, 0, 61].map((code, idx) => {
-      const d = describeWeatherCode(code, windSpeed);
-      return {
-        date: kstDate(now, idx),
-        weatherCode: code,
-        condition: d.condition,
-        icon: d.icon,
-        tempMax: round1(temperature + 3.2 - idx * 0.4),
-        tempMin: round1(temperature - 4.5 - idx * 0.3),
-        precipitationProbability: code === 61 ? 65 : idx === 2 ? 25 : 10,
-      };
-    }),
+    daily,
+    outfit: buildWeatherOutfit(regionName, meta, current, daily[0]),
     recommendedPlaceIds: pickRecommendedPlaces(
       regionName,
       advisory.suitability,
