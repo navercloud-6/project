@@ -9,6 +9,7 @@ import type { History, editOutput, posterOutput } from '@/lib/domain/assistant';
 import type { WeatherResponse } from '@/lib/domain/weather';
 import type { BriefingHeadFacts } from '@/lib/domain/briefing';
 import type { LocalPlace } from '@/lib/domain/restaurants';
+import type { QuakeReport } from '@/lib/domain/alerts';
 import type {
   CityWeatherLocation,
   CityWeatherObservation,
@@ -120,6 +121,15 @@ export interface AIPort {
   translate(text: string, target: string): Promise<string>;
   voice(text: string, speaker?: string): Promise<Uint8Array>;
   briefing(facts: BriefingHeadFacts): Promise<string>;
+  placeReasons(
+    places: {
+      name: string;
+      description: string;
+      tags: string[];
+      reviews: string[];
+    }[],
+    weather: BriefingHeadFacts['weather'],
+  ): Promise<string[]>;
   restaurantMenus(
     items: { name: string; reviews: string[] }[],
   ): Promise<Record<string, string[]>>;
@@ -140,4 +150,15 @@ export interface RestaurantSearchPort {
   configured(): boolean;
   local(query: string): Promise<LocalPlace[]>;
   blog(query: string): Promise<string[]>;
+}
+export interface AlertPort {
+  now(): number;
+  configured(): boolean;
+  // 기상청 특보 발효 현황: 발효 중(current)·예비특보(preliminary) 문단
+  status(): Promise<{
+    current: string;
+    preliminary: string;
+    issuedAt: string | null;
+  }>;
+  quakes(fromMs: number): Promise<QuakeReport[]>;
 }

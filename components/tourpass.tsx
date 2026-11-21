@@ -1,8 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { BottomNavigation, type Tab } from './bottom-navigation';
-import { Guide } from './assistant/guide';
-import { Poster } from './assistant/poster';
+import { TodayGuide } from './today-guide';
 import type { AuthStatus, Capabilities } from '@/lib/application/ports';
 import { api } from '@/lib/adapters/client-api';
 import { MyJourneys } from './my-journeys';
@@ -61,9 +60,6 @@ export default function Tourpass({
 }) {
   const [tab, setTab] = useState<Tab>('explore');
   const [exploreTask, setExploreTask] = useState<ExploreTask>('browse');
-  const [assistantTask, setAssistantTask] = useState<'guide' | 'poster'>(
-    'guide',
-  );
   const mainRef = useRef<HTMLElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const resultRef = useRef<HTMLElement>(null);
@@ -204,7 +200,7 @@ export default function Tourpass({
     }
     mainRef.current?.focus({ preventScroll: true });
     window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [tab, exploreTask, assistantTask]);
+  }, [tab, exploreTask]);
 
   useEffect(() => {
     if (result) {
@@ -563,57 +559,16 @@ export default function Tourpass({
           </>
         ) : tab === 'assistant' ? (
           <div className="assistant-page">
-            <div className="section-heading">
-              <div>
-                <span className="pill">관광 안내와 행사 등록</span>
-                <h1>여행 도우미</h1>
-                <p>
-                  관광 자료를 찾아보거나 행사 포스터를 여행으로 저장해 보세요.
-                </p>
-              </div>
-            </div>
-            <div className="task-switch" role="group" aria-label="도우미 작업">
-              {(
-                [
-                  ['guide', '관광 안내'],
-                  ['poster', '행사 등록'],
-                ] as const
-              ).map(([task, label]) => (
-                <button
-                  key={task}
-                  type="button"
-                  aria-pressed={assistantTask === task}
-                  onClick={() => setAssistantTask(task)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
             {ready ? (
-              <div className="assistant-workspace">
-                <div hidden={assistantTask !== 'guide'}>
-                  <Guide
-                    places={places}
-                    capabilities={capabilities}
-                    onDetail={setDetail}
-                    onBrowse={() => goExplore()}
-                  />
-                </div>
-                <div hidden={assistantTask !== 'poster'}>
-                  <Poster
-                    places={places}
-                    capabilities={capabilities}
-                    onBrowse={() => goExplore()}
-                    onSaved={(j) => {
-                      setSaved((current) => [j, ...current]);
-                      setTab('journeys');
-                      setNotice(
-                        '행사 여행을 저장했어요. 내 여행에서 확인해 보세요.',
-                      );
-                    }}
-                  />
-                </div>
-              </div>
+              <TodayGuide
+                places={places}
+                selection={selection}
+                selectedCityId={selectedCityId}
+                onSelectCity={setSelectedCityId}
+                onDetail={setDetail}
+                onToggle={toggle}
+                capabilities={capabilities}
+              />
             ) : (
               <div className="empty">
                 <p>
@@ -644,7 +599,6 @@ export default function Tourpass({
           </div>
         ) : tab === 'weather' ? (
           <WeatherPanel
-            capabilities={capabilities}
             selectedCityId={selectedCityId}
             onSelectCity={setSelectedCityId}
             places={places}

@@ -25,6 +25,8 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 
 맛집은 [restaurants.ts](../../lib/domain/restaurants.ts)가 술집·지역 제외와 후기 한 건 기준 메뉴 검증을 소유하고, [application/restaurants.ts](../../lib/application/restaurants.ts)가 `RestaurantSearchPort`([naver-search.ts](../../lib/adapters/naver-search.ts), NAVER API HUB 지역·블로그 검색)로 지역별 10분 캐시·동시 요청 병합을 적용한다. 메뉴 후보는 CLOVA 키가 있을 때만 HCX가 후기에서 뽑고 같은 검증을 다시 거친다.
 
+안전 안내는 [alerts.ts](../../lib/domain/alerts.ts)가 특보 구역 판정·지진 선별·안내 문장을 소유하고, [application/alerts.ts](../../lib/application/alerts.ts)가 `AlertPort`([kma-alerts.ts](../../lib/adapters/kma-alerts.ts), 공공데이터포털 기상청 `getPwnStatus`·`getEqkMsg`)의 전국 자료를 10분간 공유한다. 통합 안내는 [application/briefing.ts](../../lib/application/briefing.ts)가 원고·음성을 시·군·언어별 10분 캐시·동시 요청 병합으로 만들고, 원고 직후 음성을 미리 만든다.
+
 날씨 옷차림은 [outfit.ts](../../lib/domain/outfit.ts)의 순수 함수가 구간표·준비물 기준을 소유하고, [weather.ts](../../lib/domain/weather.ts)의 `buildWeatherOutfit`이 실시간·데모 응답에 같은 규칙으로 `outfit`을 붙인다.
 
 탭 전환 뒤 유지할 상태는 [Tourpass](../../components/tourpass.tsx)가 소유하고, 탐색·날씨는 같은 장소 카드를 재사용한다. AI 검색 목록도 같은 장소 상세 상태를 사용하며 브라우저 취향은 [preferences.ts](../../lib/adapters/preferences.ts)가 검증·저장한다.
