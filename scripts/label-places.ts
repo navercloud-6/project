@@ -20,6 +20,7 @@ import {
 const ROOT = resolve(import.meta.dirname, '..');
 const PLACES_PATH = resolve(ROOT, 'data/places.json');
 const LABELS_PATH = resolve(ROOT, 'data/place-labels.json');
+const OVERRIDES_PATH = resolve(ROOT, 'data/place-label-overrides.json');
 
 const rawItemSchema = z.object({
   id: z.string().min(1),
@@ -222,8 +223,9 @@ export function buildLabelSystemPrompt(): string {
     `companions (1~4개): ${COMPANION_LABELS.join(', ')}`,
     `styles (1~4개): ${STYLE_LABELS.join(', ')}`,
     'keywords: 장소 이름·설명에서 추출한 핵심 한국어 검색어 2~6개 (각 20자 이내).',
-    '주의: 박물관·미술관·전시관·과학관·도서관·기념관·실내 체험관은 setting을 "실내" 또는 "실내·야외"로, styles에 "비오는날"을 포함하라. 단, 야외 공원 설명에 인근 박물관이 언급된 것만으로는 "실내"로 분류하지 마라.',
-    '주의: 호수·저수지·강변·수변 공원은 themes에 "호수"를 포함하라.',
+    '주의: 박물관·미술관·전시관·과학관·도서관·기념관·실내 체험관은 setting을 "실내" 또는 "실내·야외"로, styles에 "비오는날"을 포함하라. 단, 야외 공원·호수·해수욕장·시비 설명에 인근 박물관이나 문학관이 언급된 것만으로는 "실내" 또는 "실내·야외"로 분류하지 말고 "야외"로 분류하라.',
+    '주의: 바다·해수욕장·갯벌·포구·항구·서해 섬·해안 산책로는 themes에 반드시 "바다"를 포함하고 "호수"로 분류하지 마라.',
+    '주의: 내륙 호수·저수지·강변·수변 공원은 themes에 "호수"를 포함하고, 공원·수목원·정원·생태공원은 "공원·숲"도 함께 부여하라.',
     '출력 형식: {"items":[{"id":"장소ID","setting":"실내","themes":["박물관·전시"],"companions":["아이동반","가족"],"styles":["비오는날","교육·학습"],"keywords":["박물관","전시"]}]}',
   ].join('\n');
 }
@@ -421,12 +423,9 @@ async function callClovaLabelBatch(
     : new Error('CLOVA 라벨링 호출에 실패했습니다.');
 }
 
-function loadExistingLabels(): PlaceLabelMap {
-  if (!existsSync(LABELS_PATH)) return {};
-  const raw = JSON.parse(readFileSync(LABELS_PATH, 'utf8')) as Record<
-    string,
-    unknown
-  >;
+function loadLabelFile(path: string): PlaceLabelMap {
+  if (!existsSync(path)) return {};
+  const raw = JSON.parse(readFileSync(path, 'utf8')) as Record<string, unknown>;
   const map: PlaceLabelMap = {};
   for (const [id, value] of Object.entries(raw)) {
     const parsed = placeLabelSchema.safeParse(value);
@@ -435,12 +434,40 @@ function loadExistingLabels(): PlaceLabelMap {
   return map;
 }
 
-function saveLabels(places: LabelablePlace[], map: PlaceLabelMap) {
+function loadExistingLabels(): PlaceLabelMap {
+  return loadLabelFile(LABELS_PATH);
+}
+
+export function loadOverrides(path = OVERRIDES_PATH): PlaceLabelMap {
+  const loaded = loadLabelFile(path);
+  const overrides: PlaceLabelMap = {};
+  for (const [id, label] of Object.entries(loaded)) {
+    overrides[id] = { ...label, source: 'manual' };
+  }
+  return overrides;
+}
+
+export function applyOverrides(
+  places: readonly LabelablePlace[],
+  map: PlaceLabelMap,
+  overrides: PlaceLabelMap,
+): PlaceLabelMap {
   const ordered: PlaceLabelMap = {};
   for (const place of places) {
-    ordered[place.id] = map[place.id] ?? inferHeuristicLabels(place);
+    ordered[place.id] =
+      overrides[place.id] ?? map[place.id] ?? inferHeuristicLabels(place);
   }
+  return ordered;
+}
+
+function saveLabels(
+  places: LabelablePlace[],
+  map: PlaceLabelMap,
+  overrides: PlaceLabelMap,
+) {
+  const ordered = applyOverrides(places, map, overrides);
   writeFileSync(LABELS_PATH, JSON.stringify(ordered, null, 2) + '\n', 'utf8');
+  return ordered;
 }
 
 function parseArgNumber(args: string[], prefix: string, fallback: number) {
@@ -453,6 +480,7 @@ function parseArgNumber(args: string[], prefix: string, fallback: number) {
 async function main() {
   const args = process.argv.slice(2);
   const bootstrap = args.includes('--bootstrap');
+  const applyOnly = args.includes('--apply-overrides');
   const force = args.includes('--force');
   const batchSize = parseArgNumber(args, '--batch=', 10);
   const limit = parseArgNumber(args, '--limit=', Infinity);
@@ -462,21 +490,38 @@ async function main() {
     readFileSync(PLACES_PATH, 'utf8'),
   ) as LabelablePlace[];
   const map = loadExistingLabels();
+  const overrides = loadOverrides();
+  const overrideCount = Object.keys(overrides).length;
+
+  if (applyOnly) {
+    const saved = saveLabels(places, map, overrides);
+    const clovaCount = Object.values(saved).filter(
+      (v) => v.source === 'clova',
+    ).length;
+    const manualCount = Object.values(saved).filter(
+      (v) => v.source === 'manual',
+    ).length;
+    console.log(
+      `수동 보정 반영 완료: 총 ${places.length}곳 (CLOVA ${clovaCount}곳, 수동 보정 ${manualCount}곳)`,
+    );
+    return;
+  }
 
   if (bootstrap) {
     let created = 0;
     for (const place of places) {
+      if (overrides[place.id]) continue;
       if (force || !map[place.id]) {
         map[place.id] = inferHeuristicLabels(place);
         created++;
       }
     }
-    saveLabels(places, map);
-    const clovaCount = Object.values(map).filter(
+    const saved = saveLabels(places, map, overrides);
+    const clovaCount = Object.values(saved).filter(
       (v) => v.source === 'clova',
     ).length;
     console.log(
-      `규칙 기반 초기 라벨 저장 완료: 총 ${places.length}곳 (신규/갱신 ${created}곳, CLOVA 유지 ${clovaCount}곳)`,
+      `규칙 기반 초기 라벨 저장 완료: 총 ${places.length}곳 (신규/갱신 ${created}곳, CLOVA 유지 ${clovaCount}곳, 수동 보정 유지 ${overrideCount}곳)`,
     );
     return;
   }
@@ -484,7 +529,7 @@ async function main() {
   const apiKey = process.env.CLOVA_STUDIO_API_KEY?.trim();
   if (!apiKey) {
     console.error(
-      '오류: CLOVA_STUDIO_API_KEY 환경 변수가 필요합니다. 초기 규칙 라벨만 생성하려면 --bootstrap 옵션을 사용하세요.',
+      '오류: CLOVA_STUDIO_API_KEY 환경 변수가 필요합니다. 초기 규칙 라벨은 --bootstrap, 수동 보정 반영은 --apply-overrides 옵션을 사용하세요.',
     );
     process.exit(1);
   }
@@ -494,18 +539,19 @@ async function main() {
     'HCX-005';
 
   const targets = places
-    .filter((p) => force || map[p.id]?.source !== 'clova')
+    .filter((p) => !overrides[p.id] && (force || map[p.id]?.source !== 'clova'))
     .slice(0, limit);
 
   if (!targets.length) {
+    saveLabels(places, map, overrides);
     console.log(
-      `모든 관광지(${places.length}곳)가 이미 CLOVA 라벨링 완료 상태입니다. 재실행하려면 --force를 사용하세요.`,
+      `모든 관광지(${places.length}곳, 수동 보정 ${overrideCount}곳 포함)가 이미 라벨링 완료 상태입니다. 수동 보정 외 항목을 재실행하려면 --force를 사용하세요.`,
     );
     return;
   }
 
   console.log(
-    `CLOVA Studio(${model}) 라벨링 시작: 대상 ${targets.length}곳 (배치 ${batchSize}곳)`,
+    `CLOVA Studio(${model}) 라벨링 시작: 대상 ${targets.length}곳 (배치 ${batchSize}곳, 수동 보정 보호 ${overrideCount}곳)`,
   );
 
   let labeled = 0;
@@ -534,7 +580,7 @@ async function main() {
           }
         }
       }
-      saveLabels(places, map);
+      saveLabels(places, map, overrides);
       console.log(
         `[${batchIndex}/${totalBatches}] 완료 — 누적 CLOVA ${labeled}곳 / 실패 ${failed}곳`,
       );
@@ -559,18 +605,22 @@ async function main() {
         }
         await new Promise((r) => setTimeout(r, delayMs));
       }
-      saveLabels(places, map);
+      saveLabels(places, map, overrides);
     }
     if (i + batchSize < targets.length) {
       await new Promise((r) => setTimeout(r, delayMs));
     }
   }
 
-  const totalClova = Object.values(map).filter(
+  const saved = saveLabels(places, map, overrides);
+  const totalClova = Object.values(saved).filter(
     (v) => v.source === 'clova',
   ).length;
+  const totalManual = Object.values(saved).filter(
+    (v) => v.source === 'manual',
+  ).length;
   console.log(
-    `라벨링 종료: 이번 성공 ${labeled}곳, 실패 ${failed}곳 | 전체 CLOVA 라벨 ${totalClova}/${places.length}곳`,
+    `라벨링 종료: 이번 성공 ${labeled}곳, 실패 ${failed}곳 | 전체 CLOVA ${totalClova}곳 · 수동 보정 ${totalManual}곳 / ${places.length}곳`,
   );
 }
 
