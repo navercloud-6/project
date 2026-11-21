@@ -246,7 +246,7 @@ function NaverMapCanvas({
         }),
         new maps.Polyline({
           ...base,
-          strokeColor: '#02823a',
+          strokeColor: '#03c75a',
           strokeOpacity: 0.95,
           strokeWeight: 3.5,
           strokeStyle: 'shortdash',
@@ -381,12 +381,12 @@ function FallbackSvg({
     >
       <defs>
         <linearGradient id={bgGradient} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#e8f5ed" />
-          <stop offset="100%" stopColor="#f3faf6" />
+          <stop offset="0%" stopColor="#e8fbf2" />
+          <stop offset="100%" stopColor="#e6faf9" />
         </linearGradient>
         <linearGradient id={landGradient} x1="0" y1="0" x2="0.9" y2="1">
-          <stop offset="0%" stopColor="#fafdfb" />
-          <stop offset="100%" stopColor="#e7f4ec" />
+          <stop offset="0%" stopColor="#fafefd" />
+          <stop offset="100%" stopColor="#e5f7f2" />
         </linearGradient>
       </defs>
 
@@ -397,11 +397,11 @@ function FallbackSvg({
       >
         <path
           d={gyeonggiMap.context.path}
-          fill="#e6ece8"
-          stroke="#c3d1c9"
+          fill="#e5efec"
+          stroke="#c0d8d1"
           fillRule="evenodd"
         />
-        <g fill={`url(#${landGradient})`} stroke="#b3d8c2" strokeWidth="1.5">
+        <g fill={`url(#${landGradient})`} stroke="#a7e1cd" strokeWidth="1.5">
           {gyeonggiMap.cities.map((city) => (
             <path key={city.id} d={city.path} fillRule="evenodd" />
           ))}
@@ -423,7 +423,7 @@ function FallbackSvg({
           />
           <polyline
             points={polylinePoints}
-            stroke="#02823a"
+            stroke="#03c75a"
             strokeWidth="3.5"
             strokeDasharray="8 5"
           />
@@ -444,15 +444,15 @@ function FallbackSvg({
         const radius = s.isActive ? 16 : s.inRoute ? 14 : 10;
         const fill =
           s.hasRecord || (s.isActive && !s.inRoute)
-            ? '#065f2d'
+            ? '#046858'
             : s.inRoute
-              ? '#02823a'
+              ? '#03c75a'
               : '#ffffff';
         const stroke = s.isActive
           ? '#e79323'
           : s.inRoute || s.hasRecord
             ? '#ffffff'
-            : '#02823a';
+            : '#03c75a';
         const boxHalf = Math.max(p.name.length * 5.8 + 10, 44);
 
         return (
@@ -499,7 +499,7 @@ function FallbackSvg({
                 {s.routeIndex + 1}
               </text>
             ) : (
-              <circle r="4" fill={s.isActive ? '#ffffff' : '#02823a'} />
+              <circle r="4" fill={s.isActive ? '#ffffff' : '#03c75a'} />
             )}
             {s.showLabel && (
               <g transform={`translate(0, ${radius + 14})`}>
@@ -509,14 +509,14 @@ function FallbackSvg({
                   width={boxHalf * 2}
                   height="20"
                   rx="6"
-                  fill={s.isActive ? '#162a20' : '#ffffffeb'}
-                  stroke={s.isActive ? '#162a20' : '#bfe5cd'}
+                  fill={s.isActive ? '#122922' : '#ffffffeb'}
+                  stroke={s.isActive ? '#122922' : '#aeead8'}
                   strokeWidth="1"
                 />
                 <text
                   y="3"
                   textAnchor="middle"
-                  fill={s.isActive ? '#ffffff' : '#162a20'}
+                  fill={s.isActive ? '#ffffff' : '#122922'}
                   fontSize="11"
                   fontWeight="700"
                 >
