@@ -21,6 +21,8 @@ Next.js App Router(Node.js)가 화면과 Route Handler API를 제공하고, 영�
 | [deploy/](../../deploy/) · [.github/workflows/](../../.github/workflows/) | 배포·모니터링·CI/CD를 구성한다. |
 | [tests/](../../tests/) | 경계·단위·모의 연동·HTTP 검사를 제공한다. |
 
+날씨 옷차림은 [outfit.ts](../../lib/domain/outfit.ts)의 순수 함수가 구간표·준비물 기준을 소유하고, [weather.ts](../../lib/domain/weather.ts)의 `buildWeatherOutfit`이 실시간·데모 응답에 같은 규칙으로 `outfit`을 붙인다.
+
 탭 전환 뒤 유지할 상태는 [Tourpass](../../components/tourpass.tsx)가 소유하고, 탐색·날씨는 같은 장소 카드를 재사용하며 브라우저 취향은 [preferences.ts](../../lib/adapters/preferences.ts)가 검증·저장한다.
 
 ## 경기도 지역 선택 지도

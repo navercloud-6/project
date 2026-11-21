@@ -14,12 +14,13 @@
 
 ## 최신 판정
 
-2026-11-20(Asia/Seoul), macOS(Node.js 24·PostgreSQL 16) 기준 최신 결과다. 운영 Cloud DB 이관·실서버 배포·HTTP·TourAPI 수집·화면·사진·모니터링은 이전 PR 검증 결과이며 이번 실행에서 재검증하지 않은 항목은 별도 표기한다.
+2026-11-21(Asia/Seoul), Windows 11(Node.js 26·PostgreSQL 17) 기준 최신 결과다. 운영 Cloud DB 이관·실서버 배포·HTTP·TourAPI 수집·화면·사진·모니터링은 이전 PR 검증 결과이며 이번 실행에서 재검증하지 않은 항목은 별도 표기한다.
 
 | 검사 | 최신 결과 |
 | --- | --- |
-| 단위·모의 연동 47개 | 임시 PostgreSQL 스키마(`test_*`) 격리 환경에서 모두 통과했다. |
-| 서식·타입·빌드·문서 | `format:check`, `typecheck`, `build`, `check_docs.py`, `git diff --check`를 통과했다. |
+| 단위·모의 연동 54개 | 임시 PostgreSQL 스키마(`test_*`) 격리 환경에서 모두 통과했다. 옷차림 검사 7개는 8개 구간의 경계 양쪽, 준비물 기준(강수 60%·풍속 8m/s·체감 0°C·최저 -5°C·일교차 8°C·28°C 맑음)의 등호 양쪽, 해안 시·군 문장, 같은 입력의 같은 결과, 전체 지역 데모 응답을 확인한다. |
+| 서식·타입·빌드·문서 | `format:check`, `typecheck`, `build`, `git diff --check`를 통과했다. `check_docs.py`는 Windows 경로 구분자 오탐으로 이번 실행에서 판정하지 않았다. |
+| 옷차림 실데이터 (2026-11-21) | 실제 Open-Meteo 응답으로 수원·시흥·가평(최고 0.4~1.7°C, 최저 -7.6~-5.6°C)의 옷차림·준비물 문장을 확인했다. 영상 이상 기온·비·눈의 실데이터는 미확인이며 모의 입력으로만 검사했다. |
 | 프로덕션 HTTP (이전 검증) | `tests/http.mjs`, `tests/extensions-http.mjs`, `tests/auth-http.mjs`를 테스트 PostgreSQL 서버에서 통과했다(실제 네이버 로그인 미호출). |
 | 배포 스크립트 (이전 검증) | `tests/acg_test.py`, `tests/deploy_test.py`(6개)와 `deploy/deploy-container.sh` 문법 검사를 통과했다. |
 | 운영 이관·모니터링 (이전 검증) | NCP Cloud DB for PostgreSQL 17.11 이관(데이터 SHA-256 일치), `223.130.161.104` 외부 응답 200, Prometheus 5개 대상 UP·Blackbox `probe_success=1`을 확인했다. |
