@@ -2615,7 +2615,61 @@ dialog {
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  min-width: 62px;
+  width: 132px;
+  padding: 10px 8px;
+  border: 1px solid #dce8e2;
+  border-radius: 14px;
+  background: #ffffffed;
+  box-shadow: 0 3px 12px #34564b08;
+  text-align: center;
+  z-index: 1;
+}
+.city-weather-location {
+  color: #34564b;
+  font-size: 12px;
+}
+.city-weather-reading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.city-weather-condition {
+  color: #526c60;
+  font-size: 11px;
+}
+.city-weather-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: #71847b;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.city-weather-unknown {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #8b9fa8;
+  font-size: 27px;
+}
+.city-weather-message {
+  color: #71847b;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+.city-weather-retry {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid #c5d8ce;
+  border-radius: 8px;
+  background: #fff;
+  color: #34564b;
+  font-size: 11px;
 }
 .gyeonggi-map-weather-icon {
   color: #e3a126;
@@ -3201,7 +3255,8 @@ form > .label-row:first-child {
   .gyeonggi-map-weather {
     top: 48px;
     right: 16px;
-    min-width: 48px;
+    width: 112px;
+    padding: 8px 6px;
   }
   .gyeonggi-map-weather-icon {
     width: 32px;

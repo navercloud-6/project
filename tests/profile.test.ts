@@ -82,6 +82,8 @@ test('하단 메뉴는 자연스러운 여행 흐름 순서를 따르고 프로�
 test('경기 날씨 화면은 시흥 기준 문구 대신 경기도 전체와 31개 시·군 선택을 제공한다', () => {
   const markup = renderToStaticMarkup(
     createElement(WeatherPanel, {
+      selectedCityId: null,
+      onSelectCity() {},
       places,
       selection: [],
       onTogglePlace() {},

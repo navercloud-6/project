@@ -52,6 +52,8 @@ python3 .github/scripts/check_docs.py
 
 서식 수정은 `npm run format`을 사용한다. 단위 검사는 `DATABASE_URL`(또는 `TEST_DATABASE_URL`)의 임시 스키마에서 실행한다. 프로덕션 HTTP 검사는 테스트 DB·AI 키 없는 서버(`PORT=3100`)에서 `node tests/http.mjs`, `TEST_BASE_URL=http://127.0.0.1:3100 node tests/extensions-http.mjs`를 실행하고, 로그인 HTTP 검사는 더미 `NAVER_LOGIN_CLIENT_ID`·`NAVER_LOGIN_CLIENT_SECRET` 서버에서 `node tests/auth-http.mjs`를 실행한다.
 
+날씨 전용 HTTP 검사는 DB를 사용하지 않는다. 실행 서버 주소를 `TEST_BASE_URL`로 지정해 `node tests/city-weather-http.mjs`를 실행하고, 실제 Open-Meteo 응답을 확인할 때는 `EXPECT_LIVE_WEATHER=true`를 설정한다.
+
 ## 관련 문서
 
 - [작업 지침](AGENTS.md)은 작업 순서와 문서 관리 규칙을 정의한다.
