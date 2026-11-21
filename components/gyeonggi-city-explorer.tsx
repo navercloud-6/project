@@ -63,6 +63,7 @@ export function GyeonggiCityExplorer({
   onToggle: (placeId: string) => void;
 }) {
   const labelId = useId();
+  const selectedGradientId = useId();
   const city = gyeonggiCities.find((item) => item.id === selectedCityId);
   const cityPlaces = placesInCity(places, selectedCityId);
   const populated = new Set(places.map((p) => p.cityId));
@@ -118,6 +119,18 @@ export function GyeonggiCityExplorer({
             role="group"
             aria-label="경기도 시·군 선택 지도"
           >
+            <defs>
+              <linearGradient
+                id={selectedGradientId}
+                x1="0"
+                y1="0"
+                x2="1"
+                y2="1"
+              >
+                <stop offset="0%" stopColor="#03c75a" />
+                <stop offset="100%" stopColor="#04d1c9" />
+              </linearGradient>
+            </defs>
             <g className="gyeonggi-map-context" aria-hidden="true">
               <path d={gyeonggiMap.context.path} fillRule="evenodd" />
               <text
@@ -136,6 +149,11 @@ export function GyeonggiCityExplorer({
                   item.id === selectedCityId
                     ? 'gyeonggi-city-shape is-selected'
                     : 'gyeonggi-city-shape'
+                }
+                style={
+                  item.id === selectedCityId
+                    ? { fill: `url(#${selectedGradientId})` }
+                    : undefined
                 }
                 data-city-id={item.id}
                 role="button"
