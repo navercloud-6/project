@@ -52,7 +52,7 @@ python3 .github/scripts/check_docs.py
 
 ## 관련 문서
 
-- [작업 지침](AGENTS.md) · [관광 데이터](data/places.json) · [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md) · [평가 항목 안내](docs/evaluation.md)
+- [작업 지침](AGENTS.md) · [관광 데이터](data/places.json) · [경기도 지도 작업 계획](docs/gyeonggi-city-map-plan.md) · [평가 항목 안내](docs/evaluation.md) · [제출용 기술 문서](docs/technical-report.md) ([PDF](docs/technical-report.pdf))
 
 ### 문서 분류 기준
 
