@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1568" height="452" viewBox="0 0 1568 452" role="img" aria-labelledby="title desc">
+  <title id="title">경기 하루이음 시스템 아키텍처</title>
+  <desc id="desc">경기도 31개 시·군 여행 탐색·추천·기록을 제공하는 웹 MVP. 브라우저에서 Next.js 서버와 데이터·외부 연동으로 이어지는 실행 흐름이며 화살표는 소스 의존성이 아니다. Application은 Domain에 의존하고 어댑터는 포트를 구현하며 lib/server.ts가 실제 구현을 연결한다. 비밀 키는 서버에만 두고 키 미설정 시 데모·안내로 대체한다. Maps·네이버 로그인·OCR·Vision 실키 연동과 HTTPS 적용은 확인 대기 중이다.</desc>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; fill: #1A2028; }
+    .heading { font-size: 27px; font-weight: 700; }
+    .subtitle { font-size: 19px; fill: #525862; }
+    .body { font-size: 19px; }
+    .label { font-size: 18px; font-weight: 700; fill: #2D56B6; }
+    .role { font-size: 17px; font-weight: 700; fill: #2D56B6; }
+    .icon { fill: none; stroke: #2D56B6; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <rect width="1568" height="452" rx="16" fill="#F1F4F8"/>
+  <g transform="translate(24 24)">
+    <rect width="400" height="404" rx="14" fill="#FFFFFF" stroke="#DBDEE3"/>
+    <rect x="24" y="24" width="64" height="64" rx="16" fill="#E7EDF9"/>
+    <g class="icon" transform="translate(32 32)" aria-hidden="true"><rect x="2" y="7" width="29" height="24" rx="4"/><path d="M2 14h29M11 39h11M16.5 31v8"/><rect x="35" y="18" width="11" height="21" rx="3"/><path d="M39.5 35h2"/></g>
+    <text x="104" y="63" class="label">01 | 사용자 화면</text>
+    <text x="24" y="126" class="heading">웹 브라우저</text>
+    <text x="24" y="154" class="subtitle">여행자 · 데스크톱 · 모바일</text>
+    <text x="24" y="181" class="subtitle">React 19 · NAVER Maps v3</text>
+    <path d="M24 200H376" stroke="#DBDEE3"/>
+    <text x="24" y="233" class="role">5개 탭 화면</text>
+    <text x="24" y="264" class="body">둘러보기 · 날씨 · 도우미 · 내 여행</text>
+    <text x="24" y="315" class="role">세션 · 보안 경계</text>
+    <text x="24" y="346" class="body">HttpOnly 쿠키 · /api/* 만 호출</text>
+  </g>
+  <g transform="translate(584 24)">
+    <rect width="400" height="404" rx="14" fill="#FFFFFF" stroke="#DBDEE3"/>
+    <rect x="24" y="24" width="64" height="64" rx="16" fill="#E7EDF9"/>
+    <g class="icon" transform="translate(32 32)" aria-hidden="true"><rect x="4" y="5" width="40" height="16" rx="4"/><rect x="4" y="27" width="40" height="16" rx="4"/><path d="M12 13h1M12 35h1M23 13h13M23 35h13"/></g>
+    <text x="104" y="63" class="label">02 | 핵심 처리</text>
+    <text x="24" y="126" class="heading">Next.js 서버</text>
+    <text x="24" y="154" class="subtitle">App Router · Route Handler API</text>
+    <text x="24" y="181" class="subtitle">헥사고날 · Docker 컨테이너</text>
+    <path d="M24 200H376" stroke="#DBDEE3"/>
+    <text x="24" y="233" class="role">HTTP 어댑터 · OpenAPI</text>
+    <text x="24" y="264" class="body">세션·Origin 검사 · 요청 한도</text>
+    <text x="24" y="315" class="role">Application · Domain</text>
+    <text x="24" y="346" class="body">검색·추천 · 통합 안내 · 여행 편집</text>
+  </g>
+  <g transform="translate(1144 24)">
+    <rect width="400" height="404" rx="14" fill="#FFFFFF" stroke="#DBDEE3"/>
+    <rect x="24" y="24" width="64" height="64" rx="16" fill="#E7EDF9"/>
+    <g class="icon" transform="translate(32 32)" aria-hidden="true"><ellipse cx="24" cy="9" rx="18" ry="6"/><path d="M6 9v30c0 8 36 8 36 0V9M6 24c0 8 36 8 36 0"/></g>
+    <text x="104" y="63" class="label">03 | 데이터·외부 연동</text>
+    <text x="24" y="126" class="heading">PostgreSQL</text>
+    <text x="24" y="154" class="subtitle">NCP Cloud DB · 6개 테이블</text>
+    <text x="24" y="181" class="subtitle">여행 · 기록 · 사진 · 세션 · 한도</text>
+    <path d="M24 200H376" stroke="#DBDEE3"/>
+    <text x="24" y="233" class="role">NAVER Cloud · NAVER API</text>
+    <text x="24" y="264" class="body">CLOVA · Voice · Papago · OCR · 검색</text>
+    <text x="24" y="315" class="role">공공 · 기상 API</text>
+    <text x="24" y="346" class="body">Open-Meteo · 기상청 특보·지진</text>
+  </g>
+  <g>
+    <text x="504" y="207" class="role" text-anchor="middle">/api/*</text>
+    <text x="1064" y="207" class="role" text-anchor="middle">출력 어댑터</text>
+    <path d="M440 226H568m-8-6 8 6-8 6M1000 226H1128m-8-6 8 6-8 6" fill="none" stroke="#2D56B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"/>
+  </g>
+</svg>

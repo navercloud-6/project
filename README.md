@@ -4,6 +4,8 @@
 
 경기도 31개 시·군 관광지 탐색, AI 추천, 패스 구성, 방문 기록을 제공하는 Next.js MVP다([요구사항](docs/01-func/01-requirements.md)).
 
+![경기 하루이음 핵심 기능](docs/assets/key-features.svg)
+
 ### 주요 화면
 
 [데스크톱 탐색](docs/screenshots/desktop.jpg) · [모바일 여행](docs/screenshots/mobile.jpg) · [데스크톱 도우미](docs/screenshots/assistant-desktop.jpg) · [모바일 도우미](docs/screenshots/assistant-mobile.jpg) · [사진 일기](docs/screenshots/photo-record.jpg).
@@ -11,6 +13,8 @@
 ## 기술 스택
 
 Next.js 16 · React 19 · TypeScript · Zod · Scalar(OpenAPI 3.1) · Sharp · PostgreSQL(`pg`) · NAVER Cloud(CLOVA Studio·Voice·Papago·OCR·Maps·Cloud DB). 버전은 [package.json](package.json)에서 관리한다.
+
+![경기 하루이음 시스템 아키텍처](docs/assets/architecture.svg)
 
 ## 시작하기
 

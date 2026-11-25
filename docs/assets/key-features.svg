@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="452" viewBox="0 0 1280 452" role="img" aria-labelledby="title desc">
+  <title id="title">경기 하루이음 핵심 기능</title>
+  <desc id="desc">경기 하루이음의 핵심 기능. 경기도 31개 시·군 지도와 관광지 609곳을 자연어 조건으로 검색하고 CLOVA Reranker와 Studio로 최대 3곳 코스를 추천받는다. 여행 도우미는 선택 시·군의 날씨·5일 예보, 기상특보·지진, 옷차림, 명소·맛집을 한국어·영어 음성 안내와 함께 제공한다. 1~8곳 여행 패스를 저장하고 만족도·메모·사진·AI 일기 초안으로 기록하며 대화형 수정·번역·포스터 인식을 이용한다. 관광 자료는 검토 전 자료이고 키 미설정 시 데모·안내로 대체한다.</desc>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif; fill: #1A2028; }
+    .heading { font-size: 27px; font-weight: 700; }
+    .subtitle { font-size: 19px; fill: #525862; }
+    .body { font-size: 19px; }
+    .label { font-size: 18px; font-weight: 700; fill: #2D56B6; }
+    .role { font-size: 17px; font-weight: 700; fill: #2D56B6; }
+    .icon { fill: none; stroke: #2D56B6; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+  <rect width="1280" height="452" rx="16" fill="#F1F4F8"/>
+  <g transform="translate(24 24)">
+    <rect width="400" height="404" rx="14" fill="#FFFFFF" stroke="#DBDEE3"/>
+    <rect x="24" y="24" width="64" height="64" rx="16" fill="#E7EDF9"/>
+    <g class="icon" transform="translate(32 32)" aria-hidden="true"><path d="M24 43S10 31 10 19a14 14 0 0 1 28 0c0 12-14 24-14 24Z"/><circle cx="24" cy="19" r="5.5"/></g>
+    <text x="104" y="63" class="label">01 | 탐색·AI 추천</text>
+    <text x="24" y="132" class="heading">경기도 여행지 찾기</text>
+    <text x="24" y="164" class="subtitle">31개 시·군 지도 · 관광지 609곳</text>
+    <path d="M24 190H376" stroke="#DBDEE3"/>
+    <text x="24" y="226" class="role">자연어 검색</text>
+    <text x="24" y="257" class="body">지역·동행·테마·활동 조건 필터</text>
+    <text x="24" y="315" class="role">AI 추천</text>
+    <text x="24" y="346" class="body">Reranker 선별 · 최대 3곳 코스</text>
+  </g>
+  <g transform="translate(440 24)">
+    <rect width="400" height="404" rx="14" fill="#FFFFFF" stroke="#DBDEE3"/>
+    <rect x="24" y="24" width="64" height="64" rx="16" fill="#E7EDF9"/>
+    <g class="icon" transform="translate(32 32)" aria-hidden="true"><circle cx="16" cy="16" r="6"/><path d="M16 3v3M3 16h3M7 7l2 2M25 7l-2 2M14 42h22a8 8 0 0 0 0-16 11 11 0 0 0-21 3 6.5 6.5 0 0 0-1 13Z"/></g>
+    <text x="104" y="63" class="label">02 | 여행 도우미</text>
+    <text x="24" y="132" class="heading">떠나기 전 한눈에 확인</text>
+    <text x="24" y="164" class="subtitle">날씨 · 안전 · 옷차림 · 명소 · 맛집</text>
+    <path d="M24 190H376" stroke="#DBDEE3"/>
+    <text x="24" y="226" class="role">날씨 · 안전 안내</text>
+    <text x="24" y="257" class="body">5일 예보 · 기상특보·지진 · 옷차림</text>
+    <text x="24" y="315" class="role">통합 안내</text>
+    <text x="24" y="346" class="body">1분 원고 · 한국어·영어 음성</text>
+  </g>
+  <g transform="translate(856 24)">
+    <rect width="400" height="404" rx="14" fill="#FFFFFF" stroke="#DBDEE3"/>
+    <rect x="24" y="24" width="64" height="64" rx="16" fill="#E7EDF9"/>
+    <g class="icon" transform="translate(32 32)" aria-hidden="true"><circle cx="10" cy="38" r="4"/><circle cx="38" cy="10" r="4"/><path d="M14 38h14a6 6 0 0 0 0-12H20a6 6 0 0 1 0-12h14"/></g>
+    <text x="104" y="63" class="label">03 | 여행 패스·기록</text>
+    <text x="24" y="132" class="heading">여행을 담고 기록하기</text>
+    <text x="24" y="164" class="subtitle">1~8곳 패스 저장 · 순서 편집</text>
+    <path d="M24 190H376" stroke="#DBDEE3"/>
+    <text x="24" y="226" class="role">내 여행</text>
+    <text x="24" y="257" class="body">만족도·메모 · 사진·AI 일기 초안</text>
+    <text x="24" y="315" class="role">AI 도우미</text>
+    <text x="24" y="346" class="body">대화형 수정 · 번역 · 포스터 인식</text>
+  </g>
+</svg>
