@@ -992,7 +992,8 @@ dialog::backdrop {
 .detail-image img {
   object-fit: cover;
 }
-.detail-image-empty {
+.detail-image-empty,
+.detail-image:has(.detail-photo-placeholder) {
   display: grid;
   place-items: center;
   border: 1px solid var(--line);
@@ -1779,7 +1780,9 @@ summary {
   object-fit: cover;
   display: block;
 }
-.no-photo-box {
+.no-photo-box,
+.map-card-photo:has(.no-photo),
+.journey-cover-photo:has(.no-photo) {
   display: flex;
   align-items: center;
   justify-content: center;
