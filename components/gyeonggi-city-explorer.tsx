@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+import { PlaceImage } from './place-image';
 import { useId } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import { GyeonggiMapPanel } from './gyeonggi-map';
@@ -113,16 +113,11 @@ export function GyeonggiCityExplorer({
                           onClick={() => onDetail(place)}
                           aria-label={`${place.name} 상세 보기`}
                         >
-                          {place.image ? (
-                            <Image
-                              src={place.image.path}
-                              alt={place.image.alt}
-                              fill
-                              sizes="88px"
-                            />
-                          ) : (
-                            <LocationIcon />
-                          )}
+                          <PlaceImage
+                            image={place.image}
+                            sizes="88px"
+                            fallback={<LocationIcon />}
+                          />
                         </button>
                         <div className="city-place-body">
                           <span className="city-place-category">

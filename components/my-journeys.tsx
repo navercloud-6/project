@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+import { PlaceImage } from './place-image';
 import { useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
@@ -162,12 +162,14 @@ export function MyJourneys({
                       onClick={() => onDetail(cover)}
                       aria-label={`${cover.name} 상세 보기`}
                     >
-                      <Image
-                        fill
+                      <PlaceImage
                         sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1400px) 50vw, 640px"
-                        src={cover.image.path}
-                        alt={cover.image.alt}
-                        loading="lazy"
+                        image={cover.image}
+                        fallback={
+                          <span className="no-photo">
+                            경기도의 또 다른 풍경
+                          </span>
+                        }
                       />
                     </button>
                     <figcaption>

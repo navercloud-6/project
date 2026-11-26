@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { PlaceImage } from './place-image';
 import type { Place } from '@/lib/domain/catalog';
 import { placeLabelBadges } from '@/lib/domain/place-labels';
 
@@ -21,16 +21,11 @@ export function PlaceCard({
         onClick={() => onDetail(p)}
         aria-label={`${p.name} 상세 보기`}
       >
-        {p.image ? (
-          <Image
-            src={p.image.path}
-            alt={p.image.alt}
-            fill
-            sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 960px) calc((100vw - 68px) / 2), (max-width: 1400px) calc((100vw - 136px) / 3), 422px"
-          />
-        ) : (
-          <span className="no-photo">경기도의 또 다른 풍경</span>
-        )}
+        <PlaceImage
+          image={p.image}
+          sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 960px) calc((100vw - 68px) / 2), (max-width: 1400px) calc((100vw - 136px) / 3), 422px"
+          fallback={<span className="no-photo">경기도의 또 다른 풍경</span>}
+        />
         <span className="region-label">{p.region}</span>
         {selected && <span className="selected-badge">담은 장소</span>}
       </button>

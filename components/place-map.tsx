@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+import { PlaceImage } from './place-image';
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import {
@@ -730,17 +730,11 @@ export function PlaceMap({
             onClick={() => onDetail(activePlace)}
             aria-label={`${activePlace.name} 상세 보기`}
           >
-            {activePlace.image ? (
-              <Image
-                fill
-                sizes="(max-width: 760px) calc(100vw - 36px), 210px"
-                src={activePlace.image.path}
-                alt={activePlace.image.alt}
-                loading="lazy"
-              />
-            ) : (
-              <span>경기도의 풍경</span>
-            )}
+            <PlaceImage
+              sizes="(max-width: 760px) calc(100vw - 36px), 210px"
+              image={activePlace.image}
+              fallback={<span className="no-photo">경기도의 풍경</span>}
+            />
           </button>
           <div className="map-card-body">
             <div className="map-card-meta">
