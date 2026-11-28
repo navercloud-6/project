@@ -44,50 +44,70 @@ export function createRestaurants(search: RestaurantSearchPort, ai: AIPort) {
         message: '맛집 정보는 네이버 검색 키 설정 후 제공됩니다.',
         items: [],
       });
-    return cache.getOrLoad(region, async () => {
-      try {
-        const area = searchArea(region);
-        const picked = selectRestaurants(
-          region,
-          await search.local(`${area} 맛집`),
-        );
-        const reviews = await Promise.all(
-          picked.map(async (p) =>
-            (await search.blog(`${p.name} ${area} 메뉴`))
-              .filter((text) => aboutPlace(p.name, text))
-              .slice(0, 3),
-          ),
-        );
-        const withReviews = picked.map((p, i) => ({
-          name: p.name,
-          reviews: reviews[i],
-        }));
-        const proposed =
-          ai.capabilities().clova && withReviews.some((r) => r.reviews.length)
-            ? await ai.restaurantMenus(
-                withReviews.filter((r) => r.reviews.length),
-              )
-            : {};
-        return restaurantsResponseSchema.parse({
-          region,
-          mode: 'live',
-          source: SOURCE,
-          ...stamp(search.now()),
-          message:
-            picked.length === 0 ? '조건에 맞는 맛집을 찾지 못했어요.' : null,
-          items: picked.map((p, i) => ({
-            ...p,
-            menus: verifiedMenus(proposed[p.name] ?? [], reviews[i]),
-          })),
-        });
-      } catch (error) {
-        if (error instanceof ApplicationError) throw error;
-        throw new ApplicationError(
-          'UPSTREAM_INVALID',
-          '맛집 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.',
-        );
-      }
-    });
+    let menuExtractionFailed = false;
+    return cache.getOrLoad(
+      region,
+      async () => {
+        menuExtractionFailed = false;
+        try {
+          const area = searchArea(region);
+          const picked = selectRestaurants(
+            region,
+            await search.local(`${area} 맛집`),
+          );
+          const reviews = await Promise.all(
+            picked.map(async (p) =>
+              (await search.blog(`${p.name} ${area} 메뉴`))
+                .filter((text) => aboutPlace(p.name, text))
+                .slice(0, 3),
+            ),
+          );
+          const withReviews = picked.map((p, i) => ({
+            name: p.name,
+            reviews: reviews[i],
+          }));
+          const proposed =
+            ai.capabilities().clova && withReviews.some((r) => r.reviews.length)
+              ? await ai
+                  .restaurantMenus(withReviews.filter((r) => r.reviews.length))
+                  .catch(() => {
+                    menuExtractionFailed = true;
+                    return {} as Record<string, string[]>;
+                  })
+              : {};
+          const compactProposed = new Map(
+            Object.entries(proposed).map(([name, menus]) => [
+              name.replace(/\s+/g, ''),
+              menus,
+            ]),
+          );
+          return restaurantsResponseSchema.parse({
+            region,
+            mode: 'live',
+            source: SOURCE,
+            ...stamp(search.now()),
+            message:
+              picked.length === 0 ? '조건에 맞는 맛집을 찾지 못했어요.' : null,
+            items: picked.map((p, i) => ({
+              ...p,
+              menus: verifiedMenus(
+                proposed[p.name] ??
+                  compactProposed.get(p.name.replace(/\s+/g, '')) ??
+                  [],
+                reviews[i],
+              ),
+            })),
+          });
+        } catch (error) {
+          if (error instanceof ApplicationError) throw error;
+          throw new ApplicationError(
+            'UPSTREAM_INVALID',
+            '맛집 정보를 확인할 수 없습니다. 잠시 후 다시 시도해 주세요.',
+          );
+        }
+      },
+      { shouldCache: () => !menuExtractionFailed },
+    );
   };
 }
 

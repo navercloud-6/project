@@ -24,6 +24,9 @@ import {
   createRestaurants,
 } from '../lib/application/restaurants';
 import { naverSearch } from '../lib/adapters/naver-search';
+import { parseRestaurantMenus } from '../lib/adapters/naver';
+import { parseAI } from '../lib/adapters/ai-output';
+import { z } from 'zod';
 import type { AIPort, RestaurantSearchPort } from '../lib/application/ports';
 
 const place = (patch: Partial<LocalPlace>): LocalPlace => ({
@@ -155,6 +158,107 @@ test('CLOVA 키가 없으면 메뉴 없이 맛집만 보여준다', async () => 
   const { port } = fakeSearch();
   const result = await createRestaurants(port, ai(false, {}))('수원시');
   assert.ok(result.items.every((i) => i.menus.length === 0));
+});
+
+test('AI 메뉴 추출이 실패해도 맛집 목록은 그대로 보여 주고 실패 결과는 캐시하지 않는다', async () => {
+  const { port, calls } = fakeSearch();
+  let shouldFail = true;
+  const flakyAi = {
+    capabilities: () => ({
+      clova: true,
+      voice: false,
+      translate: false,
+      ocr: false,
+    }),
+    restaurantMenus: async () => {
+      if (shouldFail) throw new Error('bad ai output');
+      return { 갈비집본점: ['왕갈비 정식'] };
+    },
+  } as unknown as AIPort;
+  const fetch = createRestaurants(port, flakyAi);
+
+  const degraded = await fetch('수원시');
+  assert.equal(degraded.mode, 'live');
+  assert.deepEqual(
+    degraded.items.map((i) => [i.name, i.menus]),
+    [
+      ['갈비집 본점', []],
+      ['국수집', []],
+    ],
+  );
+  assert.equal(calls.length, 3);
+
+  // 실패한 메뉴 추출 결과는 캐시하지 않으므로 다음 요청에서 다시 시도해 메뉴를 채운다.
+  shouldFail = false;
+  const recovered = await fetch('수원시');
+  assert.deepEqual(
+    recovered.items.map((i) => [i.name, i.menus]),
+    [
+      ['갈비집 본점', ['왕갈비 정식']],
+      ['국수집', []],
+    ],
+  );
+  assert.equal(calls.length, 6);
+
+  // 성공 후에는 10분 캐시한다.
+  await fetch('수원시');
+  assert.equal(calls.length, 6);
+});
+
+test('parseRestaurantMenus와 parseAI는 설명 문구·코드 펜스·변형 JSON을 처리하고 잘못된 출력은 거절한다', () => {
+  assert.deepEqual(
+    parseRestaurantMenus(
+      '다음은 추출한 메뉴입니다.\n```json\n{"갈비집 본점": ["왕갈비 정식", "물냉면"]}\n```\n참고해 주세요.',
+    ),
+    { '갈비집 본점': ['왕갈비 정식', '물냉면'] },
+  );
+  assert.deepEqual(
+    parseRestaurantMenus(
+      '{"갈비집 본점": ["왕갈비 정식"]}\n{"국수집": ["잔치국수"]}',
+    ),
+    { '갈비집 본점': ['왕갈비 정식'], 국수집: ['잔치국수'] },
+  );
+  assert.deepEqual(
+    parseRestaurantMenus(
+      '{"items":[{"name":"갈비집 본점","menus":["왕갈비 정식","물냉면","비빔냉면","갈비탕","육회","된장찌개"]},{"name":"국수집","menus":null}]}',
+    ),
+    {
+      '갈비집 본점': [
+        '왕갈비 정식',
+        '물냉면',
+        '비빔냉면',
+        '갈비탕',
+        '육회',
+        '된장찌개',
+      ],
+      국수집: [],
+    },
+  );
+  assert.deepEqual(
+    parseRestaurantMenus('{"갈비집 본점": "왕갈비 정식", "국수집": "없음"}'),
+    { '갈비집 본점': ['왕갈비 정식'], 국수집: [] },
+  );
+  assert.throws(
+    () => parseRestaurantMenus('메뉴를 찾지 못했습니다.'),
+    /AI 응답 형식이 올바르지 않습니다/,
+  );
+
+  // 40자를 넘는 메뉴 문자열은 도메인 검증에서 걸러진다.
+  const longMenu = '아주긴세트메뉴이름'.repeat(6);
+  assert.deepEqual(
+    verifiedMenus([longMenu, '물냉면'], [`${longMenu} 물냉면`]),
+    ['물냉면'],
+  );
+
+  // parseAI는 앞뒤 문구와 따옴표가 섞여 있어도 유효한 JSON 객체를 파싱한다.
+  const schema = z.object({ ok: z.boolean() });
+  assert.deepEqual(parseAI(schema, '12" 안내:\n```JSON\n{"ok": true}\n```'), {
+    ok: true,
+  });
+  assert.throws(
+    () => parseAI(schema, '{"ok": "no"}'),
+    /AI 응답 형식이 올바르지 않습니다/,
+  );
 });
 
 test('어댑터는 NAVER API HUB 주소·헤더로 요청하고 응답을 정리한다', async () => {

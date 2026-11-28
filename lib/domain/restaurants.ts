@@ -4,6 +4,7 @@ import { weatherQuerySchema } from './weather';
 export const RESTAURANT_CACHE_MS = 10 * 60 * 1000;
 export const RESTAURANT_LIMIT = 5;
 export const MENU_LIMIT = 3;
+export const MENU_MAX_LENGTH = 40;
 // 분류에 이 단어가 있으면 여행 안내 맛집에서 뺀다.
 export const EXCLUDED_CATEGORIES = ['술집'] as const;
 
@@ -14,7 +15,7 @@ export const restaurantSchema = z.object({
   category: z.string().max(100),
   address: z.string().max(200),
   link: z.string().url().nullable(),
-  menus: z.array(z.string().min(1).max(40)).max(MENU_LIMIT),
+  menus: z.array(z.string().min(1).max(MENU_MAX_LENGTH)).max(MENU_LIMIT),
 });
 export type Restaurant = z.infer<typeof restaurantSchema>;
 
@@ -99,11 +100,12 @@ export function verifiedMenus(menus: string[], reviews: string[]): string[] {
   const seen = new Set<string>();
   const out: string[] = [];
   for (const menu of menus) {
-    const key = squash(menu);
-    if (!key || seen.has(key)) continue;
+    const trimmed = menu.trim();
+    const key = squash(trimmed);
+    if (!key || trimmed.length > MENU_MAX_LENGTH || seen.has(key)) continue;
     if (texts.some((t) => t.includes(key))) {
       seen.add(key);
-      out.push(menu.trim());
+      out.push(trimmed);
       if (out.length === MENU_LIMIT) break;
     }
   }
