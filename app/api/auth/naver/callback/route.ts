@@ -9,11 +9,9 @@ import {
 export const runtime = 'nodejs';
 export async function GET(request: Request) {
   const jar = await cookies();
-  const params = new URL(request.url).searchParams;
-  const target = new URL(
-    '/',
-    process.env.APP_ORIGIN || new URL(request.url).origin,
-  );
+  const requestUrl = new URL(request.url);
+  const params = requestUrl.searchParams;
+  const target = new URL('/', process.env.APP_ORIGIN || requestUrl.origin);
   try {
     const token = await auth.complete(
       jar.get(sessionCookie)?.value,

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BottomNavigation, type Tab } from './bottom-navigation';
 import { TodayGuide } from './today-guide';
 import type { AuthStatus, Capabilities } from '@/lib/application/ports';
@@ -18,7 +18,7 @@ import { TripBuilder } from './trip-builder';
 import { AiTravelSearch } from './ai-travel-search';
 import { WeatherPanel } from './weather-panel';
 import { GyeonggiCityExplorer } from './gyeonggi-city-explorer';
-import { gyeonggiCities } from '@/lib/domain/gyeonggi';
+import { gyeonggiCities, gyeonggiCityByName } from '@/lib/domain/gyeonggi';
 import { searchPlaces } from '@/lib/domain/place-labels';
 import { kstDate } from '@/lib/domain/weather';
 import type { Place } from '@/lib/domain/catalog';
@@ -56,6 +56,8 @@ const EXPLORE_COPY: Record<
     body: '방문 순서와 날짜를 정리한 뒤 내 여행에 저장해 보세요.',
   },
 };
+
+const GYEONGGI_REGIONS = ['전체', ...gyeonggiCities.map((city) => city.name)];
 
 export default function Tourpass({
   places,
@@ -101,22 +103,28 @@ export default function Tourpass({
     place: Place;
   } | null>(null);
 
-  const regions = ['전체', ...new Set(places.map((p) => p.region))];
-  const byId = new Map(places.map((p) => [p.id, p]));
-  const filtered = searchPlaces(places, query, region);
-  function clearError() {
+  const regions = GYEONGGI_REGIONS;
+  const byId = useMemo(() => new Map(places.map((p) => [p.id, p])), [places]);
+  const filtered = useMemo(
+    () => searchPlaces(places, query, region),
+    [places, query, region],
+  );
+  const clearError = useCallback(() => {
     setError('');
     setLimitReached(false);
-  }
-  function clearRecommendation() {
+  }, []);
+  const clearRecommendation = useCallback(() => {
     recommendationRequestRef.current++;
     setResult(null);
-  }
+  }, []);
   function focusSearchInput() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     searchInputRef.current?.focus({ preventScroll: true });
   }
-  const selected = selection.map((id) => byId.get(id)!);
+  const selected = useMemo(
+    () => selection.map((id) => byId.get(id)!),
+    [selection, byId],
+  );
   const goExplore = (task: ExploreTask = 'browse') => {
     if (tab === 'explore' && exploreTask === task) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -248,25 +256,29 @@ export default function Tourpass({
     }
   }
 
-  function toggle(id: string) {
-    setNotice('');
-    clearError();
-    if (selection.includes(id)) setSelection(selection.filter((x) => x !== id));
-    else if (selection.length < 8) setSelection([...selection, id]);
-    else {
-      setLimitReached(true);
-      setError('한 여행에는 최대 8곳까지 담을 수 있어요.');
-    }
-  }
+  const toggle = useCallback(
+    (id: string) => {
+      setNotice('');
+      clearError();
+      setSelection((current) => {
+        if (current.includes(id)) return current.filter((x) => x !== id);
+        if (current.length < 8) return [...current, id];
+        setLimitReached(true);
+        setError('한 여행에는 최대 8곳까지 담을 수 있어요.');
+        return current;
+      });
+    },
+    [clearError],
+  );
 
-  function moveStop(from: number, to: number) {
+  const moveStop = useCallback((from: number, to: number) => {
     setSelection((current) => {
       if (to < 0 || to >= current.length) return current;
       const next = [...current];
       [next[from], next[to]] = [next[to], next[from]];
       return next;
     });
-  }
+  }, []);
 
   async function generate() {
     const trimmed = query.trim();
@@ -331,10 +343,13 @@ export default function Tourpass({
     }
   }
 
-  const updateJourney = (updated: Journey) =>
-    setSaved((current) =>
-      current.map((j) => (j.id === updated.id ? updated : j)),
-    );
+  const updateJourney = useCallback(
+    (updated: Journey) =>
+      setSaved((current) =>
+        current.map((j) => (j.id === updated.id ? updated : j)),
+      ),
+    [],
+  );
 
   const heading = EXPLORE_COPY[exploreTask];
 
@@ -605,9 +620,7 @@ export default function Tourpass({
             onTogglePlace={toggle}
             onDetailPlace={setDetail}
             onExploreRegion={(r) => {
-              const matchedCity = gyeonggiCities.find(
-                (city) => city.name === r,
-              );
+              const matchedCity = gyeonggiCityByName.get(r);
               setQuery('');
               if (r === '전체') {
                 setSelectedCityId(null);

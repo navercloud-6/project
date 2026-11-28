@@ -1,7 +1,7 @@
 import {
   buildCityWeatherResponse,
   buildDemoCityObservation,
-  cityWeatherLocations,
+  cityWeatherLocationById,
   cityWeatherQuerySchema,
   CITY_WEATHER_CACHE_MS,
   type CityWeatherResponse,
@@ -21,7 +21,7 @@ export function createCityWeather(weather: CityWeatherPort) {
 
   return async function fetchCityWeather(cityIdInput?: string) {
     const { cityId } = cityWeatherQuerySchema.parse({ cityId: cityIdInput });
-    const city = cityWeatherLocations.find((c) => c.id === cityId)!;
+    const city = cityWeatherLocationById.get(cityId)!;
     const mode = weather.demo() ? 'demo' : 'live';
     return cache.getOrLoad(`${mode}:${cityId}`, async () => {
       try {

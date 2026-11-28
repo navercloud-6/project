@@ -1,7 +1,12 @@
 import { placeIdSchema } from '@/lib/domain/contracts';
-import { checkOrigin, session, failure } from '@/lib/adapters/http';
+import {
+  checkOrigin,
+  session,
+  failure,
+  toResponseBytes,
+} from '@/lib/adapters/http';
 import { safeImage } from '@/lib/adapters/images';
-import { photoFor, operations } from '@/lib/server';
+import { hasPhoto, photoFor, operations } from '@/lib/server';
 import { ApplicationError } from '@/lib/domain/errors';
 import { z } from 'zod';
 
@@ -10,18 +15,17 @@ export const runtime = 'nodejs';
 export async function GET(request: Request) {
   try {
     const owner = await session();
-    const q = query.parse(
-      Object.fromEntries(new URL(request.url).searchParams),
-    );
-    const photo = await photoFor(owner, q.journey, q.place);
-    if (new URL(request.url).searchParams.has('metadata'))
+    const { searchParams } = new URL(request.url);
+    const q = query.parse(Object.fromEntries(searchParams));
+    if (searchParams.has('metadata'))
       return Response.json(
-        { exists: Boolean(photo) },
+        { exists: await hasPhoto(owner, q.journey, q.place) },
         { headers: { 'Cache-Control': 'private, no-store' } },
       );
+    const photo = await photoFor(owner, q.journey, q.place);
     if (!photo)
       throw new ApplicationError('NOT_FOUND', '저장한 사진이 없습니다.');
-    return new Response(new Uint8Array(photo.image), {
+    return new Response(toResponseBytes(photo.image), {
       headers: {
         'Content-Type': 'image/jpeg',
         'Cache-Control': 'private, no-store',

@@ -133,34 +133,35 @@ export function selectRecords(
   cityId: string,
   limit = 20,
 ): TourRecord[] {
-  const score = (item: TourRecord) => {
+  const scored: { item: TourRecord; name: string; score: number }[] = [];
+  for (const item of items) {
+    if (cityForRecord(item)?.id !== cityId || !validRecord(item)) continue;
     const name = normalizedName(item);
     const priority = priorityNames.findIndex((part) => name.includes(part));
-    return (
+    const score =
       (priority >= 0 ? 10000 - priority : 0) +
       (item.contenttypeid === '12' ? 20 : 0) +
       (reusablePhoto(item) ? 10 : 0) -
-      (/도서관|문화원|체육공원/.test(name) ? 30 : 0)
-    );
-  };
+      (/도서관|문화원|체육공원/.test(name) ? 30 : 0);
+    scored.push({ item, name, score });
+  }
+  scored.sort(
+    (a, b) =>
+      b.score - a.score ||
+      a.item.title.localeCompare(b.item.title, 'ko') ||
+      a.item.contentid.localeCompare(b.item.contentid),
+  );
   const names = new Set<string>();
   const ids = new Set<string>();
-  return items
-    .filter((item) => validRecord(item) && cityForRecord(item)?.id === cityId)
-    .sort(
-      (a, b) =>
-        score(b) - score(a) ||
-        a.title.localeCompare(b.title, 'ko') ||
-        a.contentid.localeCompare(b.contentid),
-    )
-    .filter((item) => {
-      const name = normalizedName(item);
-      if (names.has(name) || ids.has(item.contentid)) return false;
-      names.add(name);
-      ids.add(item.contentid);
-      return true;
-    })
-    .slice(0, limit);
+  const out: TourRecord[] = [];
+  for (const { item, name } of scored) {
+    if (names.has(name) || ids.has(item.contentid)) continue;
+    names.add(name);
+    ids.add(item.contentid);
+    out.push(item);
+    if (out.length === limit) break;
+  }
+  return out;
 }
 
 export function toPlace(item: TourRecord, checkedOn: string) {

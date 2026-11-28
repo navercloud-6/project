@@ -110,15 +110,18 @@ test('날씨 API는 경기도 31개 시·군의 좌표로 5일 예보와 같은 
   }
 });
 
-test('날씨 탭은 공유한 도시를 선택한 상태로 31개 시·군과 5일 예보를 표시한다', () => {
+test('날씨 탭은 공유한 도시를 선택한 상태로 경기도 지도와 5일 예보를 표시한다', () => {
   for (const city of gyeonggiCities) {
     const html = render(city.id, ready(city.name));
+    assert.match(html, /class="gyeonggi-map-svg"/);
     assert.equal([...html.matchAll(/<option\b/g)].length, 32);
-    assert.ok(html.includes(`value="${city.name}" selected=""`));
+    assert.ok(html.includes(`value="${city.id}" selected=""`));
+    assert.ok(html.includes(`data-city-id="${city.id}"`));
     assert.ok(html.includes(`경기도 · ${city.name}`));
     assert.equal([...html.matchAll(/class="weather-day-card"/g)].length, 5);
     assert.match(html, /데모 기상 안내/);
     assert.doesNotMatch(html, /날씨 정보를 불러오고/);
+    assert.doesNotMatch(html, /해안·산림 국지 기상|weather-region-chip/);
   }
   assert.match(render(null, ready('전체')), /경기도 대표 \(수원 중심\)/);
 });
@@ -147,7 +150,7 @@ test('도시 전환 시 이전 도시의 날씨·추천·오류를 즉시 숨긴
   assert.doesNotMatch(failed, /weather-temp-value|weather-place-grid/);
 });
 
-test('선택 목록·빠른 선택은 도시 ID를 전달하고 재시도·장소 이동을 연결한다', () => {
+test('경기도 지도 패널은 도시 ID를 전달하고 재시도·장소 이동을 연결한다', () => {
   type NodeProps = { children?: ReactNode; [key: string]: unknown };
   const nodes: NodeProps[] = [];
   function visit(node: ReactNode) {
@@ -168,20 +171,15 @@ test('선택 목록·빠른 선택은 도시 ID를 전달하고 재시도·장�
     onRetry: () => retries++,
   };
   visit(WeatherPanelView({ ...actions, state: ready('가평군') }));
-  const select = nodes.find(
-    (node) => node['aria-label'] === '경기도 시·군 선택',
+  const mapPanel = nodes.find(
+    (node) =>
+      node.selectedCityId === '41820' &&
+      typeof node.onSelectCity === 'function',
   )!;
-  (select.onChange as (event: { target: { value: string } }) => void)({
-    target: { value: '수원시' },
-  });
-  (
-    nodes.find((node) => node.children === '시흥시' && node.onClick)!
-      .onClick as () => void
-  )();
-  (
-    nodes.find((node) => node.children === '경기도 전체' && node.onClick)!
-      .onClick as () => void
-  )();
+  const onSelectCity = mapPanel.onSelectCity as (id: string | null) => void;
+  onSelectCity('41110');
+  onSelectCity('41390');
+  onSelectCity(null);
   (
     nodes.find((node) => node.children === '가평군 장소 더 보기')!
       .onClick as () => void

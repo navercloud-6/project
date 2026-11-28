@@ -36,6 +36,15 @@ async function request(url: string, init: RequestInit) {
     );
   }
 }
+const oauthTokenSchema = z.object({
+  access_token: z.string().min(1),
+  token_type: z.string().regex(/^bearer$/i),
+});
+const oauthProfileSchema = z.object({
+  resultcode: z.literal('00'),
+  response: z.object({ id: z.string().min(1).max(512) }),
+});
+
 export const naverLogin: LoginPort = {
   enabled() {
     try {
@@ -59,39 +68,29 @@ export const naverLogin: LoginPort = {
   },
   async identify(code, state) {
     const { client, secret } = config();
-    const token = z
-      .object({
-        access_token: z.string().min(1),
-        token_type: z.string().regex(/^bearer$/i),
-      })
-      .safeParse(
-        await request('https://nid.naver.com/oauth2.0/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            grant_type: 'authorization_code',
-            client_id: client,
-            client_secret: secret,
-            code,
-            state,
-          }),
+    const token = oauthTokenSchema.safeParse(
+      await request('https://nid.naver.com/oauth2.0/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          client_id: client,
+          client_secret: secret,
+          code,
+          state,
         }),
-      );
+      }),
+    );
     if (!token.success)
       throw new ApplicationError(
         'UPSTREAM_INVALID',
         '네이버 인증을 확인하지 못했습니다.',
       );
-    const profile = z
-      .object({
-        resultcode: z.literal('00'),
-        response: z.object({ id: z.string().min(1).max(512) }),
-      })
-      .safeParse(
-        await request('https://openapi.naver.com/v1/nid/me', {
-          headers: { Authorization: `Bearer ${token.data.access_token}` },
-        }),
-      );
+    const profile = oauthProfileSchema.safeParse(
+      await request('https://openapi.naver.com/v1/nid/me', {
+        headers: { Authorization: `Bearer ${token.data.access_token}` },
+      }),
+    );
     if (!profile.success)
       throw new ApplicationError(
         'UPSTREAM_INVALID',

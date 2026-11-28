@@ -69,6 +69,12 @@ export function createJourneys(
     await getJourney(owner, journey);
     return repository.photo(owner, journey, place);
   }
+  async function hasPhoto(owner: string, journey: string, place: string) {
+    await getJourney(owner, journey);
+    return repository.hasPhoto
+      ? repository.hasPhoto(owner, journey, place)
+      : Boolean(await repository.photo(owner, journey, place));
+  }
   async function savePhoto(
     owner: string,
     journey: string,
@@ -98,6 +104,7 @@ export function createJourneys(
     saveRecord,
     applyEdit,
     photoFor,
+    hasPhoto,
     savePhoto,
   };
 }

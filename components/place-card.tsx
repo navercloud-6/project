@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { PlaceImage } from './place-image';
 import type { Place } from '@/lib/domain/catalog';
 import { placeLabelBadges } from '@/lib/domain/place-labels';
 
-export function PlaceCard({
+export const PlaceCard = memo(function PlaceCard({
   place: p,
   selected,
   onDetail,
@@ -63,4 +64,4 @@ export function PlaceCard({
       </div>
     </article>
   );
-}
+});

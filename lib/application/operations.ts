@@ -7,7 +7,10 @@ import type { JourneyService } from './journeys';
 import type { AIPort, LimitPort, JourneyDraft } from './ports';
 import { createAssistant } from './assistant';
 import { createCache } from './cache';
-import { createRecommendation } from './recommendation';
+import {
+  createRecommendation,
+  type RecommendationService,
+} from './recommendation';
 import type { BriefingService } from './briefing';
 
 const PLACE_CACHE_MS = 24 * 60 * 60 * 1000;
@@ -20,10 +23,14 @@ export function createOperations(
   limits: LimitPort,
   briefing?: BriefingService,
   now: () => number = () => 0,
+  shared?: {
+    assistant?: ReturnType<typeof createAssistant>;
+    recommend?: RecommendationService;
+  },
 ) {
   const { getJourney, applyEdit, photoFor } = journeys;
-  const { guide, proposeEdit } = createAssistant(ai);
-  const recommend = createRecommendation(ai, now);
+  const { guide, proposeEdit } = shared?.assistant ?? createAssistant(ai);
+  const recommend = shared?.recommend ?? createRecommendation(ai, now);
   // 정적 카탈로그 문구 기반 장소 번역·음성은 모든 사용자에게 동일하므로 서버에서 캐시·병합한다.
   const placeTranslations = createCache<string>({
     now,

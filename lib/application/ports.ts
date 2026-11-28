@@ -32,6 +32,7 @@ export interface JourneyRepository {
     journey: string,
     place: string,
   ): Promise<Photo | undefined>;
+  hasPhoto?(owner: string, journey: string, place: string): Promise<boolean>;
   photoPlaces(owner: string, journey: string): Promise<string[]>;
   putPhoto(
     owner: string,

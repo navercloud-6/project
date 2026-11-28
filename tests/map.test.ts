@@ -73,7 +73,7 @@ test('네이버 지도 Client ID 정규화와 SDK·외부 검색 URL 생성이 �
   );
 });
 
-test('PlaceMap은 네이버 지도 키 유무에 따라 네이버 지도 영역과 SVG 폴백을 전환한다', () => {
+test('PlaceMap은 네이버 지도 키 유무에 따라 네이버 지도 영역과 SVG 폴백을 전환하고 불필요한 문구·미선택 라벨을 표시하지 않는다', () => {
   const fallbackMarkup = renderToStaticMarkup(
     createElement(PlaceMap, {
       places,
@@ -84,10 +84,28 @@ test('PlaceMap은 네이버 지도 키 유무에 따라 네이버 지도 영역�
   );
   assert.match(fallbackMarkup, /class="place-map-svg"/);
   assert.match(fallbackMarkup, /경기도 관광지 위치도/);
-  assert.match(fallbackMarkup, /네이버 지도 키 미설정/);
+  assert.doesNotMatch(
+    fallbackMarkup,
+    /네이버 지도 키 미설정|검토 전 시연 자료 · 실제 도로 경로 아님/,
+  );
   assert.match(fallbackMarkup, /https:\/\/map\.naver\.com\/p\/search\//);
   assert.doesNotMatch(fallbackMarkup, /data-map-provider="naver"/);
   assert.doesNotMatch(fallbackMarkup, /시화호|서해 \(황해\)|대야·소래산/);
+
+  const catalogMarkup = renderToStaticMarkup(
+    createElement(PlaceMap, {
+      places,
+      visiblePlaces: places.slice(0, 15),
+      routeIds: [],
+      onDetail() {},
+    }),
+  );
+  const svgMarkup = catalogMarkup.match(/<svg\b[\s\S]*?<\/svg>/)![0];
+  assert.equal(
+    (svgMarkup.match(/<rect[^>]*height="20"/g) ?? []).length,
+    1,
+    '선택·동선에 포함되지 않은 점에는 관광지 이름을 미리 출력하지 않는다',
+  );
 
   const naverMarkup = renderToStaticMarkup(
     createElement(PlaceMap, {

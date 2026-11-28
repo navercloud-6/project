@@ -2,7 +2,11 @@ import { places } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
 import { type History, demoEdit } from '@/lib/domain/assistant';
 import { ApplicationError } from '@/lib/domain/errors';
-import { placeSearchText, scorePlaceMatch } from '@/lib/domain/place-labels';
+import {
+  getPlaceCompactTexts,
+  preparePlaceQuery,
+  scorePreparedPlaceMatch,
+} from '@/lib/domain/place-labels';
 import type { AIPort } from './ports';
 
 export function createAssistant(ai: AIPort) {
@@ -10,17 +14,22 @@ export function createAssistant(ai: AIPort) {
   function retrieve(question: string, placeId?: string) {
     const compact = question.replace(/\s/g, '');
     const chunks = [...new Set(compact.match(/.{2}/g) || [])];
-    return places
-      .map((p) => {
-        const text = placeSearchText(p).replace(/\s/g, '');
-        const score =
-          (p.id === placeId ? 100 : 0) +
-          (compact.includes(p.name.replace(/\s/g, '')) ? 30 : 0) +
-          scorePlaceMatch(p, question) +
-          chunks.filter((c) => text.includes(c)).length;
-        return { p, score };
-      })
-      .filter((v) => v.score > 0)
+    const prepared = preparePlaceQuery(question);
+    const scored: { p: (typeof places)[number]; score: number }[] = [];
+    for (const p of places) {
+      const { compactName, compactSearchText } = getPlaceCompactTexts(p);
+      let chunkHits = 0;
+      for (const c of chunks) {
+        if (compactSearchText.includes(c)) chunkHits++;
+      }
+      const score =
+        (p.id === placeId ? 100 : 0) +
+        (compact.includes(compactName) ? 30 : 0) +
+        scorePreparedPlaceMatch(p, prepared) +
+        chunkHits;
+      if (score > 0) scored.push({ p, score });
+    }
+    return scored
       .sort((a, b) => b.score - a.score)
       .slice(0, 3)
       .map(({ p }) => p);

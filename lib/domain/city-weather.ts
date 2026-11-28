@@ -13,13 +13,16 @@ export const cityWeatherLocations = gyeonggiCities.map(({ id, name }) => {
   return { id, name, coordinates: { lat, lng } };
 });
 export type CityWeatherLocation = (typeof cityWeatherLocations)[number];
+export const cityWeatherLocationById = new Map(
+  cityWeatherLocations.map((city) => [city.id, city]),
+);
 
 export const cityWeatherQuerySchema = z.object({
   cityId: z
     .string()
     .default(DEFAULT_WEATHER_CITY_ID)
     .refine(
-      (id) => cityWeatherLocations.some((city) => city.id === id),
+      (id) => cityWeatherLocationById.has(id),
       '지원하지 않는 경기도 시·군입니다.',
     ),
 });

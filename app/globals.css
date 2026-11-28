@@ -1597,28 +1597,25 @@ summary {
   opacity: 0.45;
 }
 .nm-dot {
-  width: 22px;
-  height: 22px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: #fff;
-  border: 2.5px solid var(--brand);
-  color: var(--brand-ink);
+  background: var(--brand);
+  border: 2px solid #fff;
+  color: #fff;
   font-size: 11px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(16, 42, 28, 0.22);
+  box-shadow: 0 1px 4px rgba(16, 42, 28, 0.22);
 }
 .nm-dot-core {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--brand);
+  display: none;
 }
 .nm-pin.is-route .nm-dot {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   background: var(--brand-gradient-action);
   border-color: #fff;
   color: #fff;
@@ -1628,13 +1625,10 @@ summary {
   border-color: #fff;
   color: #fff;
 }
-.nm-pin.is-recorded .nm-dot-core {
-  background: #fff;
-}
 .nm-pin.is-active .nm-dot {
-  width: 32px;
-  height: 32px;
-  border: 3px solid #e79323;
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid #e79323;
   box-shadow:
     0 0 0 3px rgba(231, 147, 35, 0.28),
     0 3px 10px rgba(16, 42, 28, 0.28);
@@ -1644,6 +1638,10 @@ summary {
   color: #fff;
 }
 .nm-pin.is-active:not(.is-route):not(.is-recorded) .nm-dot-core {
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: #fff;
 }
 .nm-label {
@@ -1885,6 +1883,9 @@ summary {
 .weather-page h1 {
   font-size: 38px;
   margin: 5px 0 10px;
+}
+.weather-map-section {
+  margin-bottom: 28px;
 }
 .weather-selector {
   display: flex;

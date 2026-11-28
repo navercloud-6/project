@@ -30,6 +30,7 @@ export function Guide({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const groupedPlaces = useMemo(() => groupPlacesByRegion(places), [places]);
+  const byId = useMemo(() => new Map(places.map((p) => [p.id, p])), [places]);
 
   async function ask() {
     setBusy(true);
@@ -156,7 +157,7 @@ export function Guide({
           {answer.sources.length > 0 ? (
             <ul>
               {answer.sources.map((s) => {
-                const matched = places.find((p) => p.id === s.id);
+                const matched = byId.get(s.id);
                 return (
                   <li key={s.id}>
                     <div className="source-actions">

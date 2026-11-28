@@ -15,6 +15,11 @@ import {
   type WeatherResponse,
 } from '@/lib/domain/weather';
 
+const VALID_WMO_CODES = new Set([
+  0, 1, 2, 3, 45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77,
+  80, 81, 82, 85, 86, 95, 96, 99,
+]);
+
 const currentCityUpstreamSchema = z.object({
   timezone: z.literal('Asia/Seoul'),
   utc_offset_seconds: z.literal(32400),
@@ -24,12 +29,7 @@ const currentCityUpstreamSchema = z.object({
     weather_code: z
       .number()
       .int()
-      .refine((code) =>
-        [
-          0, 1, 2, 3, 45, 48, 51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73,
-          75, 77, 80, 81, 82, 85, 86, 95, 96, 99,
-        ].includes(code),
-      ),
+      .refine((code) => VALID_WMO_CODES.has(code)),
     wind_speed_10m: z.number().min(0),
   }),
 });

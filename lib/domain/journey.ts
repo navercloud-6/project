@@ -14,10 +14,10 @@ export function assertEditable(
       'CONFLICT',
       '여행이 변경되었습니다. 새로고침 후 다시 제안받아 주세요.',
     );
+  const nextIds = new Set(proposal.placeIds);
   if (
-    [...Object.keys(current.records), ...photoPlaces].some(
-      (place) => !proposal.placeIds.includes(place),
-    )
+    Object.keys(current.records).some((place) => !nextIds.has(place)) ||
+    photoPlaces.some((place) => !nextIds.has(place))
   )
     throw new ApplicationError(
       'CONFLICT',

@@ -117,6 +117,26 @@ export async function chat(
   return parsed.data.result.message;
 }
 
+const translatedTextSchema = z.string().min(1).max(12000);
+const ocrFieldsSchema = z
+  .array(z.object({ inferText: z.string(), lineBreak: z.boolean().optional() }))
+  .max(3000);
+const guideResponseSchema = z.object({
+  answer: z.string().min(1).max(1200),
+  sourceIds: z.array(z.string()).min(1).max(3),
+});
+const diaryResponseSchema = z.object({ draft: z.string().min(1).max(500) });
+const briefingContentSchema = z.string().min(1).max(4000);
+const restaurantMenusSchema = z.record(
+  z.string(),
+  z.array(z.string().max(40)).max(5),
+);
+
+const toBase64 = (image: Uint8Array) =>
+  Buffer.from(image.buffer, image.byteOffset, image.byteLength).toString(
+    'base64',
+  );
+
 export async function translate(text: string, target: string) {
   requireCap(capabilities().translate, 'Papago API 키 설정이 필요합니다.');
   const response = await upstream(
@@ -131,11 +151,9 @@ export async function translate(text: string, target: string) {
       body: JSON.stringify({ source: 'ko', target, text }),
     },
   );
-  const result = z
-    .string()
-    .min(1)
-    .max(12000)
-    .safeParse((await response.json()).message?.result?.translatedText);
+  const result = translatedTextSchema.safeParse(
+    (await response.json()).message?.result?.translatedText,
+  );
   if (!result.success)
     throw new ApplicationError(
       'UPSTREAM_INVALID',
@@ -198,7 +216,7 @@ export async function ocr(image: Uint8Array) {
         {
           format: 'jpg',
           name: 'poster',
-          data: Buffer.from(image).toString('base64'),
+          data: toBase64(image),
         },
       ],
     }),
@@ -209,12 +227,7 @@ export async function ocr(image: Uint8Array) {
       'UPSTREAM_INVALID',
       '포스터에서 글자를 읽지 못했습니다. 직접 입력하거나 다른 사진을 사용해 주세요.',
     );
-  const fields = z
-    .array(
-      z.object({ inferText: z.string(), lineBreak: z.boolean().optional() }),
-    )
-    .max(3000)
-    .safeParse(imageResult.fields);
+  const fields = ocrFieldsSchema.safeParse(imageResult.fields);
   if (!fields.success)
     throw new ApplicationError(
       'UPSTREAM_INVALID',
@@ -368,13 +381,7 @@ export const naver: AIPort = {
       ...history,
       { role: 'user', content: question },
     ]);
-    return parseAI(
-      z.object({
-        answer: z.string().min(1).max(1200),
-        sourceIds: z.array(z.string()).min(1).max(3),
-      }),
-      message.content,
-    );
+    return parseAI(guideResponseSchema, message.content);
   },
   async proposeEdit(journey, places, prompt, history) {
     const message = await chat(
@@ -412,7 +419,7 @@ export const naver: AIPort = {
             { type: 'text', text: `사용자가 선택한 장소: ${name}` },
             {
               type: 'image_url',
-              dataUri: { data: Buffer.from(image).toString('base64') },
+              dataUri: { data: toBase64(image) },
             },
           ],
         },
@@ -420,10 +427,7 @@ export const naver: AIPort = {
       {},
       process.env.CLOVA_VISION_MODEL || 'HCX-005',
     );
-    return parseAI(
-      z.object({ draft: z.string().min(1).max(500) }),
-      message.content,
-    );
+    return parseAI(diaryResponseSchema, message.content);
   },
   async poster(text) {
     const message = await chat([
@@ -465,7 +469,7 @@ ${JSON.stringify(facts)}`,
         repetitionPenalty: 1.1,
       },
     );
-    const content = z.string().min(1).max(4000).safeParse(message.content);
+    const content = briefingContentSchema.safeParse(message.content);
     if (!content.success)
       throw new ApplicationError(
         'UPSTREAM_INVALID',
@@ -516,10 +520,7 @@ ${places.map((p, i) => `${i + 1}. ${JSON.stringify(p)}`).join('\n')}`,
       ],
       { maxTokens: 600, temperature: 0 },
     );
-    return parseAI(
-      z.record(z.string(), z.array(z.string().max(40)).max(5)),
-      message.content,
-    );
+    return parseAI(restaurantMenusSchema, message.content);
   },
   translate,
   voice,

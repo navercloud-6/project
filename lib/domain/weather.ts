@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { places, placeIds } from '@/lib/domain/catalog';
+import { places, placesByCityId, placeIds } from '@/lib/domain/catalog';
 import {
   buildOutfit,
   outfitSchema,
@@ -329,12 +329,13 @@ export const WEATHER_REGIONS: Record<string, RegionMeta> = {
 
 export const validWeatherRegions = new Set(Object.keys(WEATHER_REGIONS));
 
+const cityIdToRegion = new Map<string, string>();
+for (const [name, meta] of Object.entries(WEATHER_REGIONS)) {
+  if (meta.cityId) cityIdToRegion.set(meta.cityId, name);
+}
+
 export function regionForCity(cityId: string | null): string {
-  return (
-    Object.keys(WEATHER_REGIONS).find(
-      (name) => WEATHER_REGIONS[name].cityId === cityId,
-    ) ?? '전체'
-  );
+  return (cityId ? cityIdToRegion.get(cityId) : undefined) ?? '전체';
 }
 
 export const weatherQuerySchema = z.object({
@@ -494,56 +495,69 @@ export function buildWeatherOutfit(
   });
 }
 
+const INDOOR_PICK_RE = /박물관|미술관|전시|문화|역사|과학관/;
+const MIXED_PICK_RE = /전망|문화|산책|공원|역사/;
+const OUTDOOR_PICK_RE = /자연|산책|경관|바다|공원|호수|수목원|숲/;
+const recommendedPlacesCache = new Map<string, readonly string[]>();
+
 export function pickRecommendedPlaces(
   regionName: string,
   suitability: 'outdoor' | 'mixed' | 'indoor',
 ): string[] {
+  const cacheKey = `${regionName}:${suitability}`;
+  const cached = recommendedPlacesCache.get(cacheKey);
+  if (cached) return [...cached];
+
   const cityId = WEATHER_REGIONS[regionName]?.cityId ?? null;
-  const scoped = cityId ? places.filter((p) => p.cityId === cityId) : places;
+  const scoped = cityId ? (placesByCityId.get(cityId) ?? []) : places;
   const pool = scoped.length > 0 ? scoped : places;
 
   const score = (p: (typeof places)[number]) => {
     const text = `${p.name} ${p.description} ${p.tags.join(' ')}`;
     if (suitability === 'indoor')
       return (
-        (/박물관|미술관|전시|문화|역사|과학관/.test(text) ? 10 : 0) +
+        (INDOOR_PICK_RE.test(text) ? 10 : 0) +
         (text.includes('체험') ? 4 : 0) +
         (p.image ? 2 : 0)
       );
-    const pattern =
-      suitability === 'mixed'
-        ? /전망|문화|산책|공원|역사/
-        : /자연|산책|경관|바다|공원|호수|수목원|숲/;
+    const pattern = suitability === 'mixed' ? MIXED_PICK_RE : OUTDOOR_PICK_RE;
     return (
       (pattern.test(text) ? (suitability === 'mixed' ? 6 : 8) : 0) +
       (p.image ? 2 : 0)
     );
   };
 
-  const sorted = [...pool].sort((a, b) => score(b) - score(a));
+  const sorted = pool
+    .map((p) => ({ p, score: score(p) }))
+    .sort((a, b) => b.score - a.score);
+
+  let picked: string[];
   if (!cityId) {
-    const picked: string[] = [];
+    picked = [];
     const seenCities = new Set<string>();
-    for (const p of sorted) {
+    for (const { p } of sorted) {
       if (!seenCities.has(p.cityId)) {
         seenCities.add(p.cityId);
         picked.push(p.id);
         if (picked.length === 3) break;
       }
     }
-    return picked;
+  } else {
+    picked = [...new Set(sorted.map(({ p }) => p.id))].slice(0, 3);
   }
-
-  return [...new Set(sorted.map((p) => p.id))].slice(0, 3);
+  recommendedPlacesCache.set(cacheKey, picked);
+  return [...picked];
 }
 
+const KST_DATE_FORMAT = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Asia/Seoul',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+});
+
 export const kstDate = (now: number, daysOffset = 0) =>
-  new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date(now + daysOffset * 86400000));
+  KST_DATE_FORMAT.format(new Date(now + daysOffset * 86400000));
 
 const round1 = (value: number) => Number(value.toFixed(1));
 

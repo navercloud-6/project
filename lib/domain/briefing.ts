@@ -1,10 +1,13 @@
 import { z } from 'zod';
-import type { Place } from './catalog';
+import { placeById, places, type Place } from './catalog';
 import type { WeatherResponse } from './weather';
 import type { Restaurant } from './restaurants';
 import { formatNum, joinKoreanList, josa, OUTFIT_VOCABULARY } from './outfit';
 
 const squash = (text: string) => text.replace(/\s+/g, '');
+const OUTFIT_VOCAB_ENTRIES = OUTFIT_VOCABULARY.map(
+  (item) => [item, squash(item)] as const,
+);
 
 export const BRIEFING_ENDING = '즐거운 여행 되세요!';
 // CLOVA Voice 1회 입력 상한(2,000자) 안에서 약 1분 분량을 목표로 한다.
@@ -80,6 +83,10 @@ export function briefingFacts(
   restaurants: Restaurant[] = [],
 ): BriefingFacts {
   const today = weather.daily[0];
+  const lookup =
+    catalog === places
+      ? placeById
+      : new Map(catalog.map((item) => [item.id, item]));
   return {
     region: weather.region === '전체' ? '경기도' : weather.region,
     weather: {
@@ -101,7 +108,7 @@ export function briefingFacts(
       notes: weather.outfit.notes,
     },
     places: weather.recommendedPlaceIds
-      .map((id) => catalog.find((p) => p.id === id))
+      .map((id) => lookup.get(id))
       .filter((p): p is NonNullable<typeof p> => Boolean(p))
       .slice(0, 3)
       .map((p) => ({
@@ -325,14 +332,12 @@ export function withReasons(
     const text = politeEnding(
       withoutOwnName(spokenKorean(raw ?? ''), name),
     ).replace(/[.!?]*$/, '.');
+    if (text.length < 8 || text.length > REASON_MAX || /\d/.test(text))
+      return '';
+    if (offSeasonWords(text, facts.weather.season).length > 0) return '';
     const own = squash(name);
-    const ok =
-      text.length >= 8 &&
-      text.length <= REASON_MAX &&
-      !/\d/.test(text) &&
-      offSeasonWords(text, facts.weather.season).length === 0 &&
-      !names.some((n) => n !== own && squash(text).includes(n));
-    return ok ? text : '';
+    const squashedText = squash(text);
+    return names.some((n) => n !== own && squashedText.includes(n)) ? '' : text;
   };
   return {
     ...facts,
@@ -342,11 +347,13 @@ export function withReasons(
     })),
     restaurants: facts.restaurants.map((r, j) => {
       const line = checked(reasons[facts.places.length + j], r.name);
+      if (!line) return { ...r, line: undefined };
       // 후기로 확인된 메뉴가 있는 맛집은 그 메뉴를 하나 이상 꼭 말해야 한다.
+      const squashedLine = squash(line);
       const hasMenu =
         r.menus.length === 0 ||
-        r.menus.some((m) => squash(line).includes(squash(m)));
-      return { ...r, line: line && hasMenu ? line : undefined };
+        r.menus.some((m) => squashedLine.includes(squash(m)));
+      return { ...r, line: hasMenu ? line : undefined };
     }),
   };
 }
@@ -443,12 +450,15 @@ export function tidyHead(text: string): string {
 export function foreignItems(head: string, facts: BriefingHeadFacts): string[] {
   const { outer, top, bottom, accessories, extras } = facts.outfit;
   const today = [...outer, ...top, ...bottom, ...accessories, ...extras];
+  const todaySet = new Set(today);
   let rest = squash(head);
   for (const item of [...today].sort((a, b) => b.length - a.length))
     rest = rest.split(squash(item)).join('|');
-  return OUTFIT_VOCABULARY.filter(
-    (item) => !today.includes(item) && rest.includes(squash(item)),
-  );
+  const out: string[] = [];
+  for (const [item, squashed] of OUTFIT_VOCAB_ENTRIES) {
+    if (!todaySet.has(item) && rest.includes(squashed)) out.push(item);
+  }
+  return out;
 }
 
 /** 앞부분과 명소·맛집 뒷부분을 합쳐 '즐거운 여행 되세요!'로 끝나는 원고를 만든다. */

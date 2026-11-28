@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import { regionForCity, weatherResponseSchema } from '@/lib/domain/weather';
 import type { BriefingOutput } from '@/lib/domain/briefing';
@@ -42,19 +42,24 @@ export function TodayGuide({
   const [briefing, setBriefing] = useState<BriefingOutput | null>(null);
 
   const spoken = briefing?.region === region ? briefing : null;
+  const byId = useMemo(() => new Map(places.map((p) => [p.id, p])), [places]);
+  const selectionSet = useMemo(() => new Set(selection), [selection]);
   // 원고가 오면 원고가 말한 순서·이유로, 오기 전에는 날씨 추천 순서(최대 3곳)로 보여 준다.
-  const spots = (
-    spoken
-      ? spoken.places
-      : (weather?.recommendedPlaceIds ?? [])
-          .slice(0, 3)
-          .map((id) => ({ id, reason: '' }))
-  )
-    .map(({ id, reason }) => ({
-      place: places.find((p) => p.id === id),
-      reason,
-    }))
-    .filter((s): s is { place: Place; reason: string } => Boolean(s.place));
+  const spots = useMemo(
+    () =>
+      (spoken
+        ? spoken.places
+        : (weather?.recommendedPlaceIds ?? [])
+            .slice(0, 3)
+            .map((id) => ({ id, reason: '' }))
+      )
+        .map(({ id, reason }) => ({
+          place: byId.get(id),
+          reason,
+        }))
+        .filter((s): s is { place: Place; reason: string } => Boolean(s.place)),
+    [spoken, weather, byId],
+  );
 
   return (
     <div className="today-guide">
@@ -119,7 +124,7 @@ export function TodayGuide({
                 {reason && <p className="today-spot-reason">{reason}</p>}
                 <PlaceCard
                   place={p}
-                  selected={selection.includes(p.id)}
+                  selected={selectionSet.has(p.id)}
                   onDetail={onDetail}
                   onToggle={onToggle}
                 />

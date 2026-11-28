@@ -69,16 +69,17 @@ export function selectRestaurants(
   candidates: LocalPlace[],
 ): LocalPlace[] {
   const seen = new Set<string>();
-  return candidates
-    .filter((p) => !EXCLUDED_CATEGORIES.some((c) => p.category.includes(c)))
-    .filter((p) => /^경기(?:도)?\s/.test(p.address))
-    .filter((p) => region === '전체' || p.address.includes(region))
-    .filter((p) => {
-      if (seen.has(p.name)) return false;
-      seen.add(p.name);
-      return true;
-    })
-    .slice(0, RESTAURANT_LIMIT);
+  const out: LocalPlace[] = [];
+  for (const p of candidates) {
+    if (EXCLUDED_CATEGORIES.some((c) => p.category.includes(c))) continue;
+    if (!/^경기(?:도)?\s/.test(p.address)) continue;
+    if (region !== '전체' && !p.address.includes(region)) continue;
+    if (seen.has(p.name)) continue;
+    seen.add(p.name);
+    out.push(p);
+    if (out.length === RESTAURANT_LIMIT) break;
+  }
+  return out;
 }
 
 const squash = (text: string) => text.replace(/\s+/g, '');
@@ -95,12 +96,16 @@ export function aboutPlace(name: string, snippet: string): boolean {
  */
 export function verifiedMenus(menus: string[], reviews: string[]): string[] {
   const texts = reviews.map(squash).filter(Boolean);
+  const seen = new Set<string>();
   const out: string[] = [];
   for (const menu of menus) {
     const key = squash(menu);
-    if (!key || out.some((m) => squash(m) === key)) continue;
-    if (texts.some((t) => t.includes(key))) out.push(menu.trim());
-    if (out.length === MENU_LIMIT) break;
+    if (!key || seen.has(key)) continue;
+    if (texts.some((t) => t.includes(key))) {
+      seen.add(key);
+      out.push(menu.trim());
+      if (out.length === MENU_LIMIT) break;
+    }
   }
   return out;
 }

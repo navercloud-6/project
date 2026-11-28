@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import { PlaceMap } from './place-map';
 import { PlaceCard } from './place-card';
@@ -46,7 +46,11 @@ export function PlaceCatalog({
     setVisibleCount(PAGE_SIZE);
   }, [query, region]);
 
-  const visiblePlaces = filtered.slice(0, visibleCount);
+  const visiblePlaces = useMemo(
+    () => filtered.slice(0, visibleCount),
+    [filtered, visibleCount],
+  );
+  const selectionSet = useMemo(() => new Set(selection), [selection]);
   const remaining = Math.max(0, filtered.length - visiblePlaces.length);
 
   return (
@@ -171,7 +175,7 @@ export function PlaceCatalog({
               <PlaceCard
                 key={p.id}
                 place={p}
-                selected={selection.includes(p.id)}
+                selected={selectionSet.has(p.id)}
                 onDetail={onDetail}
                 onToggle={onToggle}
               />

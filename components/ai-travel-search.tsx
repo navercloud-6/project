@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-import type { RefObject } from 'react';
+import { memo, useMemo, type RefObject } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import {
   RECOMMENDATION_STOP_LIMIT,
@@ -11,7 +11,7 @@ import {
   placeLabelBadges,
 } from '@/lib/domain/place-labels';
 
-function SearchPlaceItem({
+const SearchPlaceItem = memo(function SearchPlaceItem({
   place,
   selected,
   order,
@@ -60,7 +60,7 @@ function SearchPlaceItem({
       </button>
     </li>
   );
-}
+});
 
 export function AiTravelSearch({
   aiEnabled,
@@ -115,7 +115,8 @@ export function AiTravelSearch({
 }) {
   const trimmed = query.trim();
   const hasFilter = trimmed !== '' || region !== '전체' || result !== null;
-  const byId = new Map(places.map((p) => [p.id, p]));
+  const byId = useMemo(() => new Map(places.map((p) => [p.id, p])), [places]);
+  const selectionSet = useMemo(() => new Set(selection), [selection]);
   const quickPreview =
     trimmed && !result ? filtered.slice(0, RECOMMENDATION_STOP_LIMIT) : [];
 
@@ -285,7 +286,7 @@ export function AiTravelSearch({
                 <SearchPlaceItem
                   key={place.id}
                   place={place}
-                  selected={selection.includes(place.id)}
+                  selected={selectionSet.has(place.id)}
                   onDetail={onDetail}
                   onToggle={onToggle}
                 />
@@ -334,7 +335,7 @@ export function AiTravelSearch({
                 <SearchPlaceItem
                   key={place.id}
                   place={place}
-                  selected={selection.includes(place.id)}
+                  selected={selectionSet.has(place.id)}
                   onDetail={onDetail}
                   onToggle={onToggle}
                   order={index + 1}

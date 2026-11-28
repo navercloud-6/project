@@ -35,7 +35,8 @@ function createServerContainer() {
     identity,
     naverLogin,
   );
-  const { guide, proposeEdit } = createAssistant(naver);
+  const assistantService = createAssistant(naver);
+  const { guide, proposeEdit } = assistantService;
   const recommend = createRecommendation(naver, identity.now);
   const fetchWeather = createWeather({
     now: identity.now,
@@ -57,6 +58,7 @@ function createServerContainer() {
       alerts: fetchAlerts,
     }),
     identity.now,
+    { assistant: assistantService, recommend },
   );
   const fetchCityWeather = createCityWeather({
     now: identity.now,
@@ -105,6 +107,7 @@ export const {
   getJourney,
   applyEdit,
   photoFor,
+  hasPhoto,
   savePhoto,
 } = journeyService;
 export const capabilities = naver.capabilities;

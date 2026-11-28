@@ -1,5 +1,11 @@
 import { assistantInput } from '@/lib/domain/assistant';
-import { checkOrigin, session, jsonBody, failure } from '@/lib/adapters/http';
+import {
+  checkOrigin,
+  session,
+  jsonBody,
+  failure,
+  toResponseBytes,
+} from '@/lib/adapters/http';
 import { operations } from '@/lib/server';
 export const runtime = 'nodejs';
 export async function POST(request: Request) {
@@ -9,7 +15,7 @@ export async function POST(request: Request) {
     const data = assistantInput.parse(await jsonBody(request, 16000));
     const result = await operations.assistant(owner, data);
     if (result instanceof Uint8Array)
-      return new Response(new Uint8Array(result), {
+      return new Response(toResponseBytes(result), {
         headers: {
           'Content-Type': 'audio/mpeg',
           'Cache-Control': 'private, no-store',

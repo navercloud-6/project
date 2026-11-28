@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { gyeonggiCities } from './gyeonggi';
+import { gyeonggiCities, gyeonggiCityByName } from './gyeonggi';
 
 export const SETTING_LABELS = ['실내', '야외', '실내·야외'] as const;
 export const THEME_LABELS = [
@@ -266,7 +266,12 @@ function queryWord(source: string): RegExp {
   );
 }
 
-const QUERY_INTENTS: readonly [LabelField, RegExp, readonly string[]][] = (
+const QUERY_INTENTS: readonly [
+  LabelField,
+  RegExp,
+  RegExp,
+  readonly string[],
+][] = (
   [
     ['themes', '호수|저수지|호반|수변|강변', ['호수']],
     ['setting', '실내|안에서|내부|폭염|한파|추울|더울', ['실내', '실내·야외']],
@@ -302,7 +307,18 @@ const QUERY_INTENTS: readonly [LabelField, RegExp, readonly string[]][] = (
     ['styles', '사진|인생샷|포토|출사', ['사진명소']],
     ['styles', '산책|걷기|둘레길|트레일', ['산책']],
   ] satisfies [LabelField, string, string[]][]
-).map(([field, source, labels]) => [field, queryWord(source), labels]);
+).map(([field, source, labels]) => {
+  const testRe = queryWord(source);
+  return [field, testRe, new RegExp(testRe.source, 'gu'), labels];
+});
+
+const CITY_PATTERNS = gyeonggiCities.map((city) => {
+  const testRe = queryWord(`${city.name}|${city.name.slice(0, -1)}`);
+  return [city, testRe, new RegExp(testRe.source, 'gu')] as const;
+});
+
+const WANTS_INDOOR_RE = /실내|비\s*오는|우천|장마|비올|비오는/;
+const WANTS_OUTDOOR_RE = /야외|밖에서/;
 
 const QUERY_FILLERS = new Set([
   '여행',
@@ -362,29 +378,25 @@ function parsePlaceQuery(query: string) {
     .replace(/[^\p{L}\p{N}\s·]/gu, ' ')
     .trim();
   let remainder = normalized;
-  const cities = gyeonggiCities.filter((city) => {
-    const pattern = queryWord(`${city.name}|${city.name.slice(0, -1)}`);
-    if (!pattern.test(normalized)) return false;
-    remainder = remainder.replace(new RegExp(pattern.source, 'gu'), ' ');
-    return true;
-  });
-  const groups = QUERY_INTENTS.filter(([, pattern]) => {
-    if (!pattern.test(normalized)) return false;
-    remainder = remainder.replace(new RegExp(pattern.source, 'gu'), ' ');
-    return true;
-  });
-  const textGroups = remainder
-    .split(/[\s·]+/)
-    .map((word) => {
-      if (!word || QUERY_FILLERS.has(word)) return [];
-      const terms = tokenizeQuery(word);
-      return terms.some((term) => QUERY_FILLERS.has(term))
-        ? []
-        : terms.length
-          ? terms
-          : [word];
-    })
-    .filter((terms) => terms.length > 0);
+  const cities: (typeof gyeonggiCities)[number][] = [];
+  for (const [city, testRe, globalRe] of CITY_PATTERNS) {
+    if (!testRe.test(normalized)) continue;
+    remainder = remainder.replace(globalRe, ' ');
+    cities.push(city);
+  }
+  const groups: (typeof QUERY_INTENTS)[number][] = [];
+  for (const intent of QUERY_INTENTS) {
+    if (!intent[1].test(normalized)) continue;
+    remainder = remainder.replace(intent[2], ' ');
+    groups.push(intent);
+  }
+  const textGroups: string[][] = [];
+  for (const word of remainder.split(/[\s·]+/)) {
+    if (!word || QUERY_FILLERS.has(word)) continue;
+    const terms = tokenizeQuery(word);
+    if (terms.some((term) => QUERY_FILLERS.has(term))) continue;
+    textGroups.push(terms.length ? terms : [word]);
+  }
   return { cities, groups, textGroups };
 }
 
@@ -417,7 +429,7 @@ export function tokenizeQuery(query: string): string[] {
 
 export function expandQueryTerms(query: string): string[] {
   return [
-    ...new Set(parsePlaceQuery(query).groups.flatMap(([, , terms]) => terms)),
+    ...new Set(parsePlaceQuery(query).groups.flatMap(([, , , terms]) => terms)),
   ];
 }
 
@@ -440,6 +452,115 @@ export function placeSearchText(place: LabelablePlace): string {
   ].join(' ');
 }
 
+type PlaceSearchIndex = {
+  nameLower: string;
+  regionLower: string;
+  descLower: string;
+  tagsLower: string[];
+  searchTextLower?: string;
+  compactSearchText?: string;
+  compactName?: string;
+  resolvedLabels?: PlaceLabel;
+  settingLower: string;
+  themesLower: string[];
+  companionsLower: string[];
+  stylesLower: string[];
+  keywordsLower: string[];
+  themeSet: Set<string>;
+  companionSet: Set<string>;
+  styleSet: Set<string>;
+  keywordSet: Set<string>;
+};
+
+const placeIndexCache = new WeakMap<LabelablePlace, PlaceSearchIndex>();
+
+function getPlaceIndex(place: LabelablePlace): PlaceSearchIndex {
+  let index = placeIndexCache.get(place);
+  if (index) return index;
+  const l = place.labels;
+  index = {
+    nameLower: place.name.toLowerCase(),
+    regionLower: place.region.toLowerCase(),
+    descLower: place.description.toLowerCase(),
+    tagsLower: place.tags.map((item) => item.toLowerCase()),
+    resolvedLabels: l,
+    settingLower: l ? l.setting.toLowerCase() : '',
+    themesLower: l ? l.themes.map((item) => item.toLowerCase()) : [],
+    companionsLower: l ? l.companions.map((item) => item.toLowerCase()) : [],
+    stylesLower: l ? l.styles.map((item) => item.toLowerCase()) : [],
+    keywordsLower: l ? l.keywords.map((item) => item.toLowerCase()) : [],
+    themeSet: new Set(l?.themes ?? []),
+    companionSet: new Set(l?.companions ?? []),
+    styleSet: new Set(l?.styles ?? []),
+    keywordSet: new Set(l?.keywords ?? []),
+  };
+  placeIndexCache.set(place, index);
+  return index;
+}
+
+function getPlaceSearchTextLower(place: LabelablePlace): string {
+  const index = getPlaceIndex(place);
+  if (index.searchTextLower === undefined) {
+    index.searchTextLower = placeSearchText(place).toLowerCase();
+  }
+  return index.searchTextLower;
+}
+
+export function getPlaceCompactTexts(place: LabelablePlace): {
+  compactName: string;
+  compactSearchText: string;
+} {
+  const index = getPlaceIndex(place);
+  if (index.compactName === undefined) {
+    index.compactName = place.name.replace(/\s/g, '');
+  }
+  if (index.compactSearchText === undefined) {
+    index.compactSearchText = placeSearchText(place).replace(/\s/g, '');
+  }
+  return {
+    compactName: index.compactName,
+    compactSearchText: index.compactSearchText,
+  };
+}
+
+export type PreparedPlaceQuery = {
+  parsed: ReturnType<typeof parsePlaceQuery>;
+  trimmed: string;
+  lower: string;
+  longTokens: string[];
+  expandedUnmatched: string[];
+  wantsIndoor: boolean;
+  wantsOutdoor: boolean;
+  cityIdSet: Set<string>;
+  cityNameSet: Set<string>;
+};
+
+export function preparePlaceQuery(
+  query: string,
+  parsed = parsePlaceQuery(query),
+): PreparedPlaceQuery {
+  const trimmed = query.trim();
+  const lower = trimmed.toLowerCase();
+  const tokens = trimmed ? tokenizeQuery(trimmed) : [];
+  const tokenSet = new Set(tokens);
+  const expanded = new Set(parsed.groups.flatMap(([, , , terms]) => terms));
+  const expandedUnmatched: string[] = [];
+  for (const term of expanded) {
+    if (!tokenSet.has(term.toLowerCase())) expandedUnmatched.push(term);
+  }
+  return {
+    parsed,
+    trimmed,
+    lower,
+    longTokens: tokens.filter((token) => token.length >= 2),
+    expandedUnmatched,
+    wantsIndoor: trimmed ? WANTS_INDOOR_RE.test(trimmed) : false,
+    wantsOutdoor: trimmed ? WANTS_OUTDOOR_RE.test(trimmed) : false,
+    cityIdSet: new Set(parsed.cities.map((city) => city.id)),
+    cityNameSet: new Set(parsed.cities.map((city) => city.name)),
+  };
+}
+
 export function formatPlaceForReranker(place: LabelablePlace): string {
   const l = place.labels;
   const labelPart = l
@@ -448,102 +569,126 @@ export function formatPlaceForReranker(place: LabelablePlace): string {
   return `${place.name} (${place.region}) | ${labelPart} | 소개:${place.description.slice(0, 220)}`;
 }
 
+export function scorePreparedPlaceMatch(
+  place: LabelablePlace,
+  prepared: PreparedPlaceQuery,
+): number {
+  if (!prepared.trimmed) return 0;
+  const idx = getPlaceIndex(place);
+  const labels = place.labels;
+  let score = 0;
+
+  if (idx.nameLower.includes(prepared.lower)) score += 28;
+  if (idx.regionLower.includes(prepared.lower)) score += 16;
+
+  if (labels) {
+    if (prepared.wantsIndoor) {
+      if (labels.setting === '실내') score += 20;
+      else if (labels.setting === '실내·야외') score += 11;
+    }
+    if (prepared.wantsOutdoor) {
+      if (labels.setting === '야외') score += 16;
+      else if (labels.setting === '실내·야외') score += 10;
+    }
+
+    for (const term of prepared.expandedUnmatched) {
+      if (idx.themeSet.has(term)) score += 14;
+      if (idx.companionSet.has(term)) score += 10;
+      if (idx.styleSet.has(term)) score += 10;
+      if (idx.keywordSet.has(term)) score += 8;
+    }
+  }
+
+  for (const token of prepared.longTokens) {
+    if (idx.nameLower.includes(token)) score += 32;
+    if (idx.regionLower.includes(token)) score += 12;
+    if (idx.tagsLower.some((item) => item.includes(token))) score += 8;
+    if (labels) {
+      if (idx.settingLower.includes(token)) score += 14;
+      if (idx.themesLower.some((item) => item.includes(token))) score += 14;
+      if (idx.companionsLower.some((item) => item.includes(token))) score += 10;
+      if (idx.stylesLower.some((item) => item.includes(token))) score += 10;
+      if (idx.keywordsLower.some((item) => item.includes(token))) score += 10;
+    }
+    if (idx.descLower.includes(token)) score += 4;
+  }
+
+  return score;
+}
+
 export function scorePlaceMatch(
   place: LabelablePlace,
   query: string,
   parsed = parsePlaceQuery(query),
 ): number {
-  const trimmed = query.trim();
-  if (!trimmed) return 0;
-  const lower = trimmed.toLowerCase();
-  const tokens = tokenizeQuery(trimmed);
-  const expanded = new Set(parsed.groups.flatMap(([, , terms]) => terms));
-  const labels = place.labels;
-
-  let score = 0;
-  const nameLower = place.name.toLowerCase();
-  const regionLower = place.region.toLowerCase();
-  const descLower = place.description.toLowerCase();
-
-  if (nameLower.includes(lower)) score += 28;
-  if (regionLower.includes(lower)) score += 16;
-
-  if (labels) {
-    const wantsIndoor = /실내|비\s*오는|우천|장마|비올|비오는/.test(trimmed);
-    const wantsOutdoor = /야외|밖에서/.test(trimmed);
-    if (wantsIndoor) {
-      if (labels.setting === '실내') score += 20;
-      else if (labels.setting === '실내·야외') score += 11;
-    }
-    if (wantsOutdoor) {
-      if (labels.setting === '야외') score += 16;
-      else if (labels.setting === '실내·야외') score += 10;
-    }
-
-    const tokenSet = new Set(tokens);
-    for (const term of expanded) {
-      if (tokenSet.has(term.toLowerCase())) continue;
-      if (labels.themes.includes(term as ThemeLabel)) score += 14;
-      if (labels.companions.includes(term as CompanionLabel)) score += 10;
-      if (labels.styles.includes(term as StyleLabel)) score += 10;
-      if (labels.keywords.some((k) => k === term)) score += 8;
-    }
-  }
-
-  for (const token of tokens) {
-    if (token.length < 2) continue;
-    const has = (list: readonly string[]) =>
-      list.some((item) => item.toLowerCase().includes(token));
-    if (nameLower.includes(token)) score += 32;
-    if (regionLower.includes(token)) score += 12;
-    if (has(place.tags)) score += 8;
-    if (labels) {
-      if (labels.setting.toLowerCase().includes(token)) score += 14;
-      if (has(labels.themes)) score += 14;
-      if (has(labels.companions)) score += 10;
-      if (has(labels.styles)) score += 10;
-      if (has(labels.keywords)) score += 10;
-    }
-    if (descLower.includes(token)) score += 4;
-  }
-
-  return score;
+  if (!query.trim()) return 0;
+  return scorePreparedPlaceMatch(place, preparePlaceQuery(query, parsed));
 }
 
 export function matchesPlaceQuery(
   place: LabelablePlace,
   query: string,
 ): boolean {
-  return matchesParsedQuery(place, parsePlaceQuery(query));
+  return matchesPreparedQuery(place, preparePlaceQuery(query));
 }
 
-function matchesParsedQuery(
+function matchesPreparedQuery(
   place: LabelablePlace,
-  parsed: ReturnType<typeof parsePlaceQuery>,
+  prepared: PreparedPlaceQuery,
 ): boolean {
-  if (
-    parsed.cities.length &&
-    !parsed.cities.some((city) =>
-      place.cityId ? place.cityId === city.id : place.region === city.name,
-    )
-  )
-    return false;
-  const labels = place.labels ?? inferHeuristicLabels(place);
-  if (
-    !parsed.groups.every(([field, , values]) => {
+  const { parsed } = prepared;
+  if (parsed.cities.length) {
+    const matchedCity = place.cityId
+      ? prepared.cityIdSet.has(place.cityId)
+      : prepared.cityNameSet.has(place.region);
+    if (!matchedCity) return false;
+  }
+  if (parsed.groups.length) {
+    const idx = getPlaceIndex(place);
+    const labels = (idx.resolvedLabels ??= inferHeuristicLabels(place));
+    for (const [field, , , values] of parsed.groups) {
       const actual = labels[field];
-      return values.some((value) =>
+      const matched =
         typeof actual === 'string'
-          ? actual === value
-          : actual.some((label) => label === value),
-      );
-    })
-  )
-    return false;
-  const text = placeSearchText(place).toLowerCase();
+          ? values.includes(actual)
+          : values.some((value) => actual.some((label) => label === value));
+      if (!matched) return false;
+    }
+  }
+  if (!parsed.textGroups.length) return true;
+  const text = getPlaceSearchTextLower(place);
   return parsed.textGroups.every((terms) =>
     terms.some((term) => text.includes(term)),
   );
+}
+
+export function searchPlacesWithScores<T extends LabelablePlace>(
+  places: readonly T[],
+  query: string,
+  region = '전체',
+): { place: T; score: number }[] {
+  const prepared = preparePlaceQuery(query);
+  const allRegions = region === '전체';
+  const regionCity = !allRegions ? gyeonggiCityByName.get(region) : undefined;
+  const hasQuery = prepared.trimmed.length > 0;
+  const matched: { place: T; score: number }[] = [];
+  for (const place of places) {
+    if (!allRegions) {
+      const regionMatch = regionCity
+        ? place.cityId
+          ? place.cityId === regionCity.id
+          : place.region === region
+        : place.region === region;
+      if (!regionMatch) continue;
+    }
+    if (!matchesPreparedQuery(place, prepared)) continue;
+    matched.push({
+      place,
+      score: hasQuery ? scorePreparedPlaceMatch(place, prepared) : 0,
+    });
+  }
+  if (hasQuery) matched.sort((a, b) => b.score - a.score);
+  return matched;
 }
 
 export function searchPlaces<T extends LabelablePlace>(
@@ -551,17 +696,9 @@ export function searchPlaces<T extends LabelablePlace>(
   query: string,
   region = '전체',
 ): T[] {
-  const parsed = parsePlaceQuery(query);
-  const matched = places.filter(
-    (place) =>
-      (region === '전체' || place.region === region) &&
-      matchesParsedQuery(place, parsed),
+  return searchPlacesWithScores(places, query, region).map(
+    ({ place }) => place,
   );
-  if (!query.trim()) return matched;
-  return matched
-    .map((place) => ({ place, score: scorePlaceMatch(place, query, parsed) }))
-    .sort((a, b) => b.score - a.score)
-    .map(({ place }) => place);
 }
 
 export const QUICK_SEARCH_CHIPS = [

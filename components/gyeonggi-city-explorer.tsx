@@ -1,9 +1,13 @@
 'use client';
 import { PlaceImage } from './place-image';
-import { useId } from 'react';
+import { memo, useId, useMemo } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import { GyeonggiMapPanel } from './gyeonggi-map';
-import { gyeonggiCities, placesInCity } from '@/lib/domain/gyeonggi';
+import {
+  gyeonggiCities,
+  gyeonggiCityById,
+  placesInCity,
+} from '@/lib/domain/gyeonggi';
 
 const FEATURED_CITY_IDS = [
   '41110', // 수원시
@@ -28,7 +32,7 @@ function LocationIcon() {
   );
 }
 
-export function GyeonggiCityExplorer({
+export const GyeonggiCityExplorer = memo(function GyeonggiCityExplorer({
   places,
   selectedCityId,
   selection,
@@ -44,18 +48,24 @@ export function GyeonggiCityExplorer({
   onToggle: (placeId: string) => void;
 }) {
   const labelId = useId();
-  const city = gyeonggiCities.find((item) => item.id === selectedCityId);
-  const cityPlaces = placesInCity(places, selectedCityId);
-  const populated = new Set(places.map((p) => p.cityId));
-  const availableCities = gyeonggiCities.filter((item) =>
-    populated.has(item.id),
+  const city = selectedCityId
+    ? gyeonggiCityById.get(selectedCityId)
+    : undefined;
+  const cityPlaces = useMemo(
+    () => placesInCity(places, selectedCityId),
+    [places, selectedCityId],
   );
-  const featuredCities = FEATURED_CITY_IDS.map((id) =>
-    availableCities.find((item) => item.id === id),
-  ).filter((item): item is (typeof availableCities)[number] => Boolean(item));
-  const quickPickCities = featuredCities.length
-    ? featuredCities
-    : availableCities.slice(0, 6);
+  const quickPickCities = useMemo(() => {
+    const populated = new Set(places.map((p) => p.cityId));
+    const availableCities = gyeonggiCities.filter((item) =>
+      populated.has(item.id),
+    );
+    const featuredCities = FEATURED_CITY_IDS.map((id) =>
+      populated.has(id) ? gyeonggiCityById.get(id) : undefined,
+    ).filter((item): item is (typeof gyeonggiCities)[number] => Boolean(item));
+    return featuredCities.length ? featuredCities : availableCities.slice(0, 6);
+  }, [places]);
+  const selectionSet = useMemo(() => new Set(selection), [selection]);
 
   return (
     <section className="city-explorer" aria-labelledby={labelId}>
@@ -103,7 +113,7 @@ export function GyeonggiCityExplorer({
                 aria-label={`${city.name} 관광지 목록`}
               >
                 {cityPlaces.map((place) => {
-                  const added = selection.includes(place.id);
+                  const added = selectionSet.has(place.id);
                   return (
                     <li key={place.id}>
                       <article className="city-place-card">
@@ -204,4 +214,4 @@ export function GyeonggiCityExplorer({
       </div>
     </section>
   );
-}
+});

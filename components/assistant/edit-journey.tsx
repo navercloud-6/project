@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
 import { api } from '@/lib/adapters/client-api';
@@ -31,6 +31,7 @@ export function EditJourney({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [done, setDone] = useState('');
+  const byId = useMemo(() => new Map(places.map((p) => [p.id, p])), [places]);
   async function propose() {
     setBusy(true);
     setError('');
@@ -135,7 +136,7 @@ export function EditJourney({
               <h4>현재</h4>
               <ol>
                 {journey.placeIds.map((id) => (
-                  <li key={id}>{places.find((p) => p.id === id)?.name}</li>
+                  <li key={id}>{byId.get(id)?.name}</li>
                 ))}
               </ol>
             </div>
@@ -143,7 +144,7 @@ export function EditJourney({
               <h4>변경 후</h4>
               <ol>
                 {preview.proposal.placeIds.map((id) => (
-                  <li key={id}>{places.find((p) => p.id === id)?.name}</li>
+                  <li key={id}>{byId.get(id)?.name}</li>
                 ))}
               </ol>
             </div>

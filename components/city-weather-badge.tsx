@@ -3,11 +3,20 @@
 import { useEffect, useState } from 'react';
 import { cityWeatherClient } from '@/lib/adapters/city-weather-client';
 import {
-  cityWeatherLocations,
+  cityWeatherLocationById,
   DEFAULT_WEATHER_CITY_ID,
   type CityWeatherResponse,
 } from '@/lib/domain/city-weather';
 import { WeatherSymbol } from './weather-symbol';
+
+const CITY_TIME_FORMAT = new Intl.DateTimeFormat('ko-KR', {
+  timeZone: 'Asia/Seoul',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+});
 
 export type CityWeatherState =
   | { cityId: string; status: 'loading' | 'error' }
@@ -22,20 +31,11 @@ export function CityWeatherView({
   state: CityWeatherState;
   onRetry: () => void;
 }) {
-  const city = cityWeatherLocations.find((city) => city.id === cityId)!;
+  const city = cityWeatherLocationById.get(cityId)!;
   const current =
     state.cityId === cityId ? state : { cityId, status: 'loading' as const };
   const data = current.status === 'ready' ? current.data : null;
-  const time = data
-    ? new Intl.DateTimeFormat('ko-KR', {
-        timeZone: 'Asia/Seoul',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hourCycle: 'h23',
-      }).format(new Date(data.observedAt))
-    : '';
+  const time = data ? CITY_TIME_FORMAT.format(new Date(data.observedAt)) : '';
 
   return (
     <div

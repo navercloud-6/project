@@ -1,11 +1,11 @@
 'use client';
-import { useId } from 'react';
+import { memo, useId } from 'react';
 import { CityWeatherBadge } from './city-weather-badge';
 import { DEFAULT_WEATHER_CITY_ID } from '@/lib/domain/city-weather';
 import { gyeonggiCities, gyeonggiMap } from '@/lib/domain/gyeonggi';
 
 /** 경기도 시·군 선택 지도(경기 둘러보기·오늘의 안내에서 함께 쓴다). */
-export function GyeonggiMapPanel({
+export const GyeonggiMapPanel = memo(function GyeonggiMapPanel({
   selectedCityId,
   onSelectCity,
 }: {
@@ -143,4 +143,4 @@ export function GyeonggiMapPanel({
       </p>
     </div>
   );
-}
+});

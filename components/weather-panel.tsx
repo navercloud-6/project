@@ -1,42 +1,34 @@
 'use client';
 import { useState } from 'react';
+import { GyeonggiMapPanel } from './gyeonggi-map';
 import { PlaceCard } from './place-card';
 import { OutfitCard } from './outfit-card';
 import { WeatherSymbol } from './weather-symbol';
 import { useRegionQuery } from './assistant/shared';
-import type { Place } from '@/lib/domain/catalog';
+import {
+  placeById,
+  places as catalogPlaces,
+  type Place,
+} from '@/lib/domain/catalog';
 import {
   regionForCity,
-  WEATHER_REGIONS,
   weatherResponseSchema,
   type WeatherResponse,
 } from '@/lib/domain/weather';
 
-const REGION_LIST = Object.keys(WEATHER_REGIONS);
-const QUICK_REGIONS = [
-  '전체',
-  '수원시',
-  '용인시',
-  '고양시',
-  '성남시',
-  '화성시',
-  '파주시',
-  '가평군',
-  '여주시',
-  '시흥시',
-] as const;
+const DAY_LABEL_FORMAT = new Intl.DateTimeFormat('ko-KR', {
+  timeZone: 'Asia/Seoul',
+  month: 'numeric',
+  day: 'numeric',
+  weekday: 'short',
+});
 
 function formatDayLabel(dateStr: string, index: number): string {
   if (index === 0) return '오늘';
   if (index === 1) return '내일';
   const parsed = new Date(`${dateStr}T00:00:00+09:00`);
   if (isNaN(parsed.getTime())) return dateStr;
-  return new Intl.DateTimeFormat('ko-KR', {
-    timeZone: 'Asia/Seoul',
-    month: 'numeric',
-    day: 'numeric',
-    weekday: 'short',
-  }).format(parsed);
+  return DAY_LABEL_FORMAT.format(parsed);
 }
 
 const SUITABILITY_LABEL: Record<
@@ -105,12 +97,20 @@ export function WeatherPanelView({
     !loading && state.status === 'ready' && state.data.region === selectedRegion
       ? state.data
       : null;
-  const selectRegion = (name: string) =>
-    onSelectCity(WEATHER_REGIONS[name].cityId);
 
-  const recommendedPlaces = (weather?.recommendedPlaceIds ?? [])
-    .map((id) => places.find((p) => p.id === id))
-    .filter((p): p is Place => Boolean(p));
+  const recommendedIds = weather?.recommendedPlaceIds ?? [];
+  const lookup =
+    places === catalogPlaces
+      ? placeById
+      : recommendedIds.length > 0
+        ? new Map(places.map((p) => [p.id, p]))
+        : null;
+  const recommendedPlaces = lookup
+    ? recommendedIds
+        .map((id) => lookup.get(id))
+        .filter((p): p is Place => Boolean(p))
+    : [];
+  const selectionSet = new Set(selection);
 
   return (
     <div className="weather-page" aria-busy={loading}>
@@ -125,43 +125,15 @@ export function WeatherPanelView({
         </div>
       </div>
 
-      <div className="weather-selector">
-        <label className="weather-city-picker">
-          <span>시·군 선택</span>
-          <select
-            value={selectedRegion}
-            onChange={(e) => selectRegion(e.target.value)}
-            aria-label="경기도 시·군 선택"
-          >
-            {REGION_LIST.map((r) => (
-              <option key={r} value={r}>
-                {r === '전체' ? '경기도 전체 (수원 대표)' : r}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div
-          className="weather-regions"
-          role="group"
-          aria-label="경기도 주요 시·군 빠른 선택"
-        >
-          {QUICK_REGIONS.map((r) => (
-            <button
-              key={r}
-              type="button"
-              className={
-                selectedRegion === r
-                  ? 'weather-region-chip active'
-                  : 'weather-region-chip'
-              }
-              aria-pressed={selectedRegion === r}
-              onClick={() => selectRegion(r)}
-            >
-              {r === '전체' ? '경기도 전체' : r}
-            </button>
-          ))}
-        </div>
-      </div>
+      <section
+        className="city-explorer weather-map-section"
+        aria-label="경기도 시·군 선택 지도"
+      >
+        <GyeonggiMapPanel
+          selectedCityId={selectedCityId}
+          onSelectCity={onSelectCity}
+        />
+      </section>
 
       {error && (
         <div role="alert" className="tool-error">
@@ -240,10 +212,7 @@ export function WeatherPanelView({
                 </span>
                 <h3>{weather.advisory.headline}</h3>
                 <p>{weather.advisory.detail}</p>
-                <p className="fine">
-                  시·군 대표 좌표 기준 참고 정보입니다. 해안·산림 국지 기상과
-                  시설 운영 여부는 방문 전 공식 안내를 확인해 주세요.
-                </p>
+                <p className="fine">시·군 대표 좌표 기준 참고 정보입니다.</p>
               </div>
             </section>
 
@@ -324,7 +293,7 @@ export function WeatherPanelView({
                     <PlaceCard
                       key={p.id}
                       place={p}
-                      selected={selection.includes(p.id)}
+                      selected={selectionSet.has(p.id)}
                       onDetail={onDetailPlace}
                       onToggle={onTogglePlace}
                     />

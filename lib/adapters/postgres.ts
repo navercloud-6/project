@@ -141,9 +141,13 @@ export async function transaction<T>(
 }
 
 async function deleteSession(client: PoolClient, token: string) {
-  await client.query('DELETE FROM sessions WHERE token = $1', [token]);
-  await client.query('DELETE FROM account_sessions WHERE token = $1', [token]);
-  await client.query('DELETE FROM oauth_states WHERE session = $1', [token]);
+  await client.query(
+    `WITH
+       d1 AS (DELETE FROM sessions WHERE token = $1),
+       d2 AS (DELETE FROM account_sessions WHERE token = $1)
+     DELETE FROM oauth_states WHERE session = $1`,
+    [token],
+  );
 }
 
 export const journeyRepository: JourneyRepository = {
@@ -179,9 +183,24 @@ export const journeyRepository: JourneyRepository = {
       'SELECT id, image FROM photos WHERE owner = $1 AND journey = $2 AND place = $3',
       [owner, journey, place],
     );
-    return rows[0]
-      ? { id: rows[0].id, image: new Uint8Array(rows[0].image) }
+    const row = rows[0];
+    return row
+      ? {
+          id: row.id,
+          image: new Uint8Array(
+            row.image.buffer,
+            row.image.byteOffset,
+            row.image.byteLength,
+          ),
+        }
       : undefined;
+  },
+  async hasPhoto(owner, journey, place) {
+    const { rowCount } = await query(
+      'SELECT 1 FROM photos WHERE owner = $1 AND journey = $2 AND place = $3',
+      [owner, journey, place],
+    );
+    return (rowCount ?? 0) > 0;
   },
   async photoPlaces(owner, journey) {
     const { rows } = await query<{ place: string }>(
@@ -196,7 +215,17 @@ export const journeyRepository: JourneyRepository = {
        VALUES ($1, $2, $3, $4, $5)
        ON CONFLICT (journey, place)
        DO UPDATE SET image = EXCLUDED.image, id = EXCLUDED.id`,
-      [photo.id, owner, journey, place, Buffer.from(photo.image)],
+      [
+        photo.id,
+        owner,
+        journey,
+        place,
+        Buffer.from(
+          photo.image.buffer,
+          photo.image.byteOffset,
+          photo.image.byteLength,
+        ),
+      ],
     );
   },
   transaction: (operation) => transaction(() => operation()),

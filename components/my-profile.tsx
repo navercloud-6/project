@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Journey } from '@/lib/domain/contracts';
 import type { AuthStatus } from '@/lib/application/ports';
 
@@ -15,9 +15,6 @@ export function MyProfile({
   onExplore,
   onRecommend,
   onRetrySession,
-  auth,
-  onLogout,
-  busy,
 }: {
   saved: Journey[];
   ready: boolean;
@@ -29,16 +26,18 @@ export function MyProfile({
   onExplore?: () => void;
   onRecommend: (draft?: TravelPreferences) => void;
   onRetrySession?: () => void;
-  auth: AuthStatus | null;
-  onLogout: () => void;
-  busy: boolean;
+  auth?: AuthStatus | null;
+  onLogout?: () => void;
+  busy?: boolean;
 }) {
   const [region, setRegion] = useState(preferences.region);
   const [prompt, setPrompt] = useState(preferences.prompt);
   const dirty =
     region !== preferences.region || prompt.trim() !== preferences.prompt;
-  const visited = new Set(
-    saved.flatMap((journey) => Object.keys(journey.records)),
+  const visitedCount = useMemo(
+    () =>
+      new Set(saved.flatMap((journey) => Object.keys(journey.records))).size,
+    [saved],
   );
 
   return (
@@ -68,7 +67,7 @@ export function MyProfile({
               <div>
                 <dt>기록한 방문 장소</dt>
                 <dd>
-                  {visited.size}
+                  {visitedCount}
                   <small>곳</small>
                 </dd>
               </div>
@@ -173,58 +172,13 @@ export function MyProfile({
           다음 방문에도 기본값으로 쓰려면 먼저 취향 저장을 눌러 주세요.
         </p>
       </form>
-      <section className="tool-section" aria-labelledby="profile-account-title">
-        <h2 id="profile-account-title">네이버 계정 및 보관 안내</h2>
-        {auth?.authenticated ? (
-          <>
-            <p>
-              네이버 계정으로 로그인했어요. 같은 계정으로 다른 기기에서도 여행과
-              방문 기록을 확인할 수 있어요.
-            </p>
-            <button
-              type="button"
-              className="secondary"
-              onClick={onLogout}
-              disabled={busy}
-            >
-              {busy ? '로그아웃 중…' : '로그아웃'}
-            </button>
-          </>
-        ) : (
-          <>
-            <p>
-              로그인하면 이 브라우저에 저장한 여행·기록·사진을 네이버 계정에
-              연결해요. 공용 기기에서는 본인의 여행인지 먼저 확인해 주세요.
-            </p>
-            <form action="/api/auth/naver" method="post">
-              <button
-                className="naver-login"
-                disabled={!ready || !auth?.enabled || busy}
-                type="submit"
-              >
-                네이버로 로그인
-              </button>
-            </form>
-            <p className="fine">
-              {auth === null
-                ? '로그인 설정을 확인하고 있어요.'
-                : !auth.enabled
-                  ? '네이버 로그인 준비 중입니다. 지금은 회원가입 없이 이용할 수 있어요.'
-                  : '계정 식별 정보만 사용하며 이름·이메일은 저장하지 않아요.'}
-            </p>
-          </>
-        )}
-        <aside
-          className="profile-storage"
-          aria-labelledby="profile-storage-title"
-        >
-          <h3 id="profile-storage-title">여행 보관 정책</h3>
-          <p>
-            익명 여행은 쿠키 삭제·30일 만료 후 접근할 수 없으며, 계정 여행은
-            로그아웃 후에도 보관되어 다시 로그인하면 확인할 수 있어요. 여행
-            취향은 로그인 후에도 이 브라우저에만 저장됩니다.
-          </p>
-        </aside>
+      <section className="tool-section" aria-labelledby="profile-storage-title">
+        <h2 id="profile-storage-title">여행 보관 정책</h2>
+        <p>
+          저장한 여행과 방문 기록·사진은 이 브라우저 세션(30일)에 보관되며,
+          쿠키를 삭제하거나 세션이 만료되면 다시 접근할 수 없습니다. 여행 취향은
+          이 브라우저에만 저장됩니다.
+        </p>
       </section>
     </section>
   );

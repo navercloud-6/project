@@ -64,19 +64,21 @@ export function createBriefing({
 
   async function korean(region: string): Promise<BriefingOutput> {
     const caps = ai.capabilities();
-    const current = await weather(region);
-    // 맛집은 부가 정보: 검색 키가 없거나 실패해도 안내는 계속한다.
-    const nearby = restaurants
-      ? await restaurants(region)
-          .then((r) => r.items)
-          .catch(() => [])
-      : [];
-    // 특보·지진도 부가 정보: 조회 실패 시 안전 안내 없이 계속한다.
-    const safety = alerts
-      ? await alerts(region)
-          .then((r) => alertsSpeech(r.alerts))
-          .catch(() => '')
-      : '';
+    // 날씨·맛집·안전 안내 조회는 서로 독립적이므로 병렬로 요청한다.
+    // 맛집과 특보·지진은 부가 정보이므로 실패해도 안내는 계속한다.
+    const [current, nearby, safety] = await Promise.all([
+      weather(region),
+      restaurants
+        ? restaurants(region)
+            .then((r) => r.items)
+            .catch(() => [])
+        : Promise.resolve([]),
+      alerts
+        ? alerts(region)
+            .then((r) => alertsSpeech(r.alerts))
+            .catch(() => '')
+        : Promise.resolve(''),
+    ]);
     const facts = briefingFacts(current, places, nearby);
     let script = '';
     let mode: 'clova' | 'rule' = caps.clova ? 'clova' : 'rule';

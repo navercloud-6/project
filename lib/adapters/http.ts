@@ -99,6 +99,12 @@ function isZodError(error: unknown): boolean {
 export const noStoreJson = (body: unknown, status = 200) =>
   Response.json(body, { status, headers: { 'Cache-Control': 'no-store' } });
 
+export function toResponseBytes(bytes: Uint8Array): Uint8Array<ArrayBuffer> {
+  return bytes.buffer instanceof ArrayBuffer
+    ? new Uint8Array(bytes.buffer, bytes.byteOffset, bytes.byteLength)
+    : new Uint8Array(bytes);
+}
+
 export function failure(error: unknown) {
   if (error instanceof ApplicationError)
     return noStoreJson({ error: error.message }, statuses[error.code]);

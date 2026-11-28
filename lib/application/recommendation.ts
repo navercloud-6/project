@@ -6,8 +6,7 @@ import {
 import { ApplicationError } from '@/lib/domain/errors';
 import {
   formatPlaceForReranker,
-  searchPlaces,
-  scorePlaceMatch,
+  searchPlacesWithScores,
 } from '@/lib/domain/place-labels';
 import { createCache } from './cache';
 import type { AIPort } from './ports';
@@ -48,21 +47,25 @@ export function createRecommendation(
     region: string,
     feedback: { placeId: string; rating: number }[],
   ): Promise<Recommendation> {
-    const candidates = searchPlaces(places, prompt, region);
+    const candidates = searchPlacesWithScores(places, prompt, region);
     if (!candidates.length)
       throw new ApplicationError(
         'INVALID_INPUT',
         '지역과 여행 조건에 맞는 장소가 없어요. 지역이나 검색어를 바꿔 주세요.',
       );
+    const feedbackByPlace = new Map<string, number>();
+    for (const f of feedback) {
+      feedbackByPlace.set(
+        f.placeId,
+        (feedbackByPlace.get(f.placeId) ?? 0) + (f.rating - 3) * 10,
+      );
+    }
     const cityRanks = new Map<string, number>();
     const ranked = candidates
-      .map((p) => {
+      .map(({ place: p, score: matchScore }) => {
         const cityRank = cityRanks.get(p.cityId) ?? 0;
         cityRanks.set(p.cityId, cityRank + 1);
-        const matchScore = scorePlaceMatch(p, prompt);
-        const feedbackScore = feedback
-          .filter((f) => f.placeId === p.id)
-          .reduce((n, f) => n + (f.rating - 3) * 10, 0);
+        const feedbackScore = feedbackByPlace.get(p.id) ?? 0;
         return {
           p,
           cityRank,
@@ -98,6 +101,7 @@ export function createRecommendation(
       let citedIds: string[] = [];
       let reranked = false;
 
+      const poolById = new Map(rerankPool.map((p) => [p.id, p]));
       if (ai.rerank && rerankPool.length > 1) {
         try {
           const rerankResult = await ai.rerank(
@@ -107,8 +111,7 @@ export function createRecommendation(
               doc: formatPlaceForReranker(p),
             })),
           );
-          const poolIds = new Set(rerankPool.map((p) => p.id));
-          citedIds = rerankResult.citedIds.filter((id) => poolIds.has(id));
+          citedIds = rerankResult.citedIds.filter((id) => poolById.has(id));
           reranked = citedIds.length > 0;
         } catch {
           // Reranker 일시 실패 시 1차 라벨·키워드 순위로 안전 폴백한다.
@@ -120,13 +123,14 @@ export function createRecommendation(
       const citedSet = new Set(citedIds);
       const shortlist = reranked
         ? [
-            ...citedIds.map((id) => rerankPool.find((p) => p.id === id)!),
+            ...citedIds.map((id) => poolById.get(id)!),
             ...rerankPool.filter((p) => !citedSet.has(p.id)),
           ]
         : rerankPool;
 
       const result = await ai.recommend(prompt, shortlist, feedback);
-      if (result.stops.some((s) => !shortlist.some((p) => p.id === s.placeId)))
+      const shortlistIds = new Set(shortlist.map((p) => p.id));
+      if (result.stops.some((s) => !shortlistIds.has(s.placeId)))
         throw new ApplicationError(
           'UPSTREAM_INVALID',
           'AI가 유효한 여행 제안을 반환하지 않았습니다. 다시 시도해 주세요.',

@@ -1,6 +1,6 @@
 'use client';
 import { PlaceImage } from './place-image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import type { Journey } from '@/lib/domain/contracts';
 import type { AuthStatus, Capabilities } from '@/lib/application/ports';
@@ -12,17 +12,26 @@ import { PlaceMap } from './place-map';
 function JourneyCourseMap({
   journey,
   places,
+  byId,
   naverMapClientId,
   onDetail,
   onRecord,
 }: {
   journey: Journey;
   places: Place[];
+  byId: Map<string, Place>;
   naverMapClientId?: string;
   onDetail: (place: Place) => void;
   onRecord: (place: Place) => void;
 }) {
   const [opened, setOpened] = useState(false);
+  const visiblePlaces = useMemo(
+    () =>
+      journey.placeIds
+        .map((id) => byId.get(id))
+        .filter((p): p is Place => Boolean(p)),
+    [journey.placeIds, byId],
+  );
   return (
     <details
       className="journey-options"
@@ -35,9 +44,7 @@ function JourneyCourseMap({
         <PlaceMap
           compact
           places={places}
-          visiblePlaces={journey.placeIds
-            .map((id) => places.find((p) => p.id === id))
-            .filter((p): p is Place => Boolean(p))}
+          visiblePlaces={visiblePlaces}
           routeIds={journey.placeIds}
           records={journey.records}
           naverMapClientId={naverMapClientId}
@@ -80,6 +87,7 @@ export function MyJourneys({
   onDetail: (place: Place) => void;
   onSaved: (journey: Journey) => void;
 }) {
+  const byId = useMemo(() => new Map(places.map((p) => [p.id, p])), [places]);
   return (
     <section className="my-journeys">
       <div className="section-heading">
@@ -100,7 +108,7 @@ export function MyJourneys({
         </span>
         {onProfile && (
           <button type="button" className="detail-link" onClick={onProfile}>
-            {auth?.authenticated ? '계정·보관 관리' : '네이버 계정·보관 안내'}
+            {auth?.authenticated ? '보관 관리' : '여행 보관 정책'}
           </button>
         )}
       </div>
@@ -150,7 +158,7 @@ export function MyJourneys({
       ) : (
         <div className="journey-grid">
           {saved.map((j) => {
-            const cover = places.find((p) => p.id === j.placeIds[0]);
+            const cover = byId.get(j.placeIds[0]);
             const recordedCount = Object.keys(j.records).length;
             return (
               <article className="saved-journey" key={j.id}>
@@ -194,7 +202,7 @@ export function MyJourneys({
                 </div>
                 <ol>
                   {j.placeIds.map((id) => {
-                    const p = places.find((p) => p.id === id)!;
+                    const p = byId.get(id)!;
                     const r = j.records[id];
                     return (
                       <li key={id}>
@@ -234,6 +242,7 @@ export function MyJourneys({
                 <JourneyCourseMap
                   journey={j}
                   places={places}
+                  byId={byId}
                   naverMapClientId={naverMapClientId}
                   onDetail={onDetail}
                   onRecord={(p) => onRecord(j, p)}

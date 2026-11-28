@@ -61,3 +61,9 @@ export const places = data.map((p) => {
 export type Place = (typeof places)[number];
 export const placeById = new Map(places.map((p) => [p.id, p]));
 export const placeIds = new Set(placeById.keys());
+export const placesByCityId = new Map<string, Place[]>();
+for (const place of places) {
+  const list = placesByCityId.get(place.cityId);
+  if (list) list.push(place);
+  else placesByCityId.set(place.cityId, [place]);
+}

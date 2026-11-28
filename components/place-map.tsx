@@ -1,6 +1,13 @@
 'use client';
 import { PlaceImage } from './place-image';
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import type { Place } from '@/lib/domain/catalog';
 import {
   loadNaverMaps,
@@ -14,16 +21,8 @@ import {
   type NaverPolyline,
 } from '@/lib/adapters/naver-map';
 import { gyeonggiMap } from '@/lib/domain/gyeonggi';
-import { projectRoute } from '@/lib/domain/coordinates';
 
 const DEFAULT_CENTER = { lat: 37.275, lng: 127.009 };
-const FEATURED_LABEL_IDS = new Set([
-  'PLACE_REAL_001',
-  'PLACE_REAL_008',
-  'PLACE_REAL_009',
-  'PLACE_REAL_011',
-  'PLACE_REAL_012',
-]);
 
 type Records = Record<string, { rating: number; note: string }>;
 
@@ -40,20 +39,18 @@ const toLatLng = (maps: NaverMaps, p: { lat: number; lng: number }) =>
 
 function markerState(
   place: Place,
-  routeIds: string[],
+  routeIndexById: Map<string, number>,
   visibleIds: Set<string>,
   activeId: string | null,
   records: Records | undefined,
   compact: boolean,
-  total: number,
 ) {
-  const routeIndex = routeIds.indexOf(place.id);
+  const routeIndex = routeIndexById.get(place.id) ?? -1;
   const inRoute = routeIndex !== -1;
   const isActive = activeId === place.id;
   const hasRecord = Boolean(records?.[place.id]);
   const isDim = !compact && !visibleIds.has(place.id) && !inRoute;
-  const showLabel =
-    isActive || inRoute || total <= 8 || FEATURED_LABEL_IDS.has(place.id);
+  const showLabel = isActive || inRoute;
   return { routeIndex, inRoute, isActive, hasRecord, isDim, showLabel };
 }
 
@@ -98,7 +95,7 @@ function NaverMapCanvas({
   compact,
   mapPlaces,
   routePlaces,
-  routeIds,
+  routeIndexById,
   visibleIds,
   activeId,
   records,
@@ -110,7 +107,7 @@ function NaverMapCanvas({
   compact: boolean;
   mapPlaces: Place[];
   routePlaces: Place[];
-  routeIds: string[];
+  routeIndexById: Map<string, number>;
   visibleIds: Set<string>;
   activeId: string | null;
   records?: Records;
@@ -260,12 +257,11 @@ function NaverMapCanvas({
     for (const place of mapPlaces) {
       const state = markerState(
         place,
-        routeIds,
+        routeIndexById,
         visibleIds,
         activeId,
         records,
         compact,
-        mapPlaces.length,
       );
       const marker = new maps.Marker({
         map,
@@ -300,7 +296,7 @@ function NaverMapCanvas({
     compact,
     mapPlaces,
     routePlaces,
-    routeIds,
+    routeIndexById,
     visibleIds,
     activeId,
     records,
@@ -345,7 +341,7 @@ function FallbackSvg({
   compact,
   mapPlaces,
   routePlaces,
-  routeIds,
+  routeIndexById,
   visibleIds,
   activePlace,
   records,
@@ -355,7 +351,7 @@ function FallbackSvg({
   compact: boolean;
   mapPlaces: Place[];
   routePlaces: Place[];
-  routeIds: string[];
+  routeIndexById: Map<string, number>;
   visibleIds: Set<string>;
   activePlace: Place | null;
   records?: Records;
@@ -363,14 +359,19 @@ function FallbackSvg({
 }) {
   const bgGradient = `${mapId}-bg`;
   const landGradient = `${mapId}-land`;
-  const pointFor = (p: Place) =>
-    projectRoute(p.coordinates.lat, p.coordinates.lng);
   const polylinePoints = routePlaces
-    .map((p) => {
-      const pt = pointFor(p);
-      return `${pt.x},${pt.y}`;
-    })
+    .map((p) => `${p.coordinates.x},${p.coordinates.y}`)
     .join(' ');
+  const activeId = activePlace?.id ?? null;
+  const orderedMarkers = mapPlaces
+    .map((p) => ({
+      p,
+      s: markerState(p, routeIndexById, visibleIds, activeId, records, compact),
+    }))
+    .sort((a, b) => {
+      const rank = (m: typeof a) => (m.s.isActive ? 2 : m.s.inRoute ? 1 : 0);
+      return rank(a) - rank(b);
+    });
 
   return (
     <svg
@@ -430,29 +431,12 @@ function FallbackSvg({
         </g>
       )}
 
-      {mapPlaces.map((p) => {
-        const s = markerState(
-          p,
-          routeIds,
-          visibleIds,
-          activePlace?.id ?? null,
-          records,
-          compact,
-          mapPlaces.length,
-        );
-        const pt = pointFor(p);
-        const radius = s.isActive ? 16 : s.inRoute ? 14 : 10;
+      {orderedMarkers.map(({ p, s }) => {
+        const pt = p.coordinates;
+        const radius = s.inRoute ? (s.isActive ? 11 : 9) : s.isActive ? 7 : 4;
         const fill =
-          s.hasRecord || (s.isActive && !s.inRoute)
-            ? '#046858'
-            : s.inRoute
-              ? '#03c75a'
-              : '#ffffff';
-        const stroke = s.isActive
-          ? '#e79323'
-          : s.inRoute || s.hasRecord
-            ? '#ffffff'
-            : '#03c75a';
+          s.hasRecord || (s.isActive && !s.inRoute) ? '#046858' : '#03c75a';
+        const stroke = s.isActive ? '#e79323' : '#ffffff';
         const boxHalf = Math.max(p.name.length * 5.8 + 10, 44);
 
         return (
@@ -464,7 +448,7 @@ function FallbackSvg({
             tabIndex={0}
             aria-label={`${p.name} (${p.region})${s.inRoute ? ` · 코스 ${s.routeIndex + 1}번째` : ''}${s.hasRecord ? ' · 방문 기록 완료' : ''}`}
             aria-pressed={s.isActive}
-            style={{ opacity: s.isDim ? 0.4 : 1 }}
+            style={{ opacity: s.isDim ? 0.35 : 1 }}
             onClick={() => onSelect(p.id)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -475,31 +459,31 @@ function FallbackSvg({
           >
             {s.isActive && (
               <circle
-                r={radius + 5}
+                r={radius + 4}
                 fill="none"
                 stroke="#e79323"
-                strokeWidth="2.5"
-                opacity="0.85"
+                strokeWidth="2"
+                opacity="0.9"
               />
             )}
             <circle
               r={radius}
               fill={fill}
               stroke={stroke}
-              strokeWidth={s.isActive ? 3 : 2.2}
+              strokeWidth={s.isActive ? 2.2 : s.inRoute ? 1.8 : 1.2}
             />
             {s.inRoute ? (
               <text
-                y="4"
+                y="3.5"
                 textAnchor="middle"
                 fill="#ffffff"
-                fontSize="11"
+                fontSize="10"
                 fontWeight="800"
               >
                 {s.routeIndex + 1}
               </text>
             ) : (
-              <circle r="4" fill={s.isActive ? '#ffffff' : '#03c75a'} />
+              s.isActive && <circle r="2.5" fill="#ffffff" />
             )}
             {s.showLabel && (
               <g transform={`translate(0, ${radius + 14})`}>
@@ -577,14 +561,29 @@ export function PlaceMap({
     setActiveId(routeIds[0] ?? visiblePlaces[0]?.id ?? null);
   }, [activeId, visiblePlaces, routeIds]);
 
-  const byId = new Map(places.map((p) => [p.id, p]));
-  const visibleIds = new Set(visiblePlaces.map((p) => p.id));
-  const routePlaces = routeIds
-    .map((id) => byId.get(id))
-    .filter((p): p is Place => Boolean(p));
-  const mapPlaces = compact
-    ? routePlaces
-    : places.filter((p) => visibleIds.has(p.id) || routeIds.includes(p.id));
+  const byId = useMemo(() => new Map(places.map((p) => [p.id, p])), [places]);
+  const visibleIds = useMemo(
+    () => new Set(visiblePlaces.map((p) => p.id)),
+    [visiblePlaces],
+  );
+  const routeIndexById = useMemo(
+    () => new Map(routeIds.map((id, idx) => [id, idx])),
+    [routeIds],
+  );
+  const routePlaces = useMemo(
+    () =>
+      routeIds.map((id) => byId.get(id)).filter((p): p is Place => Boolean(p)),
+    [routeIds, byId],
+  );
+  const mapPlaces = useMemo(
+    () =>
+      compact
+        ? routePlaces
+        : places.filter(
+            (p) => visibleIds.has(p.id) || routeIndexById.has(p.id),
+          ),
+    [compact, routePlaces, places, visibleIds, routeIndexById],
+  );
   const activePlace =
     (activeId ? byId.get(activeId) : undefined) ??
     routePlaces[0] ??
@@ -592,15 +591,16 @@ export function PlaceMap({
     null;
 
   const useNaverMap = Boolean(clientId) && !fallbackReason;
-  const disclaimer = '검토 전 시연 자료 · 실제 도로 경로 아님';
   const captionText = useNaverMap
     ? naverStatus === 'ready'
-      ? `네이버 지도 · 경기도 관광지 위치 및 직선 동선 (${disclaimer})`
-      : `네이버 지도를 불러오는 중입니다 (${disclaimer})`
+      ? '네이버 지도 · 경기도 관광지 위치 및 직선 동선'
+      : '네이버 지도를 불러오는 중입니다'
     : fallbackReason
-      ? `개략 위치도 폴백 (${disclaimer})`
-      : `경기도 관광지 위치도 (네이버 지도 키 미설정 · ${disclaimer})`;
-  const activeRouteIdx = activePlace ? routeIds.indexOf(activePlace.id) : -1;
+      ? '개략 위치도 폴백'
+      : '경기도 관광지 위치도';
+  const activeRouteIdx = activePlace
+    ? (routeIndexById.get(activePlace.id) ?? -1)
+    : -1;
   const activeRecord = activePlace ? records?.[activePlace.id] : undefined;
 
   return (
@@ -650,7 +650,7 @@ export function PlaceMap({
             compact={compact}
             mapPlaces={mapPlaces}
             routePlaces={routePlaces}
-            routeIds={routeIds}
+            routeIndexById={routeIndexById}
             visibleIds={visibleIds}
             activeId={activePlace?.id ?? null}
             records={records}
@@ -664,7 +664,7 @@ export function PlaceMap({
             compact={compact}
             mapPlaces={mapPlaces}
             routePlaces={routePlaces}
-            routeIds={routeIds}
+            routeIndexById={routeIndexById}
             visibleIds={visibleIds}
             activePlace={activePlace}
             records={records}
@@ -682,7 +682,7 @@ export function PlaceMap({
             onChange={(e) => setActiveId(e.target.value || null)}
           >
             {mapPlaces.map((place) => {
-              const idx = routeIds.indexOf(place.id);
+              const idx = routeIndexById.get(place.id) ?? -1;
               return (
                 <option key={place.id} value={place.id}>
                   {idx !== -1 ? `${idx + 1}. ` : ''}

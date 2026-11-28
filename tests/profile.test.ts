@@ -14,6 +14,8 @@ import { Poster } from '../components/assistant/poster';
 import { ImageConfigContext } from 'next/dist/shared/lib/image-config-context.shared-runtime';
 import { imageConfigDefault } from 'next/dist/shared/lib/image-config';
 import { places } from '../lib/domain/catalog';
+import { gyeonggiCities } from '../lib/domain/gyeonggi';
+import { searchPlaces } from '../lib/domain/place-labels';
 import type { Journey } from '../lib/domain/contracts';
 
 test('프로필은 방문 기록이 있는 고유 장소만 집계하고 연결 전에는 집계를 숨긴다', () => {
@@ -50,13 +52,21 @@ test('프로필은 방문 기록이 있는 고유 장소만 집계하고 연결 
         busy: false,
       }),
     );
-  assert.match(render(true), /<h1>프로필<\/h1>/);
-  assert.doesNotMatch(render(true), /<h1>마이<\/h1>/);
-  assert.match(render(true), /저장한 여행<\/dt><dd>2<small>개/);
-  assert.match(render(true), /기록한 방문 장소<\/dt><dd>2<small>곳/);
+  const rendered = render(true);
+  assert.match(rendered, /<h1>프로필<\/h1>/);
+  assert.doesNotMatch(rendered, /<h1>마이<\/h1>/);
+  assert.match(rendered, /저장한 여행<\/dt><dd>2<small>개/);
+  assert.match(rendered, /기록한 방문 장소<\/dt><dd>2<small>곳/);
+  assert.match(rendered, /여행 보관 정책/);
+  assert.doesNotMatch(rendered, /네이버 계정|네이버로 로그인|로그아웃/);
   assert.doesNotMatch(render(false), /<dd>/);
   assert.match(render(false), /연결 상태를 확인/);
   assert.match(render(true, []), /첫 여행을 찾아보세요/);
+
+  const cityRegions = ['전체', ...gyeonggiCities.map((city) => city.name)];
+  assert.ok(cityRegions.includes('시흥시'));
+  assert.ok(!cityRegions.includes('오이도'));
+  assert.equal(searchPlaces(places, '', '시흥시').length, 20);
 });
 
 test('하단 메뉴는 자연스러운 여행 흐름 순서를 따르고 프로필 라벨을 표시한다', () => {
@@ -79,7 +89,7 @@ test('하단 메뉴는 자연스러운 여행 흐름 순서를 따르고 프로�
   ]);
 });
 
-test('경기 날씨 화면은 시흥 기준 문구 대신 경기도 전체와 31개 시·군 선택을 제공한다', () => {
+test('경기 날씨 화면은 시흥 기준 문구 대신 경기도 지도와 31개 시·군 선택을 제공한다', () => {
   const markup = renderToStaticMarkup(
     createElement(WeatherPanel, {
       selectedCityId: null,
@@ -91,10 +101,11 @@ test('경기 날씨 화면은 시흥 기준 문구 대신 경기도 전체와 31
       onExploreRegion() {},
     }),
   );
-  assert.match(markup, /경기도 전체 \(수원 대표\)/);
-  assert.match(markup, /<option value="수원시">수원시<\/option>/);
-  assert.match(markup, /<option value="가평군">가평군<\/option>/);
-  assert.match(markup, /<option value="시흥시">시흥시<\/option>/);
+  assert.match(markup, /class="gyeonggi-map-svg"/);
+  assert.match(markup, /경기도 전체 보기/);
+  assert.match(markup, /<option value="41110">수원시<\/option>/);
+  assert.match(markup, /<option value="41820">가평군<\/option>/);
+  assert.match(markup, /<option value="41390">시흥시<\/option>/);
   assert.doesNotMatch(markup, /시흥권|시흥 10개 권역/);
 });
 
